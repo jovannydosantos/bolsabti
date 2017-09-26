@@ -565,100 +565,49 @@
 		}
 		
 	</script>
-	
-	<div class="col-md-12">
-		<?php 
-			echo $this->Session->flash();
-			$paginator = $this->Paginator;
-		?>
-		
-		<div class="col-md-12" >
 
-			<div class="col-md-12" style="left: -35px;">
-				<div class="col-md-12" >
-					<p>Buscar oferta publicada:</p>
-				</div>
-				
-				<div class="col-md-11"  style="padding-left: 0px;">
-					<?php 
-					echo $this->Form->create('Company', array(
-									'class' => 'form-horizontal', 
-									'role' => 'form',
-									'inputDefaults' => array(
-															'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-															'div' => array('class' => 'form-group'),
-															'class' => 'form-control',
-															'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="top" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-															'between' => ' <div class="col-md-12">',
-															'after' => '</div></div>',
-															'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-									),
-									'action' => 'studentReport',
-									'onsubmit' =>'return validateEmpty();'
-					)); ?>
-					
-					<fieldset>
-					<div class="col-md-7" style="padding-right: 0px; display: none;" id="idDivBuscar">
-					<?php echo $this->Form->input('Buscar', array(
-															'before' => '<div class="col-md-12" style="padding-left: 0px;">',
-															'label' =>'',
-															'value'	=> $this->Session->read('palabraBuscada'), 
-															'placeholder' => 'Puesto / Sueldo / Folio ',
-															
-					));	?>
-					</div>
-					<div class="col-md-7" style="padding-right: 0px;  display: none;" id="idDivBuscarSelect">
-					<?php echo $this->Form->input('buscarSalary', array(
-															'before' => '<div class="col-md-12" style="padding-left: 0px;">',
-															'type' => 'select',
-															'class' => 'selectpicker show-tick form-control show-menu-arrow',
-															'value'	=> $this->Session->read('palabraBuscada'), 
-															'label' =>'',
-															'options' => $Salarios, 'default'=>'0', 'empty' => 'Sueldo (Neto)'
-															
-					));	?>
-					</div>
-					<div  class="col-md-4" style="padding-left: 0px; padding-right: 0px; ">
-					<?php 	$options = array('1' => 'Puesto', '2' => 'Sueldo', '3' => 'Folio');
-							echo $this->Form->input('criterio', array(
-															'type'=>'select',
-															'class' => 'selectpicker show-tick form-control show-menu-arrow',
-															'value' => $this->Session->read('tipoBusqueda'),
-															'before' => '<div class="col-md-12" style="padding-left: 0px;">',
-															'label' =>'',
-															'onchange' => 'typeSearch()',	
-															'options' => $options,'default'=>'0', 'empty' => 'Criterio de búsqueda'
-							)); ?>
-					</div>
-					<?php echo $this->Form->input('limite', array('type'=>'hidden')); ?>
-					<?php echo $this->Form->input('resetSearch', array('type'=>'hidden','value' => '1')); ?>
-					<div class="col-md-1" style="padding-left: 0px; padding-right: 0px;">
-					<?php 
-					echo $this->Form->button(
-											'Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-											array(
-												'type' => 'submit',
-												'div' => 'form-group',
-												'class' => 'btn btnBlue btn-default',
-												'style' => 'width: 130px;',
-												'escape' => false,
-											)
-					);
-					echo $this->Form->end(); 
-					?>
-					</div>
-					<div class="col-md-1" style="padding-left: 0px; padding-right: 0px;">
-					<img data-toggle="tooltip" id="" data-placement="top" 
-title="El sistema realiza búsquedas escribiendo alguna(s) palabra(s) clave(s) en el campo abierto. 
-Ejemplos: 
-Analista en Mercadotecnia
-MySQL" class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="    margin-top: -56px;margin-left: 135px;">
-			  		</div>
-					</fieldset>
-				</div>
-			</div>
-		</div>
+<div class="col-md-12" >
+	<div class="col-md-12" >
+		<label>Buscar oferta publicada:</label>
 	</div>
+</div>
+
+<?php 
+	echo $this->Session->flash();
+	$paginator = $this->Paginator;
+?>
+
+<div class="col-md-12" >
+	<?= $this->Form->create('Company', [
+						'class' => 'form-horizontal', 
+						'role' => 'form',
+						'inputDefaults' => [
+							'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+							'div' => ['class' => 'form-group'],
+							'class' => 'form-control',
+							'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+							'between' => '<div class="col-md-12">',
+							'after' => '</div>',
+							'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+						],
+						'action' => 'studentReport',
+						'onsubmit' =>'return validateEmpty();']); ?>
+
+	<fieldset>
+		<div class="col-md-3">
+			<?php $options = array('1' => 'Puesto', '2' => 'Sueldo', '3' => 'Folio'); ?>
+			<?= $this->Form->input('criterio', ['type'=>'select','options' => $options,'selected' => $this->Session->read('tipoBusqueda'),'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Criterio de búsqueda']); ?>
+		</div>
+		<div class="col-md-6">
+			<?= $this->Form->input('Buscar', ['placeholder' => 'Puesto / Sueldo / Folio ','value'	=> $this->Session->read('palabraBuscada')]); ?>
+		</div>
+		<div class="col-md-2">
+			<?= $this->Form->button('Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>',['type'=>'submit','class' => 'btn btn-primary','escape' => false,'style'=>'margin-top: 7px;']);?>
+			<?= $this->Form->end(); ?>
+		</div>
+	</fieldset>
+</div>
+	
 	
 		<?php if(isset($ofertas)): 
 				if(empty($ofertas)):

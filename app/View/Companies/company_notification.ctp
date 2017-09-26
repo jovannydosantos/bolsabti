@@ -375,7 +375,7 @@
 															),
 														),
 														array(
-															'class' => 'btn btn-default btnBlue ',
+															'class' => 'btn btn-default btn-info ',
 															'style' => 'width: 200px;'.$seleccionado1,
 															)	
 						); 	?> 
@@ -392,7 +392,7 @@
 															),
 														),
 														array(
-															'class' => 'btn btn-default btnBlue ',
+															'class' => 'btn btn-default btn-info ',
 															'style' => 'width: 200px;'.$seleccionado2,
 															)	
 						); 	?> 
@@ -409,7 +409,7 @@
 															),
 														),
 														array(
-															'class' => 'btn btn-default btnBlue ',
+															'class' => 'btn btn-default btn-info ',
 															'style' => 'width: 200px;'.$seleccionado3,
 															)	
 						); 	?> 
@@ -426,7 +426,7 @@
 															),
 														),
 														array(
-															'class' => 'btn btn-default btnBlue ',
+															'class' => 'btn btn-default btn-info ',
 															'style' => 'width: 200px;'.$seleccionado4,
 															'escape' => false,
 															)	

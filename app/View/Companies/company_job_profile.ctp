@@ -816,7 +816,7 @@
 															'action'=>'companyJobOffer',
 															),
 													array(
-															'class' => 'btn btn-default btnBlue ',
+															'class' => 'btn btn-default btn-primary ',
 															'style' => 'margin-top: 5px; width: 120px;',
 															'escape' => false,
 															)	
@@ -923,7 +923,7 @@ Farmacéutica" class="img-circle cambia" alt="help.png" src="/unam/img/help.png"
 				<div class="col-md-6">
 							<?php 	echo $this->Form->input('CompanyJobProfile.activity', array(
 											'maxlength' => '1000',
-											'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="top" title="Escriba las funciones o actividades a desempeñar en el puesto. Le sugerimos ser lo más claro y concreto. Sólo cuenta con 1000 caracteres como máximo. " class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: 100px;">',
+											'before' => '<div class="col-md-12 ">',
 											'style' => 'resize: vertical; min-height: 120px;  max-height: 300px; height: 120px;',
 											'label' => array(
 															'class' => 'col-md-0 col-md-offset-0 control-label',
@@ -976,8 +976,8 @@ Farmacéutica" class="img-circle cambia" alt="help.png" src="/unam/img/help.png"
 															'data-width'=> '129px',
 															'between' => '<div class="col-md-12 ">',
 															'label' => array(
-																		'class' => 'col-md-0 col-md-offset-0 control-label',
-																		'text' => '',),
+															'class' => 'col-md-0 col-md-offset-0 control-label',
+															'text' => '',),
 															'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px;',
 															'div' => array('class' => 'form-inline'),
 															'label' => array(
@@ -1010,7 +1010,7 @@ Farmacéutica" class="img-circle cambia" alt="help.png" src="/unam/img/help.png"
 														'type' => 'submit', 
 														'div' => 'form-group',
 														'escape' => false,
-														'class' => 'btn btnBlue btn-default col-md-9 col-md-offset-3',
+														'class' => 'btn btn-primary btn-default col-md-9 col-md-offset-3',
 														'escape' => false,
 											));
 								echo $this->Form->end(); 
@@ -1026,7 +1026,7 @@ Farmacéutica" class="img-circle cambia" alt="help.png" src="/unam/img/help.png"
 																					'action'=>'companyJobContractType',
 																				),
 																				array(
-																					'class' => 'btn btn-default btnBlue ',
+																					'class' => 'btn btn-default btn-primary ',
 																					'style' => 'width: 130px;',
 																					'escape' => false,
 																					)	

@@ -1046,7 +1046,7 @@
 														'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
 														'div' => array('class' => 'form-group row'),
 														'class' => 'form-control',
-														'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="top" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+														'before' => '<div class="col-md-12">',
 														'between' => ' <div class="col-md-6">',
 														'after' => '</div></div>',
 														'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
@@ -1062,7 +1062,7 @@
 													'class' => 'btn btnBlue btn-default form-control',
 													'escape' => true,
 													'style' => 'width: 250px;margin-left: 10px;',
-													'before' => '<div class="col-md-4 "><img data-toggle="tooltip" id="" data-placement="left" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-bottom: -10px;">',
+													'before' => '',
 												)
 				);
 				echo $this->Form->end(); 
@@ -1078,7 +1078,7 @@
 													'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
 													'div' => array('class' => 'form-group'),
 													'class' => 'form-control',
-													'before' => '<div class="col-md-6 "><img data-toggle="tooltip" id="" data-placement="left" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+													'before' => '<div class="col-md-6 ">',
 													'between' => ' <div class="col-md-12">',
 													'after' => '</div></div>',
 													'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
@@ -1898,7 +1898,7 @@
 														'type' => 'submit',
 														'div' => 'form-group',
 														'action' => 'specificSearchCandidateResults',
-														'class' => 'btn btnBlue btn-default',
+														'class' => 'btn btn-primary btn-default',
 														'style' => 'width: 130px;',
 														'escape' => false,
 													)

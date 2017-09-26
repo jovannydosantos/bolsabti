@@ -346,7 +346,9 @@
 		}
 		
 	</script>
-	
+	<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
+        <p style="color: #588BAD;">Candidatos mas vistos por empresas</p>
+    </blockquote>
 		
 	<div class="col-md-12">
 		<?php 

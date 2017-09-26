@@ -89,6 +89,7 @@
 				endif;
 			endif;
 			$this->notification();	
+			$this->folder();
 		}
 		
 		public function isAuthorized($company) {
@@ -511,7 +512,7 @@
 			$this->Session->delete('CompanyJobProfile.id');
 			$this->Session->delete('companyJobContractType.id');
 			$this->Session->delete('CompanyCandidateProfile.id');
-			$this->Session->write('Editando', 0);
+			$this->Session->write('Editando', 0);			
 
 			$this->Company->recursive = 1;
 			$this->set('company', $this->Company->findById($this->Session->read('company_id')));	
@@ -550,6 +551,7 @@
 		}
 	
 		public function changePassword($id = null){
+			
 			$this->Company->id = $id;
 			$this->Company->recursive = 1;			
 			$this->set('company', $this->Company->findById($this->Session->read('company_id')));
@@ -557,6 +559,11 @@
 				$this->request->data = $this->Company->read();
 			else:			
 				if($this->request->is('post')):
+					// echo "<pre>";
+					// print_r($this->request->data);
+					// echo "</pre>";
+					// exit;
+					
 					$this->Company->set($this->request->data);	//pasa los parametros al modelo para ser validados.
 						if ($this->Company->validates(array('fieldList' => array('new_password', 'new_password_confirm', 'old_password','email_confirm')))):	//pasa los campos que serán validados.
 							if($this->Company->updateAll(array('Company.password' => "'".AuthComponent::password($this->data['Company']['new_password'])."'"),array('Company.id' => $this->Company->data['Company']['id']))):
@@ -581,7 +588,7 @@
 									));
 									$Email->send();
 									$this->Session->setFlash('Su contraseña ha sido modificada exitosamente, podrá acceder con ella en su próxima visita.', 'alert-success');
-									$this->redirect(array('action' => 'logout'));
+									// $this->redirect(array('action' => 'logout'));
 							else:
 								$this->Session->setFlash('Lo sentimos, no se pudo cambiar su contraseña si el problema persiste contacte al administrador.', 'alert-danger');
 							endif;	
@@ -3022,6 +3029,7 @@
 			endif;
 		}	
 		
+		
 		public function companyFolder(){
 			if($this->request->is('post')):
 				if($this->Session->read('redirect') <> ''):
@@ -3054,6 +3062,7 @@
 						$this->Session->delete('CompanyJobProfile.id');
 						$this->Session->delete('companyJobContractType.id');
 						$this->Session->delete('CompanyCandidateProfile.id');
+						$this->Session->delete('intoFolder');
 						$this->redirect(array('action' => $redirect ));
 					else:
 						$this->Session->setFlash('No se pudo eliminar la carpeta', 'alert-danger');
@@ -4166,6 +4175,7 @@
 					$intoFolder = $this->Session->read('intoFolder');
 				else:
 					$intoFolder = '';
+					$this->Session->delete('intoFolder');
 				endif;
 			endif;
 			

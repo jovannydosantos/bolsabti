@@ -19,63 +19,40 @@
 		}
 	</script>
 	
-	<?php 
-		echo $this->Session->flash();
+	
+	<?= $this->Session->flash();
 		$paginator = $this->Paginator;
 	?>
 
-	<div class="col-md-9"  style="padding-left: 0px;">
-				<?php 
-					echo $this->Form->create('Company', array(
+	<div class="col-md-12">
+				<?= $this->Form->create('Company', [
 									'class' => 'form-horizontal', 
 									'role' => 'form',
-									'inputDefaults' => array(
-															'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-															'div' => array('class' => 'form-group'),
+									'inputDefaults' => [
+															'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+															'div' => ['class' => 'form-group'],
 															'class' => 'form-control',
-															'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="top" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+															'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
 															'between' => ' <div class="col-md-12">',
-															'after' => '</div></div>',
-															'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-									),
+															'after' => '</div>',
+															'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+									],
 									'action' => 'companyPostullation',
 									'onsubmit' =>'return validateEmpty();'
-					)); ?>		
+					]); ?>		
 				<fieldset>
-					<div class="col-md-6" style="padding-right: 0px;">
-					<?php echo $this->Form->input('Buscar', array(
-															'before' => '<div class="col-md-12" style="padding-left: 0px;">',
-															'label' =>'',
-															'value'	=> $this->Session->read('palabraBuscada'), 
-															'placeholder' => 'Nombre de la empresa / Puesto / Folio',
-															
-					));	?>
+					<div  class="col-md-3">
+					<?php $options = array('1' => 'Nombre de la empresa', '2' => 'Puesto', '3' => 'Folio'); ?>
+					<?= $this->Form->input('criterio', ['type'=>'select','options' => $options,'selected' => $this->Session->read('tipoBusqueda'),'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Criterio de búsqueda']); ?>
 					</div>
-					<div  class="col-md-4" style="padding-left: 0px; padding-right: 0px;">
-					<?php 	$options = array('1' => 'Nombre de la empresa', '2' => 'Puesto', '3' => 'Folio');
-							echo $this->Form->input('criterio', array(
-													'type'=>'select',
-													'before' => '<div class="col-md-12" style="padding-left: 0px;">',
-													'label' =>'',
-													'label' =>'',
-													'selected' => $this->Session->read('tipoBusqueda'),
-													'options' => $options,'default'=>'0', 'empty' => 'Criterio de búsqueda'
-							)); ?>
+					<div class="col-md-6">
+					<?= $this->Form->input('Buscar',[ 'placeholder' => 'Nombre de la empresa / Puesto / Folio','value'	=> $this->Session->read('palabraBuscada')]); ?>
+					
 					</div>
-					<div class="col-md-1" style="padding-left: 0px; padding-right: 0px;">
-					<?php 
-					echo $this->Form->button(
-											'Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-											array(
-												'type' => 'submit',
-												'div' => 'form-group',
-												'class' => 'btn btnBlue btn-default',
-												'style' => 'width: 130px;',
-												'escape' => false,
-											)
-					);
-					echo $this->Form->end(); 
-					?>
+					<div class="col-md-2">
+					<?= $this->Form->button('Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>',['type'=>'submit','class' => 'btn btn-primary','escape' => false,'style'=>'margin-top: 7px;']);?>
+					<?= $this->Form->end(); ?>
+					
 			  		</div>
 				</fieldset>
 			</div>
@@ -94,7 +71,7 @@
 			foreach($ofertas as $k => $oferta):
 		?>
 		<div class="col-md-12" style="margin-bottom: 10px;">
-			<div class="col-md-8"  style="color: #FFB71F; margin-top: 7px;">
+			<div class="col-md-8"  style="color: #7875FB; margin-top: 7px;">
 				<?php  
 					$texto = str_ireplace ( $this->Session->read('palabraBuscada'), '<strong style="font-size: 14px; color: #93B2FF">'.$this->Session->read('palabraBuscada').'</strong>', $oferta['CompanyJobProfile']['job_name']); 
 				?> 
@@ -131,7 +108,7 @@
 																'action'=>'results_search_excel',$oferta['CompanyJobProfile']['id'],$oferta['CompanyJobProfile']['job_name'],
 															),
 															array(
-																'class' => 'btn btn-default btnBlue ',
+																'class' => 'btn btn-default btn-primary ',
 																'style' => 'width: 200px; font-size: 12px;',
 																'escape' => false,
 																)	
@@ -144,7 +121,7 @@
 															),
 															array(
 																'title' => 'Sin postulados',
-																'class' => 'btn btn-default btnBlue ',
+																'class' => 'btn btn-default btn-primary ',
 																'style' => 'width: 200px; cursor: not-allowed; font-size: 12px;',
 																'escape' => false,
 																)	

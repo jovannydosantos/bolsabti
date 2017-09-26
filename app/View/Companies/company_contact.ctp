@@ -383,6 +383,11 @@
 		}
 
 	</script>
+	
+	<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
+        <p style="color: #588BAD;">Actualizar datos de registro.</p>
+    </blockquote>
+	
 		<div class="col-md-12">
 		
 			<?php echo $this->Session->flash(); ?>
@@ -395,39 +400,35 @@
 								'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
 								'div' => array('class' => 'form-group'),
 								'class' => 'form-control',
-								'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="right" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+								'before' => '',
 								'between' => '<div class="col-md-11 ">',
 								'after' => '</div></div>',
 								'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style'=>'padding-left: 5px; padding-right: 5px;'))
 							),
 							'action' => 'companyContact',
 			)); ?>		
-		
+		<div class="col-md-12">
 			<fieldset>
-				
-				<div class="col-md-12" style="margin-top: 30px;">
-					<p>Datos de la Empresa o Institución</p>
+				<div style="background-color: #084283; margin-bottom: 15px;  width: 370px; max-width: 370px; " class="col-md-5 ">
+				<div style="text-align: left; margin-bottom: 5px;" >
+				<p style="margin-left: 50px; font-size: 15px;">Datos de la Empresa o Institución</p>
 				</div>
-			
-			<div class="col-md-12">
-				<div style="background-color: #835B06; margin-bottom: 15px;  width: 370px; max-width: 370px; " class="col-md-5 ">
 					<?php echo $this->Form->input('CompanyProfile.id'); ?>
 					<?php echo $this->Form->input('CompanyProfile.rfc', array(					
 								'label' =>'',
 								'readonly' => 'readonly',
-								'before' => '<div class="col-md-12 " style="margin-top: 50px;"><img data-toggle="tooltip" id="" data-placement="right" title="Registro Federal de Contribuyentes (RFC), es una clave alfanumérica que expide el Servicio de Administración Tributaria (SAT) a las empresas o instituciones legalmente constituidas en México.
-Se activará su registro únicamente como persona física con actividad empresarial o como persona moral." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+								'before' => '<div class="col-md-12 " style="margin-top: 50px;">',
 								'placeholder' => 'RFC',
 								'onblur' => 'sendRfc()'
 					)); ?>
 					<?php echo $this->Form->input('CompanyProfile.social_reason', array(		
-									'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="right" title="Es el nombre oficial y legal de la empresa de acuerdo con su documentación oficial y a su Registro Federal de Contribuyentes (RFC)." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',		
+									'before' => '<div class="col-md-12">',		
 									'label' => '',
 									'placeholder' => 'Razón social'
 					)); ?>
 					<?php echo $this->Form->input('CompanyProfile.company_name', array(
 									'label' => '',
-									'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="right" title="Nombre que identifica a una empresa o institución y la distingue entre las empresas que desarrollan actividades similares." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',	
+									'before' => '<div class="col-md-12">',	
 									'placeholder' => 'Nombre comercial'
 					)); ?>
 					<?php 	echo $this->Form->input('CompanyProfile.company_type', array(				
@@ -457,7 +458,7 @@ Se activará su registro únicamente como persona física con actividad empresar
 					)); ?>
 					<?php 	echo $this->Form->input('CompanyProfile.employees_number', array(		
 									'type' => 'select',
-									'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="right" title="Total del personal que labora en la empresa o institución." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+									'before' => '<!--div class="col-md-12">',
 									'class' => 'selectpicker show-tick form-control show-menu-arrow',
 									'label' => '',
 									'placeholder' => 'Número de empleados',	
@@ -472,7 +473,7 @@ Se activará su registro únicamente como persona física con actividad empresar
 					)); ?>
 				
 					<div style="margin-top: 42px;">
-					   <p style="margin-left: 20px; margin-bottom: 0px; font-size: 14px;"> Domicilio Fiscal<img data-toggle="tooltip" id="" data-placement="right" title="Dirección donde se encuentra ubicada la empresa, institución, de acuerdo con el Registro Federal de Contribuyentes (RFC)." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: 10px;"></p> <!-- Panama -->
+					   <p style="margin-left: 20px; margin-bottom: 0px; font-size: 14px;"> Domicilio Fiscal</p>  <!-- img data-toggle="tooltip" id="" data-placement="right" title="Dirección donde se encuentra ubicada la empresa, institución, de acuerdo con el Registro Federal de Contribuyentes (RFC)." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: 10px;"> Panama -->
 					</div>
 					
 					<?php echo $this->Form->input('CompanyProfile.street', array(	
@@ -516,17 +517,17 @@ Se activará su registro únicamente como persona física con actividad empresar
 			
 				</div>
 			
-				<div style="background-color: #835B06; margin-bottom: 15px; padding: 15px 0 0;  margin-left: 20px; " class="col-md-5 ">
+				<div style="background-color: #084283; margin-bottom: 15px; padding: 15px 0 0;  margin-left: 20px; " class="col-md-5 ">
 					
 					<div style="text-align: left; margin-bottom: 5px;" >
-					   <p style="margin-left: 50px; font-size: 15px;"> Domicilio Sede<img data-toggle="tooltip" id="" data-placement="right" title="Dirección donde se encuentra ubicada la empresa, institución o alguna de sus sucursales, donde puede ser localizado el responsable de registro." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: 10px;">
+					   <p style="margin-left: 50px; font-size: 15px;"> Domicilio Sede</p>
 								<?php 
 									echo $this->Html->link('<span class="glyphicon glyphicon-transfer"></span>',		
 																						array(
 																							// Sin parametros
 																							),
 																						array(
-																							'class' => 'btn btn-default btnBlue ',
+																							'class' => 'btn btn-default btn-primary ',
 																							'onclick' => 'return clonarFormacionAcademica();', 
 																							'escape' => false,
 																							'style' => 'float: right; margin-right: 44px; margin-top: -6px;',
@@ -576,12 +577,12 @@ Se activará su registro únicamente como persona física con actividad empresar
 									'placeholder' => 'Código postal',
 					)); ?>
 					
-					<div style="text-align: left;  margin-top: 20px;  margin-bottom: -10px;" >
+					<div style="text-align: left;" >
 					   <p style="margin-left: 50px;"> Breve descripción de la empresa</p>
 					</div>
 					
 					<?php echo $this->Form->input('CompanyProfile.company_description', array(
-									'before' => '<div class="col-md-12 " style="left: 30px; padding-left: 0px; padding-right: 40px;"><img data-toggle="tooltip" id="" data-placement="top" title="Información y características que permitan al candidato conocer aspectos de interés y atractivos de la empresa o institución." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: -3px; margin-top: 100px;">',
+									'before' => '<div class="col-md-12 " style="left: 30px; padding-left: 0px; padding-right: 40px;"> ',
 									'between' => '<div class="col-md-10 col-md-offset-1" style="padding-left: 0px;">',
 									'style' => ' resize: none; height: 120px;',
 									'label' => '',
@@ -595,7 +596,7 @@ Se activará su registro únicamente como persona física con actividad empresar
 					</div>
 					
 					<?php echo $this->Form->input('Company.username', array(
-									'before' => '<div class="col-md-11 col-md-offset-1"><img data-toggle="tooltip" id="" data-placement="top" title="El RFC de la empresa o institución se asignará como usuario para ingresar al portal." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+									'before' => '<div class="col-md-11 col-md-offset-1">',
 									'readonly' => 'true',
 									'label' => '',
 									'placeholder' => 'Usuario creado automáticamente (RFC)',
@@ -604,7 +605,7 @@ Se activará su registro únicamente como persona física con actividad empresar
 				</div>
 			</div>	
 
-				<div style="background-color: #835B06; margin-bottom: 15px; padding: 15px 0 0;  margin-left: 15px;  width: 370px; max-width: 370px; " class="col-md-5 ">
+				<div style="background-color: #084283; margin-bottom: 15px; padding: 15px 0 0;  margin-left: 15px;  width: 370px; max-width: 370px; " class="col-md-5 ">
 					<div style="text-align: left; " >
 					   <p style="margin-left: 50px;"> Datos de contacto</p>
 					</div>
@@ -645,7 +646,7 @@ Se activará su registro únicamente como persona física con actividad empresar
 									'placeholder' => 'Horario de atención',					
 					)); ?>
 					<?php echo $this->Form->input('Company.email', array(
-									'before' => '<div class="col-md-11 col-md-offset-1"><img data-toggle="tooltip" id="" data-placement="right" title="Dirección electrónica otorgada por la empresa o institución al responsable de registro." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+									'before' => '<div class="col-md-11 col-md-offset-1">',
 									'label' => '',
 									'placeholder' => 'Correo institucional',
 									'onchange' => 'emptyConfirm()',									
@@ -705,7 +706,7 @@ Se activará su registro únicamente como persona física con actividad empresar
 														'type' => 'submit', 
 														'div' => 'form-group',
 														'escape' => false,
-														'class' => 'btn btnBlue btn-default col-md-offset-5',
+														'class' => 'btn btn-primary btn-default col-md-offset-5',
 														'style' => 'width:120px;'
 								));
 								echo $this->Form->end(); 
