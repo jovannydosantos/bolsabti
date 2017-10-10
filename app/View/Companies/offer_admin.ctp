@@ -2,30 +2,33 @@
 	$this->layout = 'company'; 
 ?>
 <script>
+
+function validateEmpty(){
+		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
+		
+		if(document.getElementById('CompanyBuscar').value == ''){
+			jAlert('Ingrese el puesto, sueldo ó folio', 'Mensaje');
+			document.getElementById('CompanyBuscar').focus();
+			return false;
+		} else 
+		if(selectedIndex == 0){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
 	function validateEmpty(){
 		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
-		var palabraBuscar = document.getElementById('CompanyBuscar').value ;
-		var sueldo = document.getElementById("CompanyBuscarSalary").selectedIndex;
-
-		if(selectedIndex == 0){
-			jAlert('Seleccione el criterio de búsqueda', 'Mensaje');
-			document.getElementById('CompanyCriterio').focus();
-			return false;
-		}else 
-		if((palabraBuscar == '') && (sueldo == '')){
-			
-			if(selectedIndex == 1){
-				jAlert('Ingrese el puesto', 'Mensaje');
-				document.getElementById('CompanyBuscar').focus();
-			} else
-			if(selectedIndex == 2){
-				jAlert('Seleccione el rango de sueldo', 'Mensaje');
-				document.getElementById('CompanyBuscarSalary').focus();
-			}else{
-					jAlert('Ingrese el folio', 'Mensaje');
-					document.getElementById('CompanyBuscar').focus();
+		
+		if(document.getElementById('CompanyBuscar').value == ''){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el puesto, sueldo ó folio a buscar'});
+				return false;
 			}
-			
+		 else 
+		if(selectedIndex == 0){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
 			return false;
 		}else {
 			return true;
@@ -43,7 +46,7 @@
 
 <div class="col-md-12" >
 	<div class="col-md-12" >
-		<label>Buscar oferta dentro de carpeta(s):</label>
+		<label>Buscar oferta:</label>
 	</div>
 </div>
 
@@ -176,7 +179,7 @@
 	
 				
 <div class="col-md-12 scrollbar" id="style-2" style="margin-top: 30px">
-	<?= $this->element('ofertasCompanies'); ?>
+	<?= $this->element('ofertascompanies'); ?>
 </div>					
 
 <?php 

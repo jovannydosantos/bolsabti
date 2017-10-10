@@ -27,6 +27,7 @@
 	function ofertaExpirada(){
 		$.alert({
 			title:'AVISO',
+			type: 'blue',
 			content : 'Oferta Expirada',
 		});	
 	}
@@ -34,6 +35,7 @@
 	function ofertaIncompleta(){
 		$.alert({
 			title:'AVISO',
+			type: 'blue',
 			content : 'Oferta Incompleta',
 		});	
 	}

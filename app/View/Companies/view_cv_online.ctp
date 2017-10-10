@@ -1071,11 +1071,11 @@
 	</div>	
 	<div class="col-md-12"  style="text-align: left; margin-top: 10px;">
 		
-		<div class="col-md-9" style="padding-left: 0px;">
-			<p>Fecha de última actualización:<?php echo ' '.date("d / m / Y",strtotime($student['StudentLastUpdate']['modified'])); ?></p>
+	<div class="col-md-9" style="padding-left: 0px;">
+		<p>Fecha de última actualización:<?php echo ' '.date("d / m / Y",strtotime($student['StudentLastUpdate']['modified'])); ?></p>
 
-		</div>
-		<div class="col-md-3">
+	</div>
+	<div class="col-md-3">
 			<?php 
 			$caracteres = strlen($student['Student']['id']);
 						$faltantes = 5 - $caracteres;	
@@ -1098,6 +1098,129 @@
 	<div class="col-md-offset-10">
 		<a class="btn btn-default btnBlue " style="margin-top: 5px; width: 150px;" onclick="goBack();"><i class="glyphicon glyphicon-arrow-left"></i> &nbsp; Regresar</a>
 	</div>
+	
+		<!--Form para Agendar entrevista telefónica-->
+<div class="modal fade" id="myModalnotificationTelefonica" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content fondoBti">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title whiteText" id="myModalLabel">Seleccione el día y la hora para la entrevista telefónica</h4>
+			</div>
+			<div class="modal-body">
+				<?php 
+					echo $this->Form->create('Company', array(
+												'class' => 'form-horizontal', 
+												'id' => 'FormTelephoneNotification',
+												'role' => 'form',
+												'inputDefaults' => array(
+														'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
+																						'div' => array('class' => 'form-group'),
+																						'class' => 'form-control',
+																						'before' => '<div class="col-md-12 ">',
+																						'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
+																						'after' => '</div></div>',
+																						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
+												),
+														'action' => 'companyTelephoneNotification',
+																	'onsubmit' =>'return validateTelephoneNotificationForm();'
+					)); 
+				?>
+				<fieldset>
+					<?php 	echo $this->Form->input('StudentNotification.student_id', array(
+																					'type'=>'hidden',
+																					'id'=>'StudentTelephoneNotificationId'
+					)); ?>
+					<?php 	echo $this->Form->input('CompanyInterviewMessage.id', array(
+																				'type'=>'hidden',
+																				'value'=>$company['CompanyInterviewMessage']['id'],
+					)); ?>
+					<?php 	echo $this->Form->input('StudentNotification.company_interview_message', array(
+																		'id' => 'StudentTelephoneNotificationMessage',
+																		'before' => '<div class="col-md-12 ">',
+																		'style' => 'resize: vertical; min-height: 75px;  max-height: 120px; height: 75px;',
+																		'maxlength' => '316',
+																		'type' => 'textarea',
+																		'value'=>$company['CompanyInterviewMessage']['telehone_interview_message'],
+																		// 'id' => 'taComentario',
+																		'label' => array(
+																		'class' => 'col-md-0 control-label',
+																		'text' => ''),
+																		'placeholder' => 'Mensaje ',
+					));	?>	
+					<center>	
+						<h4 class="modal-title whiteText" id="myModalLabel">Fecha:</h4>						
+						<?php echo $this->Form->input('StudentNotification.company_interview_date', array(				
+						'id' => 'StudentTelephoneNotificationDate',
+						'type' => 'date',
+						'class' => 'selectpicker show-tick form-control show-menu-arrow',
+						'data-width'=> '150px',
+						'label' => array(
+						'class' => 'col-sm-0 col-md-0 control-label',
+						'text' => '',),
+						'dateFormat' => 'YMD',
+						'separator' => '',
+						'minYear' => date('Y') - -2,
+						'maxYear' => date('Y') - 0,	
+
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
+						)); ?>
+						
+						<h4 class="modal-title whiteText" id="myModalLabel">Hora:</h4>
+						<?php echo $this->Form->input('StudentNotification.company_interview_hour', array(				
+						'id' => 'StudentTelephoneNotificationHour',
+						'type' => 'time',
+						'timeFormat' => '24',
+						'interval' => 15,
+						'class' => 'selectpicker show-tick form-control show-menu-arrow',
+						'data-width'=> '150px',
+						'label' => array(
+						'class' => 'col-sm-0 col-md-0 control-label',
+						'text' => '',),
+
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
+						)); ?>
+
+						<select  id="StudentAcademicSituationId" class="selectpicker show-tick form-control show-menu-arrow" required="required" name="data[StudentNotification][company_job_profile_id]" >
+							<option value="">Seleccione el puesto interesado en el perfil</option>
+							<?php 
+								foreach($company['CompanyJobProfile'] as $k => $companyJobProfileId):
+
+									$caracteres = strlen($companyJobProfileId['id']);
+									$faltantes = 5 - $caracteres;	
+									if($faltantes > 0):
+										$ceros = '';
+										for($cont=0; $cont<=$faltantes;$cont++):
+											$ceros .= '0';
+										endfor;
+										$folio = $ceros.$companyJobProfileId['id'];
+									else:
+										$folio = strlen($companyJobProfileId['id']);
+									endif;
+									
+									if(!empty($companyJobProfileId['CompanyJobContractType']) and ($companyJobProfileId['CompanyJobContractType']['salary']<>'')):
+										$salario = $Salarios[$companyJobProfileId['CompanyJobContractType']['salary']];
+									else:
+										$salario = '';
+									endif
+							?>
+							<option value=<?php echo $companyJobProfileId['id']; ?> > <?php echo $folio.' '.$companyJobProfileId['job_name'].' '.$salario; ?></option>
+							<?php 
+								endforeach;
+							?>
+						</select>
+					</center>
+				</fieldset>
+				<div class="modal-footer">
+					<?= $this->Form->button('<i class="glyphicon glyphicon-earphone"></i>&nbsp; Enviar',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
+					<?= $this->Form->end(); ?>
+				</div>
+			
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
 	
 		<!--Form para ajendar entrevista telefónica-->
 		<div class="modal fade" id="myModalnotificationTelefonica" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
@@ -1241,446 +1364,3 @@
 						</div>
 					</div>
 	
-	<!--Form para ajendar entrevista personal-->
-		<div class="modal fade" id="myModalnotificationPersonal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
-						<div class="modal-dialog"  style="width: 675px">
-							<div class="modal-content backgroundUNAM">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-									<h4 class="modal-title" id="myModalLabel">Indique los datos para la entrevista personal</h4>
-								</div>
-								<div class="modal-body backgroundUNAM"style="height: 470px;">
-									
-								<?php 
-									echo $this->Form->create('Company', array(
-																		'class' => 'form-horizontal', 
-																		'role' => 'form',
-																		'inputDefaults' => array(
-																				'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																												'div' => array('class' => 'form-group'),
-																												'class' => 'form-control',
-																												'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="left" title="Documentación requerida para la entrevista presencial.Ejemplo:IFE, Currículum impreso, etcétera" class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: 6px;margin-top: 6px;" >',
-																												'between' => ' <div class="col-md-11" style="padding-right: 0px;">',
-																												'after' => '</div></div>',
-																												'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-																		),
-																		'action' => 'companyPersonalNotification',
-																		'onsubmit' =>'return validateNotificationPersonalForm();'
-									)); 
-								?>	
-						
-										<div class="col-md-12 col-md-offset-0" style=" margin-top: 5px;  padding-right: 0px;">	
-												<fieldset>
-													<?php 	echo $this->Form->input('StudentNotification.student_id', array('type'=>'hidden', 'class'=>'StudentNotificationStudentId')); ?>
-													<?php 	echo $this->Form->input('CompanyInterviewMessage.id', array(
-																												'type'=>'hidden',
-																												'value'=>$company['CompanyInterviewMessage']['id'],
-																										)); ?>
-													<?php 	echo $this->Form->input('StudentNotification.company_interview_message', array(
-																										'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="left" title="Crear un mensaje genérico con el fin de programar una entrevista presencial." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: 52px;margin-left: 5px;">',
-																										'style' => 'resize: vertical; min-height: 75px;  max-height: 120px; height: 75px;',
-																										'maxlength' => '316',
-																										'type' => 'textarea',
-																										'value'=>$company['CompanyInterviewMessage']['personal_interview_message'],
-																										'id' => 'taComentario2',
-																										'label' => array(
-																													'class' => 'col-md-0 control-label',
-																													'text' => ''),
-																													'placeholder' => 'Mensaje ',
-													));	?>
-													
-													<div class="col-xs-6 col-md-offset-6" style="height: 0;">
-														<p style="margin-left: -41%;margin-top: 12px;">Fecha</p>
-														<p style="margin-left: 1%;margin-top: 27px;">Hora</p>
-														<label class="col-md-6 control-label"  style="margin-left: 131px; top: -37px;"></label>
-													</div>
-
-														<?php 	echo $this->Form->input('StudentPersonalNotification.company_interview_date', array(
-																										'type' => 'date',
-																										'before' => '<div class="col-md-11" style="margin-left: 62px;"">',
-																										'between' => ' <div class="col-md-8 col-md-offset-4">',
-																										'style' => 'width: 98px; margin-left: -10px; margin-right: 18px; padding:0px',
-																										'div' => array('class' => 'form-inline'),
-																										'label' => array(
-																											'class' => 'col-xs-offset-3 control-label ',
-																											'text' => '',),
-																										'dateFormat' => 'YMD',
-																										'separator' => '',
-																										'minYear' => date('Y') - -2,
-																										'maxYear' => date('Y') - 0,	
-																
-														));	?>
-														
-												
-														<?php 	echo $this->Form->input('StudentPersonalNotification.company_interview_hour', array(
-																										'type' => 'time',
-																										'timeFormat' => '24',
-																										'interval' => 15,
-																										'before' => '<div class="col-md-11" style="left: 58px; margin-top: 10px;">',
-																										'between' => ' <div class="col-md-6 col-md-offset-6" style="padding-left: 20px;">',
-																										'style' => 'width: 98px; margin-left: 4px; border-left-width: 0; padding-left: 0;  padding-left: 0px; padding-right: 0px;',
-																										'div' => array('class' => 'form-inline'),
-																										'label' => array(
-																														'class' => 'col-md-1 col-md-offset-5 control-label',
-																														'text' => ''),
-														));?>
-														
-														<?php 	echo $this->Form->input('StudentNotification.company_interview_direction', array(
-																										'before' => '<div class="col-md-12 ">',
-																										'between' => ' <div class="col-md-11" style="margin-top: 20px; padding-right: 0px;">',
-																										'label' => array(
-																													'class' => 'col-md-0 control-label',
-																													'text' => ''),
-																										'placeholder' => 'Dirección ',
-														));	?>
-														<?php 	echo $this->Form->input('StudentNotification.company_contact_name', array(
-																										'before' => '<div class="col-md-12 ">',
-																										'between' => ' <div class="col-md-11" style="padding-right: 0px;">',
-																										'label' => array(
-																													'class' => 'col-md-0 control-label',
-																													'text' => ''),
-																										'placeholder' => 'Nombre del entrevistador ',
-														));	?>
-														<?php 	echo $this->Form->input('StudentNotification.company_contact', array(
-																										'before' => '<div class="col-md-12 ">',
-																										'between' => ' <div class="col-md-11" style="padding-right: 0px;">',
-																										'label' => array(
-																													'class' => 'col-md-0 control-label',
-																													'text' => ''),
-																										'placeholder' => 'Contacto entrevistador',
-														));	?>
-														<?php 	echo $this->Form->input('StudentNotification.company_interview_document', array(
-// 																										'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="left" title="Documentación requerida para la entrevista presencial.
-// Ejemplo:
-// IFE, Currículum impreso, etcétera." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: 6px;margin-left: 6px;">',
-																										'between' => ' <div class="col-md-11" style="padding-right: 0px;">',
-																										'label' => array(
-																													'class' => 'col-md-0 control-label',
-																													'text' => ''),
-																										'placeholder' => 'Documentos',
-														));	?>
-
-														<div class="form-group required">
-														<div class="col-md-12" style="padding-right: 0px;">
-															<label for="StudentAcademicSituationId"></label>
-															<div class="col-md-11 " >
-																<select  id="StudentAcademicSituationId" class="form-control" required="required" name="data[StudentNotification][company_job_profile_id]" >
-																	<option value="">Seleccione el puesto interesado en el perfil</option>
-																	<?php 
-																		foreach($company['CompanyJobProfile'] as $k => $companyJobProfileId):
-
-																			$caracteres = strlen($companyJobProfileId['id']);
-																			$faltantes = 5 - $caracteres;	
-																			if($faltantes > 0):
-																				$ceros = '';
-																				for($cont=0; $cont<=$faltantes;$cont++):
-																					$ceros .= '0';
-																				endfor;
-																				$folio = $ceros.$companyJobProfileId['id'];
-																			else:
-																				$folio = strlen($companyJobProfileId['id']);
-																			endif;
-																			
-																			if(!empty($companyJobProfileId['CompanyJobContractType']) and ($companyJobProfileId['CompanyJobContractType']['salary']<>'')):
-																				$salario = $Salarios[$companyJobProfileId['CompanyJobContractType']['salary']];
-																			else:
-																				$salario = '';
-																			endif
-																	?>
-																			<option value=<?php echo $companyJobProfileId['id']; ?> > <?php echo $folio.' '.$companyJobProfileId['job_name'].' '.$salario; ?></option>
-																	<?php 
-																		endforeach;
-																	?>
-																	
-																</select>
-															</div>
-														</div>
-													</div>
-
-												</fieldset>	
-										</div>
-				
-				
-
-								</div>
-								<div class="modal-footer">
-									<?php 	echo $this->Form->button('Enviar',array(
-																			'type' => 'submit', 
-																			'div' => 'form-group',
-																			'escape' => false,
-																			'class' => 'btn btnRed btn-default col-md-3 col-md-offset-8'
-																));
-											echo $this->Form->end(); 
-									?>
-								</div>
-							</div>
-						</div>
-					</div>
-
-	<!--Form para envio de correo -->
-		<div class="modal fade" id="myModalMail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
-						<div class="modal-dialog"  style="width: 650px">
-							<div class="modal-content backgroundUNAM">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-									<h4 class="modal-title" id="myModalLabel">Envio de correo electrónico a perfil de student</h4>
-								</div>
-								<div class="modal-body backgroundUNAM"style="height: 440px;">
-									<?php
-										echo $this->Form->create('Company', array(
-														'type' => 'file',
-														'class' => 'form-horizontal', 
-														'role' => 'form',
-														'inputDefaults' => array(
-															'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-															'div' => array('class' => 'form-group'),
-															'class' => 'form-control',
-															'label' => array('class' => 'col-xs-4 col-sm-4 col-md-2 col-md-4 control-label '),
-															'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="left" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-															'between' => '<div class="col-xs-11 col-sm-10 col-md-10 " >',
-															'after' => '</div></div>',
-															'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-														),
-														'action' => 'companyEmailNotification'
-									)); ?>
-										
-
-										<style type="text/css">
-											.upload {
-												width: 154px;
-												height: 35px;
-												background: url("<?php echo $this->webroot; ?>/img/adjuntarboton.png");
-												overflow: hidden;
-												background-repeat-x: no-repeat;
-												background-repeat:no-repeat;
-												margin-left: 35px;
-												margin-top: -28px;
-											}
-										</style>
-
-										<fieldset style="margin-top: 30px;">
-											
-											<?php echo $this->Form->input('Student.emailTo', array(
-																					'readonly' => 'readonly',
-																					'before' => '<div class="col-md-9 ">',	
-																					'between' => '<div class="col-xs-11 col-sm-10 col-md-10 " style="padding-left: 5px; padding-right: 5px;">',
-																					'label' => array(
-																									'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',
-																									'style' => 'left: 6px;',
-																									'text' => '',
-																								),
-																					'placeholder' => 'Correo',
-											)); ?>
-											<?php echo $this->Form->input('Student.CC', array(	
-																					'type' => 'hidden',
-																					'before' => '<div class="col-md-12 ">',	
-																					'style'	=> 'margin-left: -15px;',		
-																					'label' => array(
-																									'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',
-																									'text' => 'CC:',
-																									'style' => 'margin-left: 15px;',
-																								),
-																					'placeholder' => 'CC',
-											)); ?>
-											<?php echo $this->Form->input('Student.CCO', array(	
-																					'type' => 'hidden',
-																					'before' => '<div class="col-md-12 ">',	
-																					'style' => 'margin-left: -15px;',			
-																					'label' => array(
-																									'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',
-																									'text' => 'CCO:',
-																									'style' => 'margin-left: 15px;',
-																								),
-																					'placeholder' => 'CCO',
-											)); ?>
-											<?php echo $this->Form->input('Student.title', array(
-																					'before' => '<div class="col-md-9 "><img data-toggle="tooltip" id="" data-placement="top" title="Ingresar asunto del mensaje, breve y conciso." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: 8px;">',
-																					'between' => '<div class="col-xs-11 col-sm-10 col-md-10 " style="padding-left: 5px; padding-right: 5px;">',
-																					'style' => 'margin-left: -5px;',				
-																					'label' => array(
-																									'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',
-																									'text' => '',
-																									'style' => 'margin-left: 5px;',
-																									),
-																					'placeholder' => 'Título',
-											)); ?>
-											
-											<?php echo $this->Form->input('Student.file', array(
-																					'type' => 'file',
-																					'before' => '<div class="col-md-12 ">',
-																					'between' => '<div class="col-xs-11 col-sm-9 col-md-8 upload">',
-																					'style' => 'display: block !important;
-																														width: 157px !important;
-																														height: 57px !important;
-																														opacity: 0 !important;
-																														overflow: hidden !important;
-																														background-repeat-y: no-repeat;
-																														cursor: pointer;',
-																					'label' => array(
-																									'class' => 'col-xs-11 col-sm-6 col-md-3 control-label',
-																									'text' => 'máx. 200kb'
-																									),
-																					'onchange' => 'cambiarContenido()'
-																					
-											)); ?>
-											<div class="col-md-12" >
-												<p id="textFile" style="border-top-width: 0px; margin-left: 18px; "></p>
-											</div>
-											<?php echo $this->Form->input('Student.message', array(	
-																						'type' => 'textarea',
-																						'rows' => '5',
-																						'cols' => '5',
-																						'maxlength' => '632',
-																						'id' => 'messageIdEmail',
-																						'before' => '<div class="col-md-12 ">',
-																						'style' => 'margin-left: -25px; resize: vertical; min-height: 75px;  max-height: 150px; height: 130px;',
-																						'label' => array(
-																										'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',
-																										'text' => '',
-																										'style' => 'margin-top: -5px;left: -7px;',
-																						),
-																						'placeholder' => 'Cuerpo del correo'
-											)); ?>
-											<div class="col-md-11 form-group row" style="text-align: right; top: -10px; margin-left: 7px; margin-bottom: 0px;padding-right: 22px;">
-												<span id="contadorTaComentario2" style="color: white">0/632</span><span style="color: white"> caracteres máx.</span>
-												<img data-toggle="tooltip" id="" data-placement="left" title="Mensaje que le será enviado al student" class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: -55px;">
-											</div>
-													
-											<?php echo $this->Form->input('Student.sign', array(	
-																					'before' => '<div class="col-md-6 "><img data-toggle="tooltip" id="" data-placement="top" title="Texto de identificación que será presentado en todos los correos que envíe.Se sugiere los siguientes datos: nombre, cargo y empresa, teléfono de contacto, redes sociales." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: -5px;margin-top: 8px;">',
-																					'style' => 'margin-left: -10px;',
-																					'label' => array(
-																									'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',
-																									'text' => '',
-																									'style' => 'margin-left: 10px;',
-																									),
-																					'placeholder' => 'Firma',
-																					'between' => '<div class="col-xs-11 col-sm-8 col-md-4 ">',
-
-											)); ?>
-										</fieldset>
-
-								</div>
-								<div class="modal-footer">
-									<?php 	echo $this->Form->button('Enviar',array(
-																			'type' => 'submit', 
-																			'div' => 'form-group',
-																			'escape' => false,
-																			'class' => 'btn btnRed btn-default col-md-3 col-md-offset-8'
-																));
-											echo $this->Form->end(); 
-									?>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-			<!--Form para reportar contratación-->
-		<div class="modal fade" id="myModalReportarContratacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
-						<div class="modal-dialog"  style="width: 630px">
-							<div class="modal-content backgroundUNAM">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-									<h4 class="modal-title" id="myModalLabel">Reportar contratación</h4>
-								</div>
-								<div class="modal-body backgroundUNAM"style="height: 215px;">
-								<?php 
-									echo $this->Form->create('Company', array(
-																		'class' => 'form-horizontal', 
-																		'role' => 'form',
-																		'inputDefaults' => array(
-																				'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																												'div' => array('class' => 'form-group'),
-																												'class' => 'form-control',
-																												'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="top" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png" >',
-																												'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
-																												'after' => '</div></div>',
-																												'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-																		),
-																		'action' => 'reportarContratacion',
-																		'onsubmit' =>'return validarReportarContratacionForm();'
-									)); 
-								?>	
-						
-										<div class="col-md-12 col-md-offset-0" style=" margin-top: 40px;  padding-right: 0px;">	
-												<fieldset>
-													<?php 	echo $this->Form->input('StudentReportarContratacion.student_id', array('type'=>'hidden')); ?>
-
-													
-													<div class="col-xs-6 col-md-offset-6" style="height: 0;">
-														<p style="margin-left: -52%;margin-top: 5px;">Fecha</p>
-														<label class="col-md-6 control-label"  style="margin-left: 131px; top: -37px;"></label>
-													</div>
-														<?php 	echo $this->Form->input('StudentReportarContratacion.fecha_contratacion', array(
-																										'type' => 'date',
-																										'before' => '<div class="col-md-12">',
-																										'between' => ' <div class="col-md-8" style="left: 28%;">',
-																										'style' => 'width: 98px;    margin-left: -10px; margin-right: 18px;padding:0px',
-																										'div' => array('class' => 'form-inline'),
-																										'label' => array(
-																											'class' => 'col-sm-0 col-md-0 col-xs-offset-1 control-label ',
-																											'text' => '',),
-																										'dateFormat' => 'YMD',
-																										'separator' => '',
-																										'minYear' => date('Y') - 20,
-																										'maxYear' => date('Y') - 0,	
-																
-														));	?>
-
-													<div class="form-group required">
-														<div class="col-md-12" style="padding-right: 0px;">
-															<label for="StudentAcademicSituationId"></label>
-															<div class="col-md-11 "  style="margin-top: 15px;">
-																<select  id="StudentAcademicSituationId" class="form-control" required="required" name="data[StudentReportarContratacion][company_job_profile_id]" >
-																	<option value="">Seleccione el puesto que cubrió el candidato</option>
-																	<?php 
-																		foreach($company['CompanyJobProfile'] as $k => $companyJobProfileId):
-
-																			$caracteres = strlen($companyJobProfileId['id']);
-																			$faltantes = 5 - $caracteres;	
-																			if($faltantes > 0):
-																				$ceros = '';
-																				for($cont=0; $cont<=$faltantes;$cont++):
-																					$ceros .= '0';
-																				endfor;
-																				$folio = $ceros.$companyJobProfileId['id'];
-																			else:
-																				$folio = strlen($companyJobProfileId['id']);
-																			endif;
-																			
-																			if(!empty($companyJobProfileId['CompanyJobContractType']) and ($companyJobProfileId['CompanyJobContractType']['salary']<>'')):
-																				$salario = $Salarios[$companyJobProfileId['CompanyJobContractType']['salary']];
-																			else:
-																				$salario = '';
-																			endif
-																	?>
-																			<option value=<?php echo $companyJobProfileId['id']; ?> > <?php echo $folio.' '.$companyJobProfileId['job_name'].' '.$salario; ?></option>
-																	<?php 
-																		endforeach;
-																	?>
-																	
-																</select>
-															</div>
-														</div>
-													</div>
-													
-												</fieldset>	
-										</div>
-				
-				
-
-								</div>
-								<div class="modal-footer">
-									<?php 	echo $this->Form->button('Reportar contratación',array(
-																			'type' => 'submit', 
-																			'div' => 'form-group',
-																			'escape' => false,
-																			'class' => 'btn btnRed btn-default col-md-4 col-md-offset-7'
-																));
-											echo $this->Form->end(); 
-									?>
-								</div>
-							</div>
-						</div>
-					</div>			
-					

@@ -1,21 +1,7 @@
  <?php 
 	$this->layout = 'company';
 ?>
-	<style> 
-	.checkbox label {
-		color: #fff;
-	}
-	.titulos{
-		color: #fff; 
-		margin-left: 15px;
-		margin-right: 20px;
-	}
-	p {
-		font-size: 14px;
-	}
-	</style>
-	
-	<script>
+<script type="text/javascript">
 		$(document).ready(function() {
 			
 			$("#estado").on('change',function (){
@@ -1027,353 +1013,222 @@
 				$('.selectpicker').selectpicker('refresh');
 			}
 		}
-	</script>
+</script>
 
-	<div class="col-md-12">
-	<?php echo $this->Session->flash(); ?>	
-	</div>
-	
-	<div class="col-md-12" style="margin-top: 15px; margin-left: 20px; font-size: 12px;">
-		
-	<div class="col-md-3" style="padding-left: 0px;">
-		<?php echo $this->Session->flash(); ?>	
+	<div class="col-md-4">
+		<div class="col-md-12">		
+			<?= $this->Form->create('Company', [
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'action' => '',
+								'onsubmit' =>'addNameSearch(); return false;']); ?>
 
-			<?php
-				echo $this->Form->create('Company', array(
-												'class' => 'form-horizontal', 
-												'role' => 'form',
-												'inputDefaults' => array(
-														'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-														'div' => array('class' => 'form-group row'),
-														'class' => 'form-control',
-														'before' => '<div class="col-md-12">',
-														'between' => ' <div class="col-md-6">',
-														'after' => '</div></div>',
-														'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-												),
-										'action' => '',
-										'onsubmit' =>'addName(); return false;'
-				)); 
-			?>
-			<?php 
-				echo $this->Form->input('Guardar Búsqueda', array(
-													'type' => 'submit',
-													'label' => '',
-													'class' => 'btn btnBlue btn-default form-control',
-													'escape' => true,
-													'style' => 'width: 250px;margin-left: 10px;',
-													'before' => '',
-												)
-				);
-				echo $this->Form->end(); 
-			?>
-	</div>
-	<div class="col-md-3 col-md-offset-1">
-			<?php 
-				echo $this->Form->create('Company', array(
-											'class' => 'form-horizontal', 
-											'id' => 'viewSearchId',
-											'role' => 'form',
-											'inputDefaults' => array(
-													'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-													'div' => array('class' => 'form-group'),
-													'class' => 'form-control',
-													'before' => '<div class="col-md-6 ">',
-													'between' => ' <div class="col-md-12">',
-													'after' => '</div></div>',
-													'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-											),
-											'action' => 'specificSearchCandidateResults',
-							));	
-							
-				echo $this->Form->input('busqueda_guardada', array(
-																	'type'=>'select',
-																	'label' => '',
-																	'onchange' => 'viewSearch()' ,
-																	'class' => 'form-horizontal', 
-																	'role' => 'form',
-																	'class' => 'form-control selectpicker show-tick show-menu-arrow',
-																	'before' => '<div class="col-md-12" style="padding-right: 0px; padding-left: 0px;">',
-																	'between' => ' <div class="col-md-12" >',
-																	// 'style' =>'margin-top: -49px; margin-left: 295px;',
-																	'after' => '</div></div>',
-																	'options' => $busquedasGuardadas,'default'=>'0', 'empty' => 'Búsquedas guardadas'
-						)); 
-				echo $this->Form->end();
-			?>
-	</div>
-	
-	<div class="col-md-2 col-md-offset-5" style="text-align: left; margin-top: -15px; border-left-width: 0px; left: 70px;">
-		<p> (máx. 10)</p>
-	</div>
-			
-			<?php 
-					echo $this->Form->create('Company', array(
-									'class' => 'form-horizontal',
-									'id' => 'requestForm',
+				<?= $this->Form->button('Guardar Búsqueda &nbsp; <span class="glyphicon glyphicon-floppy-disk"></span> ',['type'=>'submit','class' => 'btn btn-primary col-md-12','escape' => false]);?>
+				<?= $this->Form->end(); ?>
+		</div>
+	</div>	
+
+	<div class="col-md-4">	
+		<div class="col-md-12">	
+			<?= $this->Form->create('Company', [
+									'class' => 'form-horizontal', 
+									'id' => 'viewSearchId',
 									'role' => 'form',
-									'inputDefaults' => array(
-											'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-											'div' => array('class' => 'form-group'),
-											'class' => 'form-control',
-											'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="left" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-											'between' => ' <div class="col-md-11">',
-											'after' => '</div></div>',
-											'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-									),
-									'onsubmit' =>'return contarPalabras();',
-									'action' => 'specificSearchCandidateResults',
-					)); 
-			?>
-					
-			<?php 	$options = array('25' => 25, '50' => 50, '100' => 100, '200' => 200);
-								echo $this->Form->input('Student.limit', array(
-																'type'=>'select',
-																'class' => 'form-control selectpicker show-tick show-menu-arrow',
-																'data-width'=>"200px",
-																'between' => ' <div class="col-md-3" style="width: 200px; margin-left: 590px; margin-top: -70px;">',
-																'before' => '<div class="col-md-12 "',
-																'selected' => $this->Session->read('limit'),
-																'label' =>'',
-																'options' => $options,'default'=>'0', 'empty' => 'Resultados por hoja'
-			)); ?>
+									'inputDefaults' => [
+										'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+										'div' => ['class' => 'form-group','style'=>'margin-bottom: 0px;'],
+										'class' => 'form-control',
+										'label' => ['text'=>''],
+										'between' => '<div class="col-md-12">',
+										'after' => '</div>',
+										'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+									],
+									'action' => 'specificSearchResults']); ?>
 
+			<?= $this->Form->input('busqueda_guardada', ['type'=>'select','options' => $busquedasGuardadas,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Búsquedas guardadas','onchange' => 'viewSearch()']); ?>
+			<span style="float: right;">(máx. 10)</span>
+			<?= $this->Form->end(); ?>	
+		</div>
+	</div>	
 
-			<div class="col-md-12" style="margin-left: -16px;">	
-					<div class="col-md-12" style="padding-left: 15px; padding-right: 10px;">	
-						<div style="text-align: left;">
-							<p style="margin-left: 15px;"> Palabras clave</p>
-						</div>
-			
-						<?php // name for save search 
-						echo $this->Form->input('CompanySavedSearch.name', array(
-										'label' => '',
-										'type' => 'hidden',
-						));	?>
-							
-						<?php 	echo $this->Form->input('CompanyJobProfile.job_name', array(
-									'label' => '',
-									'placeholder' => 'Palabras clave',
-									'maxlength' => 60,
-									'before' => '<div class="col-md-6 ">',
-						));	?>
-						</div>
+	<?= $this->Form->create('company', [
+							'class' => 'form-horizontal', 
+							'id' => 'requestForm',
+							'role' => 'form',
+							'inputDefaults' => [
+								'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+								'div' => ['class' => 'form-group'],
+								'class' => 'form-control',
+								'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+								'between' => '<div class="col-md-12">',
+								'after' => '</div>',
+								'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+							],
+							'onsubmit' =>'return checkAlInputs();',
+							'action' => 'specificSearchResults',]); ?>	
 
-						<div style="text-align: left;" class="col-md-offset-4">
-						<p style="margin-top: -15px;margin-left: -23px;"> 60 caracteres máx.</p>
-				</div>						
+	<div class="col-md-4">	
+		<div class="col-md-12">
+				<?php $options = array('25' => 25, '50' => 50, '100' => 100, '200' => 200); ?>
+				<?= $this->Form->input('limit', ['type'=>'select','options' => $options,'label' => ['text'=>''],'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0','selected' => $this->Session->read('limit'),'empty' => 'Resultados por hoja']); ?> 		
+				<?= $this->Form->input('CompanySavedSearch.name', ['type' => 'hidden']); ?>
+		</div>
+	</div>
+	
+	<div class="col-md-6" style="margin-top: 15px">		
+		   <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	        <p style="color: #588BAD">Palabras clave.</p>
+	       </blockquote
+			<?= $this->Form->input('CompanyJobProfile.job_name', ['placeholder' => 'Palabras clave (60 caracteres máx.)']); ?>					
+        
+	       <div class="col-md-12" style="margin-top: 15px;">
+					<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	                    <p style="color: #588BAD">Perfil de candidatos</p>
+	                    </blockquote>
+				<div class="col-md-12">
+			<?= $this->Form->input('StudentProfile.sex', ['type'=>'select','before' => '<div class="col-md-12" style="padding-left: 5px; padding-right: 0px;">','label' => '','class' => 'form-control selectpicker show-tick show-menu-arrow','between' => ' <div class="col-md-6" style="padding-left: 0px; padding-right: 0px;">','options' => $Sexo,'default'=>'0', 'empty' => 'Sexo']); ?></div>	
+			<?php for($i=14; $i<=99; $i++): $option[$i] = $i;endfor; ?>
+		    <?=$this->Form->input('Company.fecha_minima',['type'=>'select','before' => '<div class="col-md-12 " style="padding-left: 5px; padding-right: 0px;">','between' => '<div class="col-md-6 " style="padding-left: 0px; padding-right: 0px;">','label' => '','class' => 'form-control selectpicker show-tick show-menu-arrow','placeholder'=>'Edad max','options' => $option,'default'=>'', 'empty' => 'Edad mínima']);?>
 			</div>
-
-			<div class="col-md-12">	
-				<div class="col-md-6" style="margin-left: -16px;">	
-					<div style="text-align: left;">
-						<p style="margin-left: 15px;"> Perfil de candidatos</p>
-					</div>
-					
-					<div class="col-md-12">
-						<?php echo $this->Form->input('StudentProfile.sex', array(
-																			'type'=>'select',
-																			'before' => '<div class="col-md-12" style="margin-left: 5px;>',
-																			'label' => '',
-																			'class' => 'form-control selectpicker show-tick show-menu-arrow',
-																			'between' => ' <div class="col-md-12" style="margin-left: -21px;">',
-																			'options' => $Sexo,'default'=>'0', 'empty' => 'Sexo'
-								)); ?>
-					</div>
-					
-						<div class="col-md-12">
-							<div class="col-md-6">
-							<?php 	
-								for($i=14; $i<=99; $i++):
-									$option[$i] = $i;
-								endfor;
-											echo $this->Form->input('Student.fecha_minima', array(
-																			'type'=>'select',
-																			'before' => '<div class="col-md-12 " style="padding-left: 0px; padding-right: 0px;">',
-																			'between' => ' <div class="col-md-10" style="padding-left: 0px; padding-right: 0px;">',
-																			'label' => '',
-																			'class' => 'form-control selectpicker show-tick show-menu-arrow',
-																			'placeholder'=>'Edad max', 
-																			'options' => $option,'default'=>'', 'empty' => 'Edad mínima'
-																			
-										));?>
-							</div>			
-							<div class="col-md-6">
-										<?php 	echo $this->Form->input('Student.fecha_maxima', array(
-																			'type'=>'select',
-																			'before' => '<div class="col-md-12 " style="padding-left: 0px; padding-right: 0px;">',
-																			'between' => ' <div class="col-md-10" style="padding-left: 0px; padding-right: 0px;margin-left: 2px;">',
-																			'label' => '',
-																			'class' => 'form-control selectpicker show-tick show-menu-arrow',
-																			'placeholder'=>'Edad min',
-																			'options' => $option,'default'=>'', 'empty' => 'Edad máxima'
-																			
-										));?>
-							</div>	
-					</div>
-
-					<div class="col-md-12" >
-								<?php 	
-										$options = array('s' => 'Si', 'n' => 'No');
-										echo $this->Form->input('StudentProfile.disability', array(
-															'type' => 'radio',
-															'style' => 'margin-left: -18px; margin-top: 0; top: 7px; width: 15px;height:15px',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-9" style="color: #fff;"><div class="radio-inline col-xs-2 col-sm-2 col-md-2" style="margin-left: 260px;"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'options' => $options,
-															'onclick' => 'desabilityMobility()'
-										));
-								?>
-
-								<p style="position: absolute; margin-top: -46px;">Discapacidad</p>
-								<div class="col-md-offset-11" style="top: -45px;">
-									<img style=" float: right; margin-top: -45px; position: absolute; right: 15px;" data-toggle="tooltip"  data-placement="top" title="Es un programa que ofrece u oferta vacantes a candidatos con discapacidad con todas las prerrogativas de la ley y cuentan con las condiciones necesarias para el desarrollo de las actividades dentro de sus procesos de trabajo." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">
-								</div>
-
+			<?=$this->Form->input('Company.fecha_maxima',['type'=>'select','before' => '<div class="col-md-12 " style="padding-left: 5px; padding-right: 0px;">','between' => '<div class="col-md-6 " style="padding-left: 0px; padding-right: 0px;">','label' => '','class' => 'form-control selectpicker show-tick show-menu-arrow','placeholder'=>'Edad min','options' => $option,'default'=>'', 'empty' => 'Edad máxima']);?>
+				
+			</div>
+        <div class="col-md-12" >
+								<?php $options = ['s' => 'Si', 'n' => 'No']; ?>
+								<?=$this->Form->input('StudentProfile.disability',['type' => 'radio',	'style' => 'margin-left: -18px; margin-top: 0; top: 7px; width: 15px;height:15px','default'=> 0,'legend' => false,'before' => '<div class="col-xs-12 col-sm-12 col-md-9" style="color: write;"><div class="radio-inline col-xs-2 col-sm-2 col-md-2" style="margin-left: 260px;"><label>','after' => '</label></div></div>',
+															'separator' => '</div><div class="radio-inline col-xs-2 col-sm-2 col-md-2">','options' => $options,'onclick' => 'desabilityMobility()']);	?>
+							<span style="position:absolute; margin-top: -46px;">Discapacidad</span>
 								<div id="bloque2" style="display:none">
-									<?php 	echo $this->Form->input('StudentProfile.disability_type', array(
-																	'type'=>'select',
-																	'before' => '<div class="col-md-12" style="margin-left: 5px;>',
-																	'label' => '',
-																	'class' => 'form-control selectpicker show-tick show-menu-arrow',
-																	'between' => ' <div class="col-md-12" style="margin-left: -21px;">',
-																	'options' => $TiposDiscapacidad,'default'=>'0', 'empty' => 'Tipo de discapacidad'
-									)); ?>
+								<?=$this->Form->input('StudentProfile.disability_type',['type'=>'select','before' => '<div class="col-md-12" style="margin-left: 5px;>','label' => '','class' => 'form-control selectpicker show-tick show-menu-arrow','between' => ' <div class="col-md-6" style="margin-left: -21px;">','options' => $TiposDiscapacidad,'default'=>'0', 'empty' => 'Tipo de discapacidad'
+									]); ?>		
 								</div>
 							</div>
-
-					<p style="margin-left: 15px;">Lugar de trabajo</p>
-							
-							<?php 	
-								echo $this->Form->input('StudentProfile.state', array(	
-															'type' => 'select',
-															'id' =>'estado',
-															'between' => ' <div class="col-md-12" style="margin-left: 8px; margin-top: -17px; padding-left: 6px;">',
-															'before' => '<div class="col-md-11">',
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'data-live-search' => 'true',
-															'label' => '',
-															'required' => false,
-															'options' => $estadosMexico,'default'=>'0', 'empty' => 'Estado / Entidad Federativa',
-							)); ?>	
-							
-							<?php 
-								echo $this->Form->input('StudentProfile.city', array(	
-															'type' => 'select',
-															'id' => 'ciudad',
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'data-live-search' => 'true',
-															'between' => ' <div class="col-md-12" style="margin-left: 8px; margin-top: -17px; padding-left: 6px;">',
-															'before' => '<div class="col-md-11">',
-															'label' => '',
-															'required' => false,
-															'default'=>'0', 'empty' => 'Delegación / Municipio',
-							)); ?>
-
-			<fieldset class='col-md-offset-0 col-md-10' style="min-width: 850px;">
-				
-				<p style="margin-bottom: 0px;margin-left:-2px;"><span style="color:red;"></span>Nivel académico<img data-toggle="tooltip" id="" data-placement="right" title="Grado de estudios que debe tener el candidato para cumplir con el perfil de la oferta." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: 5px; margin-top: -5px;"></p>
+				<div class="col-md-12" style="margin-top: -15px;">
+				<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	                       <p style="color: #588BAD">Lugar de trabajo</p>
+	                    </blockquote>
+                    <?= $this->Form->input('StudentProfile.state',[	'type' => 'select','id' =>'estado','before' => '<div class="col-md-12" style="margin-left: 5px;>','between' => ' <div class="col-md-6" style="margin-left: -21px;">','class' => 'form-control selectpicker show-tick show-menu-arrow','data-live-search' => 'true','label' => '','required' => false,'options' => $estadosMexico,'default'=>'0', 'empty' => 'Estado / Entidad Federativa',]); ?>	
+							</div>
+					<?=$this->Form->input('StudentProfile.city', ['type' => 'select','id' => 'ciudad','class' => 'form-control selectpicker show-tick show-menu-arrow','data-live-search' => 'true','between' => '<div class="col-md-6" style="margin-left: -21px;">','before' => '<div class="col-md-12" style="margin-left: 5px;>','label' => '','required' => false,'default'=>'0', 'empty' => 'Delegación / Municipio',]); ?>	
+                    </div>
+				<div class="col-md-12" style="margin-top: 15px;">
+                 <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	                    <p style="color: #588BAD">Nivel académico</p>
+	                    </blockquote> 
+						
+			    <fieldset class='col-md-offset-0 col-md-10' style="min-width: 850px;">
 					<div id="nivelesId" class="col-md-12" style="padding-left: 0px; margin-bottom: 10px;">
 						<div class="col-md-2" style="padding-left: 0px; padding-right: 0px; margin-right: 15px;">	
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.licenciatura', array(
+							<?=$this->Form->checkbox('StudentProfessionalProfile.licenciatura', [
 											'value' => '1',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'actualizaCarreras("1");',
-							));?><span class="titulos">Licenciatura</span>
+							]);?><span class="titulos"> Licenciatura </span>
 						</div>
 						<div class="col-md-2" style="padding-left: 0px; padding-right: 0px;">	
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.especialidad', array(
+							<?=$this->Form->checkbox('StudentProfessionalProfile.especialidad', [
 											'value' => '1',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'actualizaCarreras("2");',
-							));?><span class="titulos">Especialidad</span>
+							]);?><span class="titulos"> Especialidad </span>
 						</div>
 						<div class="col-md-2" style="padding-left: 0px; padding-right: 0px;">	
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.maestria', array(
+							<?= $this->Form->checkbox('StudentProfessionalProfile.maestria',[
 											'value' => '1',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'actualizaCarreras("3");',
-							));?><span class="titulos">Maestría</span>
+							]);?><span class="titulos"> Maestría </span>
 						</div>
 						<div class="col-md-2" style="padding-left: 0px; padding-right: 0px;">	
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.doctorado', array(
+							<?=$this->Form->checkbox('StudentProfessionalProfile.doctorado',[
 											'value' => '1',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'actualizaCarreras("4");',
-							));?><span class="titulos">Doctorado</span>
+							]);?><span class="titulos"> Doctorado </span>
 						</div>
 					</div>
-							
-				<p style="margin-bottom: 0px;margin-left:-2px;"><span style="color:red;"></span>Situación académica del último nivel de estudios seleccionado<img data-toggle="tooltip" id="" data-placement="top" title="Situación académica requerida para cumplir con el perfil de la oferta" class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-left: 5px; margin-top: -5px;"></p>
-					<div id="situacionesId"  class="col-md-12" style="padding-left: 0px; padding-right: 0px; margin-bottom: 20px;">
-						
+                     <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	                    <p style="color:#588BAD">Situación académica del último nivel de estudios seleccionado</p>
+	                    </blockquote>
+				
 						<div id="estudianteId" class="col-md-2"  style="padding-left: 0px; padding-right: 0px; margin-right: 15px;" >
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.0.academic_situation', array(
+							<?=$this->Form->checkbox('StudentProfessionalProfile.0.academic_situation', [
 											'value' => '1',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'semestre("1");',
-							));?><span class="titulos" style="margin-right: 0px;">Estudiante</span>
+							]);?>
+							<span class="titulos" style="margin-right: 0px;"> Estudiante </span>
 						</div>
 						<div id="egresadoId" class="col-md-2"   style="padding-left: 0px; padding-right: 0px; margin-right: -5px;">
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.1.academic_situation', array(
+							<?=$this->Form->checkbox('StudentProfessionalProfile.1.academic_situation', [
 											'value' => '2',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'semestre("2");',
-							));?><span class="titulos" style="margin-right: 0px;">Egresado</span>
+							]);?><span class="titulos" style="margin-right: 0px;"> Egresado </span>
 						</div>
 						<div id="tituladoId" class="col-md-2"   style="padding-left: 0px; padding-right: 0px; margin-right: 0px;">
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.2.academic_situation', array(
+							<?=$this->Form->checkbox('StudentProfessionalProfile.2.academic_situation', [
 											'value' => '3',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'semestre("3");',
-							));?><span class="titulos" style="margin-right: 0px;">Titulado</span>
+							]);?><span class="titulos" style="margin-right: 0px;"> Titulado </span>
 						</div>
 						<div id="diplomaId" class="col-md-2"  style="padding-left: 0px; padding-right: 0px; margin-right: 15px;">
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.3.academic_situation', array(
+							<?= $this->Form->checkbox('StudentProfessionalProfile.3.academic_situation', [
 											'value' => '4',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'semestre("4");',
-							));?><span class="titulos" style="margin-left: 15px; margin-right: 0px;">Con diploma</span>
+							]);?><span class="titulos" style="margin-right: 0px;"> Con diploma </span>
 						</div>
 						<div id="gradoId" class="col-md-2"  style="padding-left: 0px; padding-right: 0px; margin-right: 15px;">
-							<?php echo $this->Form->checkbox('StudentProfessionalProfile.4.academic_situation', array(
+							<?= $this->Form->checkbox('StudentProfessionalProfile.4.academic_situation', [
 											'value' => '5',
 											'label' => '',
 											'style' => 'display: inline',
 											'onClick' => 'semestre("5");',
-							));?><span class="titulos" style="margin-right: 0px;">Con grado</span>
+							]);?><span class="titulos" style="margin-right: 0px;"> Con grado </span>
 						</div>
 					</div>
-					<div class="col-md-12" style="padding-left: 0px;">	
-						<div id="avanceId" style="display: none">
-							<p style="margin-left:-5px;">Avance académico:</p>
-								<?php 	echo $this->Form->input('StudentProfessionalProfile.semester', array(										
+					
+    <div class="col-md-12" style="padding-left: 0px;">
+    <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	<p style="color: #588BAD">Avance académico:</p>
+	</blockquote>					
+						
+					<?= $this->Form->input('StudentProfessionalProfile.semester',[										
 												'type' =>'select',
 												'class' => 'form-control selectpicker show-tick show-menu-arrow',
 												'data-width' => '385px',
 												'label' => '',
-												'before' => '<div class="col-md-12" style="padding-left: 0px;">',
-												'options' => $Semestres,'default'=>'0', 'empty' => 'Avance académico',
-								)); ?>	
+												'before' => '<div class="col-md-12" style="margin-left: 5px;>',
+												'options' => $Semestres,'default'=>'0', 'empty' => 'Avance académico',]); ?>	
 						</div>
 					</div>	
-					
-					<p style="margin-left: 0px;">Promedio</p>
-					
-					<div class="col-md-6" style="padding-left: 5px; padding-right: 0px;">	
-						<div class="col-md-6" style="padding-left: 8px; padding-right: 19px;">
-									<?php echo $this->Form->input('StudentProfessionalProfile.average_id', array(
+         <div class="col-md-12" style="padding-left: 0px;">
+					<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	                    <p style="color: #588BAD">Promedio</p>
+	                    </blockquote>
+						
+						<div class="col-md-6">
+						  <div class="col-md-6">
+									<?= $this->Form->input('StudentProfessionalProfile.average_id', [
 																'type'=>'select',
 																			'before' => '<div class="col-md-12 " style="padding-left: 0px; padding-right: 0px;">',
 																			'between' => ' <div class="col-md-10" style="padding-left: 0px; padding-right: 0px;">',
@@ -1382,35 +1237,35 @@
 																			'placeholder'=>'Promedio', 
 																'options' => $Promedios,'default'=>'0', 'empty' => 'Promedio',
 																'onchange' => 'promedio()',
-									)); ?>
+									]); ?>
+						</div>
 						</div>
 						<div class="col-md-6">
-									<?php echo $this->Form->input('StudentProfessionalProfile.decimal_average_id', array(
+									<?= $this->Form->input('StudentProfessionalProfile.decimal_average_id', [
 																'type'=>'select',
 																			'before' => '<div class="col-md-12 " style="padding-left: 0px; padding-right: 0px;">',
-																			'between' => ' <div class="col-md-10" style="padding-left: 0px; padding-right: 0px;">',
+																			'between' => ' <div class="col-md-10" style="padding-left: 0px; padding-right: 0px;margin-left: 2px;">',
 																			'label' => '',
 																			'class' => 'form-control selectpicker show-tick show-menu-arrow',
 																'placeholder' => 'Decimal',
 																'options' => $Decimales,'default'=>'0', 'empty' => 'Decimas',
 																'onchange' => 'promedio()',
-									)); ?>
-						</div>
-					</div>
-						
-					<div class="col-md-12" style="padding-left: 0px;">	
-						<p style="margin-left: -2px;">
-						<span style="color:red;"></span>
-						Carreras / Áreas
-						</p>
-					</div>
-						
-					<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">	
-						<div class="col-md-6" style="padding-left: 0px; padding-right: 0px;">
-							<?php 	echo $this->Form->input('CompanyCandidateProfile.origen', array(
+									]); ?>
+						      </div>
+					     </div>
+						 
+						 <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;" class="col-md-12" style="padding-left: 0px;">
+	     <p style="color: #588BAD">Carreras / Áreas</p>
+	    </blockquote>
+		</div>
+		
+		
+		<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">	
+		<div class="col-md-6" style="padding-left: 0px; padding-right: 0px;">
+		<?=$this->Form->input('CompanyCandidateProfile.origen', [
 												'type'=>'select',
 												'label' => '',
-												'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 25px;">',
+												'before' => '<div class="col-md-6" style="padding-left: 0px; padding-right: 25px;">',
 												'between' => ' <div class="col-md-12" >',
 												'name' => 'origen[]',
 												'multiple'=>'multiple',
@@ -1419,497 +1274,125 @@
 												'style' => 'max-height: 150px;',
 												'options' => $careers,
 												'options' => ''
-								)); ?>
+								]); ?>
 						</div>	
-						
-						<div class="col-md-1" style="padding-left: 0px;margin-left: -10px;">
+							
+							<div class="col-md-1" style="padding-left: 0px;margin-left: -12px;">
 								<button type="button" id="pasarDerechaId" class="pasar izq btn btnBlue btn-default" style=" margin-bottom: 10px;" >
 								<span class="glyphicon glyphicon-chevron-right"></span>
 								</button>
-								<button type="button" class="quitar der btn btnBlue btn-default">
+								<button type="button" id="pasarIzquierdaId" class="quitar der btn btnBlue btn-default"style=" margin-bottom: 10px;">
 								<span class="glyphicon glyphicon-chevron-left"></span>
 								</button>
 								<!--input type="button" class="pasartodos izq" value="Todos »"><input type="button" class="quitartodos der" value="« Todos"-->
-						</div>
-						
+						</div>	
+						</div>	
 						<div class="col-md-5" style="padding-left: 0px; padding-right: 0px;">
 							<div class="form-group required">
 								<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
-								<img style=" float: right; margin-top: 130px; position: absolute; left: 375px;" data-toggle="tooltip"  data-placement="left" title="Seleccionar las carreras http://www.oferta.unam.mx/ y/o programas de posgrado http://www.posgrado.unam.mx/ofertas-de-posgrado-0  que son los adecuados o afines para cubrir el puesto. Puede agregar o eliminar opciones." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">
 									<div class="col-md-12" style="padding-left: 0px; padding-right: 0px; color: rgb(85, 85, 85); font-size: 14px;">
 										<select name="destino[]" id="destino" multiple="multiple" size="10" style="width: 100%;height: 150px;"></select>
-
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					
-					
-<div class="col-md-12">
-	<div class="col-md-6">
-		<div class="col-md-12" style="margin-left: -45px;">
-				<div class="col-md-9" style="margin-left: -50px;">
-					<div style="text-align: left;" class="col-md-offset-1 col-md-12">
-						<p>Modalidad de contratación</p>
-					</div>
+					</div>		
+								
+								
+			<div class="col-md-6">
+					    <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	                    <p style="color: #588BAD">Modalidad de contratación</p>
+	                    </blockquote>		
+								
+				<div id="originalComputo" class="clonComputo">	
+				<?= $this->Form->input('StudentWorkArea.job_name', ['placeholder' => 'Puesto',]);?> 	
+			    </div>
 
-					<div class="col-md-11">	
-									<?php 	echo $this->Form->input('StudentWorkArea.job_name', array(
-													'before' => '<div class="col-md-12 ">',
-													'style' => 'width: 385px;margin-left: 6px;',
-													'required' => false,
-													'label' => array(
-															'class' => 'col-md-0 control-label',
-															'text' => ''),
-															'placeholder' => 'Puesto',
-									));	?> 	
-					</div>
-
-					<div class="col-md-11" style="margin-left: 5px;">	
-
-					<?php 	echo $this->Form->input('StudentProspect.economic_pretension', array(
-															'type' => 'select',
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'data-width' => '385px',
-															'before' => '<div class="col-md-12 ">',
-															'label' => array(
-																	'class' => 'col-md-0 control-label',
-																	'text' => ''),
-															'placeholder' => '',
-															'options' => $Salarios,'default'=>'0', 'empty' => 'Pretensiones económicas'
-					));	?>
-					</div>
 				
-					<div class="col-md-11" style="margin-left: 5px;">	
-
-					<div id="original" class="clonGiro">
-					<?php 	echo $this->Form->input('CompanyJobProfileDynamicGiro.0.giro', array(
-									'type'=>'select',
-									'class' => 'form-control clonGiroReindexa selectpicker show-tick show-menu-arrow',
-									'data-live-search' => "true",
-									'data-width' => '385px',
-									'before' => '<div class="col-md-12 ">',
-									'label' => '',
-									'placeholder' => 'Giro',
-									'style' => 'width: 385px;margin-left: 5px;',
-									'onchange' => 'cargaAreas(0)',
-									'options' => $Giros,'default'=>'0', 'empty' => 'Giro de interés',
-					));	?>
-					<?php 	echo $this->Form->input('CompanyJobProfileDynamicArea.0.area_interes', array(
-									'type'=>'select',
-									'class' => 'form-control clonAreaReindexa selectpicker show-tick show-menu-arrow',
-									'data-live-search' => "true",
-									'data-width' => '385px',
-									'before' => '<div class="col-md-12 ">',
-									'label' => '',
-									'style' => 'width: 385px;margin-left: 5px;',
-									'placeholder' => 'Áreas de interés',
-									'default'=>'0', 'empty' => 'Área de interés',
-					));	?>
-					</div>
-					
-					<div class="contenedorClonesGiros">
+				<?= $this->Form->input('StudentProspect.economic_pretension', ['type'=>'select','options' => $Salarios,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Pretensiones económicas','required' => false]); ?>
 					
 					
-					</div>
+			<div id="original" class="clonGiro">
+			<?= $this->Form->input('CompanyJobProfileDynamicGiro.0.giro', ['type'=>'select','options' => $Giros,'class' => 'selectpicker show-tick form-control show-menu-arrow clonAreaReindexa','data-live-search' => 'true','default'=>'0', 'empty' => 'Giro de interés','onchange' => 'cargaAreas(0)']); ?>
+			<?= $this->Form->input('CompanyJobProfileDynamicArea.0.area_interes', ['type'=>'select','class' => 'selectpicker show-tick form-control show-menu-arrow clonAreaReindexa','data-live-search' => 'true','default'=>'0', 'empty' => 'Áreas de interés']); ?>
+		    </div>
+			
+		    <div class="contenedorClonesGiros"></div>
+					
+			<div style="text-align: right;">
+			<span>Agregar otro giro y área (máx. 3)</span>
+			<button type="button" class="btn btn-default btn-sm" onclick="clonarGiro();">
+	          <span class="glyphicon glyphicon-plus-sign"></span>
+	        </button>
+		</div>			
+			<div>	
+			
+             <?php 	$options = array('s' => 'Si', 'n' => 'No'); ?>
+		     <?= $this->Form->input('StudentProspect.can_travel', ['type'=>'select','options' => $options,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Disponibilidad para viajar']); ?>
+             <?php $options = array('1' => 'Dentro del país', '2' => 'Fuera del país'); ?>
+			 <?= $this->Form->input('StudentProspect.change_residence_option', ['type'=>'select','options' => $options,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Disponibilidad para cambiar de residencia']); ?>
+            
+			</div>	
+			
+			
+		<div class="col-md-12">	
+		<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+	        <p style="color: #588BAD">Conocimientos y habilidades profesionales.</p>
+	    </blockquote>
 
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-12" style="margin-left: 28%;">
-				<p>Agregar otro giro y área (máx. 3) <img src="<?php echo $this->webroot; ?>/img/add.png" id="agregarGiro" onclick="clonarGiro();" style='background-color: transparent; width: 25px;cursor:pointer;margin-top: -5px;'> </p>
-			</div>
-
-					<div class="col-md-12" style="margin-left: -50px;">
-								<?php 	
-										$options = array('s' => 'Si', 'n' => 'No');
-										echo $this->Form->input('StudentProspect.can_travel', array(
-															'type' => 'radio',
-															'style' => 'margin-left: -18px; margin-top: 0; top: 7px; width: 15px;height:15px',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-9" style="color: #fff;margin-left: 285px;"><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'options' => $options,
-															'onclick' => 'desabilityMobility1()'
-										));
-								?>
-
-							<p style="position: absolute; margin-top: -46px;"><span style="color:red;"></span>Disponibilidad para viajar</p>
-						</div>
-
-						<div id="bloque1" style="display:none">
-								<div class="col-md-12" >
-									<?php 	
-										$options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
-										echo $this->Form->input('StudentProspect.can_travel_option', array(
-															'type' => 'radio',
-															'style' => 'margin-left: -18px; margin-top: 0; top: 7px; width: 15px;height:15px',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-12" style="color: #fff;margin-left:87px"><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'options' => $options,
-										));
-										
-									?>
-							</div>
-						</div>
-							
-							<div class="col-md-12" style="margin-left: -50px;">
-								<?php 	
-										$options = array('s' => 'Si', 'n' => 'No');
-										echo $this->Form->input('StudentProspect.change_residence', array(
-															'type' => 'radio',
-															'style' => 'margin-left: -18px; margin-top: 0; top: 7px; width: 15px;height:15px',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-9" style="color: #fff;margin-left: 285px;"><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'options' => $options,
-															'onclick' => 'desabilityMobility2()'
-										));
-								?>
-
-								<p style="position: absolute; margin-top: -46px;  width: 210px;"><span style="color:red;"></span>Disponibilidad para cambiar de residencia</p>
-							</div>
-							<div id="bloque3" style="display:none">
-								<div class="col-md-12" >
-								<?php 	
-										$options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
-										echo $this->Form->input('StudentProspect.change_residence_option', array(
-															'type' => 'radio',
-															'style' => 'margin-left: -18px; margin-top: 0; top: 7px; width: 15px;height:15px',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-12" style="color: #fff;margin-left:87px;margin-top: -5px;"><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'options' => $options,
-										));
-								?>
-								</div>
-							
-
-							</div>
+	    <div class="col-md-12">
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+		        <p style="color: #588BAD">Idiomas.</p>
+		    </blockquote>
+	    </div>
 		</div>
-	<div class="col-md-6">
-		<div>
-			<div style="margin-right: 8px; margin-left: -21px;width: 450px;margin-top: 2px;">	
-				<div id="contenedorIdiomas" style="width: 436px;">	
-						<div class="col-md-12 col-md-offset-1">
-							<p>Conocimientos y habilidades profesionales</p>
-							<p>Idioma</p>
-						</div>
-						<?php 	echo $this->Form->input('StudentLenguage.0.language_id', array(
-										'type'=>'select',
-										'required' => false,
-										'class' => 'form-control selectpicker show-tick show-menu-arrow',
-										'data-live-search' => 'true',
-									    'before' => '<div class="col-md-12 ">',
-										'between' => ' <div class="col-md-11 col-md-offset-1">',
-										'label' => '',
-										'options' => $Lenguages,'default'=>'0', 'empty' => 'Idioma'
-						));?>
-						<?php 	echo $this->Form->input('StudentLenguage.0.reading_level', array(
-										'type'=>'select',
-										'class' => 'form-control selectpicker show-tick show-menu-arrow',
-										'required' => false,
-										'before' => '<div class="col-md-12 col-md-offset-1" >',
-										'between' => ' <div class="col-md-7" style="margin-left: -3px;">',
-										'label' => array(
-												'class' => 'col-md-4 control-label',
-												'text' => 'Lectura'),
-										'placeholder' => 'Nivel',
-										'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-						));	?>
-						<?php 	echo $this->Form->input('StudentLenguage.0.writing_level', array(
-										'type'=>'select',
-										'required' => false,
-										'before' => '<div class="col-md-12 col-md-offset-1">',
-										'between' => ' <div class="col-md-7" style="margin-left: -3px;">',
-										'class' => 'form-control selectpicker show-tick show-menu-arrow',
-										'label' => array(
-												'class' => 'col-md-4 control-label',
-												'text' => 'Escritura'),
-										'placeholder' => 'Nivel',
-										'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-						));	?>
-						<?php 	echo $this->Form->input('StudentLenguage.0.conversation_level', array(
-										'type'=>'select',
-										'required' => false,
-										'before' => '<div class="col-md-12 col-md-offset-1">',
-										'between' => ' <div class="col-md-7" style="margin-left: -3px;">',
-										'class' => 'form-control selectpicker show-tick show-menu-arrow',
-										'label' => array(
-												'class' => 'col-md-4 control-label',
-												'style' => 'margin-left: 0px; padding-left: 52px;',
-												'text' => 'Conversación'),
-										'placeholder' => 'Nivel',
-										'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-						));	?>
-						
-						<script languaje="javascript">
-							var x = 1;
-						</script> 
-					
-						<?php 
-							$cont = 0;
-							if(!empty($this->request->data['StudentLenguage'])):
-								foreach($this->request->data['StudentLenguage'] as $k => $idioma): 
-									if($cont > 0):
-						?>
-										<div id="divIdiomas"> 	
-											<button type="button" class="btn btn-danger eliminar"  style="float: right; margin-bottom: -30px; margin-top: -5px; margin-right: -18px;"><i class="glyphicon glyphicon-trash"></i></button>
-											<div class="col-md-4 col-md-offset-1">
-												<p>Idioma</p>
-											</div>
-											<?php 	echo $this->Form->input('StudentLenguage.'.$cont.'.language_id', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12 ">',
-															'required' => false,
-															'between' => ' <div class="col-md-11 col-md-offset-1">',
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'data-live-search' => 'true',
-															'label' => '',
-															'options' => $Lenguages,'default'=>'0', 'empty' => 'Idiomccscsa'
-											));?>
-											<?php 	echo $this->Form->input('StudentLenguage.'.$cont.'.reading_level', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12">',
-															'required' => false,
-															'between' => ' <div class="col-md-7">',
-															'style' => 'margin-left: -3px;',
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'label' => array(
-																	'class' => 'col-md-4 control-label',
-																	'text' => 'Lectura'),
-															'placeholder' => 'Nivel',
-															'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-											<?php 	echo $this->Form->input('StudentLenguage.'.$cont.'.writing_level', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12">',
-															'style' => 'margin-right: 3px; margin-left: 36px;',
-															'required' => false,
-															'between' => ' <div class="col-md-7">',
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'label' => array(
-																	'class' => 'col-md-4 control-label',
-																	'text' => 'Escritura'),
-															'placeholder' => 'Nivel',
-															'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-											<?php 	echo $this->Form->input('StudentLenguage.'.$cont.'.conversation_level', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12">',
-															'style' => 'margin-right: 3px; margin-left: 36px;',
-															'required' => false,
-															'between' => ' <div class="col-md-7">',
-															'class' => 'form-control',
-															'label' => array(
-																	'class' => 'col-md-4 control-label',
-																	'style' => 'margin-left: 0px; padding-left: 52px;',
-																	'text' => 'Conversación'),
-															'placeholder' => 'Nivel',
-															'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-										</div>
+		<div id="original" class="clon">
+			<?= $this->Form->input('StudentLenguage.0.language_id', ['type'=>'select','options' => $Lenguages,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Idioma']); ?>
+            <?= $this->Form->input('StudentLenguage.0.reading_level', ['type'=>'select','options' => $NivelesIdioma,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Nivel']); ?>
+		</div>
+		<div class="contenedorClonesLanguages"></div>
+								
+	    <div style="text-align: right;">
+			<span>Agregar otro idioma (máx. 3)</span>
+			<button type="button" class="btn btn-default btn-sm" onclick="clonarLenguaje();">
+	          <span class="glyphicon glyphicon-plus-sign"></span>
+	        </button>
+		</div>
+		
+		<div class="col-md-12">
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+		        <p style="color: #588BAD">Cómputos.</p>
+		    </blockquote>
+	    </div>
+	
+		<div id="originalComputo" class="clonComputo">
+		
+			<?=$this->Form->input('StudentTechnologicalKnowledge.0.tecnology_id',['type'=>'select','options' => $Tecnologias,'class' => 'form-control selectpicker show-tick show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Categoría']);?>
 							
-									<script languaje="javascript">
-										x++;
-									</script> 
-						<?php
-									endif;
-									$cont++;
-								endforeach; 
-							endif;
-						?>
-						
-				</div>
-					<p style="margin-left: 215px;">Agregar otro idioma (máx 3)<img  id="agregarIdioma" src="<?php echo $this->webroot; ?>/img/add.png" ALT="add.png" style='background-color: transparent; width: 25px;cursor:pointer;margin-top: -5px; margin-left: 5px;'></p>
-				</div>
-
-				<div id="contenedorComputo" style="margin-left: 15px; margin-right: -130px; width: 477px;"> 	
-					<div class="col-md-12" >
-						<p>Cómputo</p>
-					</div>
-					<?php 	echo $this->Form->input('StudentTechnologicalKnowledge.0.tecnology_id', array(
-									'type'=>'select',
-									'required' => false,
-									'before' => '<div class="col-md-11">',
-									'between' => ' <div class="col-md-11">',
-									'class' => 'form-control selectpicker show-tick show-menu-arrow',
-									'label' => '',
-									'options' => $Tecnologias,'default'=>'0', 'empty' => 'Categoría'
-					));?>
-					<div id="contentName0">
-					<?php 	echo $this->Form->input('StudentTechnologicalKnowledge.0.name', array(
-									'type'=>'select',
-									'required' => false,
-									'class' => 'form-control selectpicker show-tick show-menu-arrow',
-									'data-live-search' => 'true',
-									'before' => '<div class="col-md-11 "><img data-toggle="tooltip" id="" data-placement="top" title="Nombre del lenguaje de programación, software, sistema operativo o herramienta requerido por la oferta." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-									'between' => ' <div class="col-md-11">',
-									'label' => '',
-									'placeholder' => 'Nombre',
-									'onchange' => 'hideOther(0)',
-									'options' => $Programas,'default'=>'0', 'empty' => 'Nombre'
-					));	?>
-					</div>
-					<div id="contentOther0">
-					<?php	echo $this->Form->input('StudentTechnologicalKnowledge.0.other', array(
-									'class' => 'form-control selectpicker show-tick show-menu-arrow',
-									'required' => false,
-									'before' => '<div class="col-md-11 "><img data-toggle="tooltip" id="" data-placement="top" title="En el caso de no encontrar el nombre del lenguaje de programación, software, sistema operativo o herramienta deberá escribirlo en este campo." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-									'between' => ' <div class="col-md-11">',
-									'label' => '',
-									'placeholder' => 'Otro',
-									'onblur' => 'restart(0)'
-					));	?>
-					</div>
-					<?php 	echo $this->Form->input('StudentTechnologicalKnowledge.0.level', array(
-									'type'=>'select',
-									'required' => false,
-									'before' => '<div class="col-md-11">',
-									'between' => ' <div class="col-md-11">',
-									'class' => 'form-control selectpicker show-tick show-menu-arrow',
-									'label' => '',
-									'placeholder' => 'Nivel',
-									'options' => $NivelesSoftware,'default'=>'0', 'empty' => 'Nivel'
-					));	?>
-				
-				
-					<script languaje="javascript">
-						var xComputo = 1;
-					</script> 
-					
-						<?php 
-							$cont = 0;
-							if(!empty($this->request->data['StudentTechnologicalKnowledge'])):
-								foreach($this->request->data['StudentTechnologicalKnowledge'] as $k => $computo): 
-									if($cont > 0):
-						?>
-										<div id="divComputo"> 	
-											<button type="button" class="btn btn-danger eliminar" style="margin-right: 15px; float: right; margin-bottom: -30px; margin-top: 0px;"><i class="glyphicon glyphicon-trash"></i></button>
-											<div class="col-md-4">
-												<p>Cómputo</p>
-											</div>
-											<?php 	echo $this->Form->input('StudentTechnologicalKnowledge.'.$cont.'.category_id', array(
-															'type'=>'select',
-															'required' => false,
-															'before' => '<div class="col-md-11">',
-															'between' => ' <div class="col-md-11">',
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'label' => '',
-															'options' => $Tecnologias,'default'=>'0', 'empty' => 'Categoría'
-											));?>
-											<div id="contentName<?php echo $cont; ?>">
-											<?php 	echo $this->Form->input('StudentTechnologicalKnowledge.'.$cont.'.name', array(
-															'type'=>'select',
-															'required' => false,
-															'class' => 'form-control selectpicker show-tick show-menu-arrow',
-															'data-live-search' => 'true',
-															'before' => '<div class="col-md-11 ">',
-															'between' => ' <div class="col-md-11">',
-															'label' => '',
-															'placeholder' => 'Nombre',
-															'onchange' => 'hideOther('.$cont.')',
-															'options' => $Programas,'default'=>'0', 'empty' => 'Nombre'
-											));	?>
-											</div>
-											<div id="contentOther<?php echo $cont; ?>">
-											<?php	echo $this->Form->input('StudentTechnologicalKnowledge.'.$cont.'.other', array(
-															'class' => 'form-control  selectpicker show-tick show-menu-arrow',
-															'required' => false,
-															'before' => '<div class="col-md-11 "><img data-toggle="tooltip" id="" data-placement="top" title="En el caso de no encontrar el nombre del lenguaje de programación, software, sistema operativo o herramienta deberá escribirlo en este campo." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-															'between' => ' <div class="col-md-11">',
-															'label' => '',
-															'placeholder' => 'Otro',
-															'onblur' => 'restart('.$cont.')'
-											));	?>
-											</div>
-											<?php 	echo $this->Form->input('StudentTechnologicalKnowledge.'.$cont.'.level', array(
-															'type'=>'select',
-															'required' => false,
-															'before' => '<div class="col-md-11">',
-															'between' => ' <div class="col-md-11">',
-															'class' => 'form-control',
-															'label' => '',
-															'placeholder' => 'Nivel',
-															'options' => $NivelesSoftware,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-										</div>
-									<script languaje="javascript">
-											xComputo++;
-									</script> 
-							<?php   endif; ?>
-									
-									<script languaje="javascript">
-											// xComputo++;
-											<?php if($computo['name'] <> ''): ?>
-												hideOther(<?php echo "'".$cont."'"; ?>);
-											<?php else: 
-													if($computo['other'] <> ''):
-											?>
-														restart(<?php echo "'".$cont."'"; ?>);
-											<?php 	endif;
-												endif; 
-											?>
-									</script> 
-						<?php
-									$cont++;
-								endforeach; 
-							endif;
-						?>
-						
-				</div>
-				<div class="col-md-12" style="margin-left: 46%;" >
-					<p>Agregar otro cómputo (máx 3) <img  id="agregarComputo" src="<?php echo $this->webroot; ?>/img/add.png" ALT="add.png" style='background-color: transparent; width: 25px; cursor:pointer;margin-top: -5px;'></p>
-				</div>
-			</div>
-						
-				<?php 	echo $this->Form->input('StudentJobSkill.name', array(
-													'before' => '<div style="margin-left:42px;width: 367px;>',
-													'between' => '<div>',
-													'maxlength' => '316',
-													'type' => 'textarea',
-													'required' => false,
-													'label' => '',
-													'style' => 'resize: vertical; min-height: 120px;  max-height: 120px; height: 120px;margin-left: 4px;',
-													'placeholder' => 'Certificaciones',
-				));	?>
-				<div class="col-md-6" style="text-align: right; right; top: -10px;margin-left: 232px;">
-					<span id="contadorTaComentario">0/316</span><span> caracteres máx.</span>
-				</div>
-				
-
-				<div class="col-md-offset-8" style="padding-left: 25px;">
-
-				<?php 
-							echo $this->Form->button(
-													'Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-													array(
-														'type' => 'submit',
-														'div' => 'form-group',
-														'action' => 'specificSearchCandidateResults',
-														'class' => 'btn btn-primary btn-default',
-														'style' => 'width: 130px;',
-														'escape' => false,
-													)
-							);
-
-							echo $this->Form->end(); 
-							?>
-				</div>
-			</div>
+			<?= $this->Form->input('StudentTechnologicalKnowledge.0.name', ['type'=>'select','options' => $Programas,'class' => 'form-control selectpicker show-tick show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Nombre']);	?>
+			<?= $this->Form->input('StudentTechnologicalKnowledge.0.other',['placeholder' => 'Otro',]);	?>
+			<?= $this->Form->input('StudentTechnologicalKnowledge.0.level', ['type'=>'select','options' => $NivelesSoftware,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Nivel']); ?>
+		</div>
+			
+		<div class="contenedorClonesComputo"></div>
+		
+		<div style="text-align: right;">
+			<span>Agregar otro cómputo (máx. 3)</span>
+			<button type="button" class="btn btn-default btn-sm" onclick="clonarComputo();">
+	          <span class="glyphicon glyphicon-plus-sign"></span>
+	        </button>
+		</div>
 	</div>
-</div>
 	
+	 <?=$this->Form->input('CompanyJobSkill.name', ['before' => '<div style="margin-left:42px;width: 367px;></div>','between' => '<div></div>','maxlength' => '316','type' => 'textarea','required' => false,'label' => '','style' => 'resize: vertical; min-height: 120px;  max-height: 120px; height: 120px;margin-left: 4px;','placeholder' => 'Certificaciones',]);?>
+				
+				<div class="col-md-6 " style="text-align: right; right; top: 7px;margin-left: 232px;">
+					<span id="contadorTaComentario">0/316 caracteres máx.</span>
+				</div>
 	
-	
+	<div class="col-md-12 text-center">
+
+				<?=$this->Form->button('Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>',['type' => 'submit','class' => 'btn btn-primary btn-default','escape' => false,'style' => 'width: 130px;',]); ?>
+				<?=$this->Form->end(); ?>
+				</div>
+		
