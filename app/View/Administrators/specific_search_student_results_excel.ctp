@@ -4,8 +4,8 @@
 
 	$objPHPExcel = new PHPExcel();
 	 
-	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo UNAM")
-								 ->setLastModifiedBy("SISBUT UNAM")
+	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo bti")
+								 ->setLastModifiedBy("Sistema de Bolsa Universitaria de Trabajo bti")
 								 ->setTitle("Resultados de Busqueda especifica")
 								 ->setSubject("Resultados de Busqueda especifica")
 								 ->setDescription("Resultados de Busqueda especifica")

@@ -2,15 +2,15 @@
 	App::import('Vendor', 'Classes/PHPExcel');
 		
 	$workbook = new PHPExcel();
-	$workbook->getProperties()->setCreator("SISBUT UNAM")
-								 ->setLastModifiedBy("SISBUT UNAM")
+	$workbook->getProperties()->setCreator("Bolsabti")
+								 ->setLastModifiedBy("Bolsabti")
 								 ->setTitle("Informe de ".$nombreInforme)
 								 ->setSubject("Informe de ".$nombreInforme)
 								 ->setDescription("Informe de ".$nombreInforme)
 								 ->setKeywords("Informe de ".$nombreInforme)
-								 ->setCategory("Informe de ".$nombreInforme);
+								 ->setCategory("Informe de ".$nombreInforme);				 
     $sheet = $workbook->getActiveSheet();
-		
+
 	/*----Estilos-----*/
 	$styleBorderArray = array(
 			'borders' => array(
@@ -44,7 +44,7 @@
 	/*----/Estilos-----*/
 		
 	/*----Titulos y estilos------*/
-		$workbook->setActiveSheetIndex(0)->setCellValue('A1','SISBUT UNAM');
+		$workbook->setActiveSheetIndex(0)->setCellValue('A1','Bolsabti');
 		$workbook->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 		
 		$workbook->setActiveSheetIndex(0)->mergeCells('A2:E2');
@@ -147,48 +147,48 @@
 
 		// Si el tipo de descarga es por dia y el tipo de informe es por curriculum
 		if($tipoInforme==0): //Curriculums
-				$con = 6;
-				$fechaAnterior = '';
-				$ban = 0;
-				foreach($datos as $dato):
-					if($statusFecha==1):
-						$fecha = $dato['Student']['created'];
+			$con = 6;
+			$fechaAnterior = '';
+			$ban = 0;
+			foreach($datos as $dato):
+				if($statusFecha==1):
+					$fecha = $dato['Student']['created'];
+				else:
+					if($statusFecha==2):
+						$fecha = date("Y-m", strtotime($dato['Student']['created']));
 					else:
-						if($statusFecha==2):
-							$fecha = date("Y-m", strtotime($dato['Student']['created']));
-						else:
-							if($statusFecha==3):
-								$fecha = date("Y", strtotime($dato['Student']['created']));
-							endif;
+						if($statusFecha==3):
+							$fecha = date("Y", strtotime($dato['Student']['created']));
 						endif;
 					endif;
-					
-					if($ban==1):
-						$fechaEntrada = $fecha;
-						if($fechaAnterior <> $fechaEntrada):
-							$con++;
-							$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaEntrada);
-							$fechaAnterior = $fechaEntrada;
-						endif;
-					else:
-						$fechaAnterior = $fecha;
-						$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaAnterior);
-					endif;
-					
-					if($dato['Student']['status']==1):
-						$valor = $dato[0]['totalStatus']+$workbook->getActiveSheet()->getCell('B'.$con)->getValue();
-						$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,$valor);
-					else:
-						$valor = $dato[0]['totalStatus']+$workbook->getActiveSheet()->getCell('C'.$con)->getValue();
-						$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,$valor);
-					endif;
-					
-					$ban = 1;
-				endforeach;
+				endif;
 				
-				for($con2 = 6; $con2 <= $con; $con2++):
-					$workbook->getActiveSheet()->setCellValue('D'.$con2,'=SUM(B'.$con2.':C'.$con2.')');
-				endfor;
+				if($ban==1):
+					$fechaEntrada = $fecha;
+					if($fechaAnterior <> $fechaEntrada):
+						$con++;
+						$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaEntrada);
+						$fechaAnterior = $fechaEntrada;
+					endif;
+				else:
+					$fechaAnterior = $fecha;
+					$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaAnterior);
+				endif;
+				
+				if($dato['Student']['status']==1):
+					$valor = $dato[0]['totalStatus']+$workbook->getActiveSheet()->getCell('B'.$con)->getValue();
+					$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,$valor);
+				else:
+					$valor = $dato[0]['totalStatus']+$workbook->getActiveSheet()->getCell('C'.$con)->getValue();
+					$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,$valor);
+				endif;
+				
+				$ban = 1;
+			endforeach;
+			
+			for($con2 = 6; $con2 <= $con; $con2++):
+				$workbook->getActiveSheet()->setCellValue('D'.$con2,'=SUM(B'.$con2.':C'.$con2.')');
+			endfor;
 		else:
 			if($tipoInforme==1): //Empresas
 					$con = 6;
@@ -200,7 +200,7 @@
 						$columna = 'G'; 
 						for($i = 1; $i <=$dato['CompanyProfile']['company_rotation']; $i++){$columna++;} //Verifica en que columna se encuentra el giro
 						
-						$valor = $porexpirar[$index]+$workbook->getActiveSheet()->getCell($columna.$con)->getValue();
+						$valor = $porexpirar[$index]+$workbook->getActiveSheet()->getCell($columna.$con)->getValue(); //Si existe valor en la celda del giro le suma el nuevo giro +1
 						$workbook->setActiveSheetIndex(0)->setCellValue($columna.$con,$valor+1);
 									
 						if($statusFecha==1):
@@ -225,18 +225,12 @@
 								$workbook->setActiveSheetIndex(0)->setCellValue('E'.$con,$expiradas[$index]);
 								$workbook->setActiveSheetIndex(0)->setCellValue('F'.$con,$pendientes[$index]);
 							else:
-								if(($statusFecha==2) OR ($statusFecha==3)):
-									$valor = $porexpirar[$index]+$workbook->getActiveSheet()->getCell('D'.$con)->getValue();
-									$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,$valor);
-									$valor = $expiradas[$index]+$workbook->getActiveSheet()->getCell('E'.$con)->getValue();
-									$workbook->setActiveSheetIndex(0)->setCellValue('E'.$con,$valor);
-									$valor = $pendientes[$index]+$workbook->getActiveSheet()->getCell('F'.$con)->getValue();
-									$workbook->setActiveSheetIndex(0)->setCellValue('F'.$con,$valor);
-								else:
-									$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,$porexpirar[$index]);
-									$workbook->setActiveSheetIndex(0)->setCellValue('E'.$con,$expiradas[$index]);
-									$workbook->setActiveSheetIndex(0)->setCellValue('F'.$con,$pendientes[$index]);
-								endif;
+								$valor = $porexpirar[$index]+$workbook->getActiveSheet()->getCell('D'.$con)->getValue();
+								$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,$valor);
+								$valor = $expiradas[$index]+$workbook->getActiveSheet()->getCell('E'.$con)->getValue();
+								$workbook->setActiveSheetIndex(0)->setCellValue('E'.$con,$valor);
+								$valor = $pendientes[$index]+$workbook->getActiveSheet()->getCell('F'.$con)->getValue();
+								$workbook->setActiveSheetIndex(0)->setCellValue('F'.$con,$valor);
 							endif;
 						else:
 							$fechaAnterior = $fecha;
@@ -254,13 +248,13 @@
 							$valor = $dato[0]['totalStatus']+$workbook->getActiveSheet()->getCell('C'.$con)->getValue();
 							$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,$valor);
 						endif;
+						
 						$index++;
 					endforeach;
 
 					for($con2 = 6; $con2 <= $con; $con2++):
 						$workbook->getActiveSheet()->setCellValue('G'.$con2,'=SUM(B'.$con2.':C'.$con2.')');
-					endfor;
-					
+					endfor;		
 			else:
 				if($tipoInforme==2): //Ofertas
 						$con = 6;
@@ -354,73 +348,89 @@
 						endfor;
 				else:
 					if($tipoInforme==3): //Postulaciones
-							$con = 6;
-							$index = 0;
-							$ban = 0;
-							$onlyOfferId = array();
-							foreach($datos as $oferta):
-								if(!empty($oferta)):
-									if($statusFecha==1):
-										$fecha = $fechasPostulaciones[$index];
+						$con = 6;
+						$index = 0;
+						$ban = 0;
+						// $onlyOfferId = array();
+						
+						foreach($datos as $oferta):
+							if(!empty($oferta)):
+								$onlyOfferId[$index]=array();
+								
+								if($statusFecha==1):
+									$fecha = $fechasPostulaciones[$index];
+								else:
+									if($statusFecha==2):
+										$fecha = date("Y-m", strtotime($fechasPostulaciones[$index]));
 									else:
-										if($statusFecha==2):
-											$fecha = date("Y-m", strtotime($fechasPostulaciones[$index]));
-										else:
-											if($statusFecha==3):
-												$fecha = date("Y", strtotime($fechasPostulaciones[$index]));
-											endif;
+										if($statusFecha==3):
+											$fecha = date("Y", strtotime($fechasPostulaciones[$index]));
 										endif;
-									endif;	
-									
-									if($ban==1):
-										$fechaEntrada = $fecha;
-										if($fechaAnterior <> $fechaEntrada):
-											$fechaAnterior = $fechaEntrada;
-											$con++;
-											foreach($companyJobProfileIds[$index] as $idOffer):
-												if(!in_array($idOffer, $onlyOfferId)):
-													$onlyOfferId[] = $idOffer;
-												endif;
-											endforeach;
-											$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,count($onlyOfferId));
-											$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaEntrada);
-											$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,count($onlyOfferId));
-											$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,count($arrayTotalPostulaciones[$index]));
-										else:
-											$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,count($onlyOfferId));
-											$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,count($onlyOfferId));
-											$valor = count($arrayTotalPostulaciones[$index])+$workbook->getActiveSheet()->getCell('D'.$con)->getValue();
-											$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,$valor);
-										endif;
-									else:
-										foreach($companyJobProfileIds[$index] as $idOffer):
-											if(!in_array($idOffer, $onlyOfferId)):
-												$onlyOfferId[] = $idOffer;
-											endif;
-										endforeach;
-										$fechaAnterior = $fecha;
-										$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaAnterior);
-										$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,count($onlyOfferId));
-										$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,count($onlyOfferId));
-										$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,count($arrayTotalPostulaciones[$index]));
-										$ban=1;
 									endif;
-										
-									foreach($oferta as $dato):
-										$columna = 'D'; 
-										for($i = 1; $i <=$dato['CompanyJobProfile']['rotation']; $i++){$columna++;} //Verifica en que columna se encuentra el giro
-		
-										if($fechaAnterior == $fecha):
-											$valor = $dato[0]['total']+$workbook->getActiveSheet()->getCell($columna.$con)->getValue();
-											$workbook->setActiveSheetIndex(0)->setCellValue($columna.$con,$valor);	
-										else:
-											$workbook->setActiveSheetIndex(0)->setCellValue($columna.$con,$dato[0]['total']);
-										endif;
-									endforeach;
+								endif;	
+								
+								if($ban==1):
+									$fechaEntrada = $fecha;
+									if($fechaAnterior <> $fechaEntrada):
+										$fechaAnterior = $fechaEntrada;
+										$con++;
+										// foreach($companyJobProfileIds[$index] as $idOffer):
+										// 	if(!in_array($idOffer, $onlyOfferId[$index])):
+										// 		$onlyOfferId[$index][] = $idOffer;
+										// 	endif;
+										// endforeach;
+										$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaEntrada);
+										$valor = count($companyJobProfileIdActivas[$index])+$workbook->getActiveSheet()->getCell('B'.$con)->getValue();
+										$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,$valor);
+										$valor = count($companyJobProfileIds[$index])+$workbook->getActiveSheet()->getCell('C'.$con)->getValue();
+										$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,$valor);
+										$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,count($arrayTotalPostulaciones[$index]));
+									else:
+										// foreach($companyJobProfileIds[$index] as $idOffer):
+										// 	if(!in_array($idOffer, $onlyOfferId[$index])):
+										// 		$onlyOfferId[$index][] = $idOffer;
+										// 	endif;
+										// endforeach;
+										$valor = count($companyJobProfileIdActivas[$index])+$workbook->getActiveSheet()->getCell('B'.$con)->getValue();
+										$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,$valor);
+										$valor = count($companyJobProfileIds[$index])+$workbook->getActiveSheet()->getCell('C'.$con)->getValue();
+										$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,$valor);
+										$valor = count($arrayTotalPostulaciones[$index])+$workbook->getActiveSheet()->getCell('D'.$con)->getValue();
+										$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,$valor);
+									endif;
+								else:
+									// foreach($companyJobProfileIds[$index] as $idOffer):
+									// 	if(!in_array($idOffer, $onlyOfferId[$index])):
+									// 		$onlyOfferId[$index][] = $idOffer; //evita que agrege las ofertas repetidas 
+									// 	endif;
+									// endforeach;
+									$fechaAnterior = $fecha;
+									$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaAnterior);
+									$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,count($companyJobProfileIdActivas[$index]));
+									$workbook->setActiveSheetIndex(0)->setCellValue('C'.$con,count($companyJobProfileIds[$index]));
+									$workbook->setActiveSheetIndex(0)->setCellValue('D'.$con,count($arrayTotalPostulaciones[$index]));
+									$ban=1;
+								endif;
+
+								foreach($oferta as $dato):
+									$columna = 'D'; 
+									for($i = 1; $i <=$dato['CompanyJobProfile']['rotation']; $i++){$columna++;} //Verifica en que columna se encuentra el giro
+	
+									if($fechaAnterior == $fecha):
+										$valor = $dato[0]['total']+$workbook->getActiveSheet()->getCell($columna.$con)->getValue();
+										$workbook->setActiveSheetIndex(0)->setCellValue($columna.$con,$valor);	
+									else:
+										$workbook->setActiveSheetIndex(0)->setCellValue($columna.$con,$dato[0]['total']);
+									endif;
+								endforeach;
 									
 								endif;
 								$index++; //Para avanzar las fechas de postulaciones
 							endforeach;	
+							// echo "<pre>";
+							// print_r($onlyOfferId);
+							// echo "</pre>";
+							// exit;
 					else:
 						if(($tipoInforme==4) OR ($tipoInforme==5)): //Notificaciones telefonicas //Notificaciones Presenciales
 								$con = 6;
@@ -511,38 +521,7 @@
 										$workbook->getActiveSheet()->setCellValue('D'.$con2,'=SUM(B'.$con2.':C'.$con2.')');
 									endfor;
 							else:
-								if($tipoInforme==7): //Estudiantes eliminados
-										$con = 6;
-										$ban = 0;
-										foreach($datos as $dato):
-											if($statusFecha==1):
-												$fecha = $dato['StudentDisabled']['created'];
-											else:
-												if($statusFecha==2):
-													$fecha = date("Y-m", strtotime($dato['StudentDisabled']['created']));
-												else:
-													if($statusFecha==3):
-														$fecha = date("Y", strtotime($dato['StudentDisabled']['created']));
-													endif;
-												endif;
-											endif;
-										
-											if($ban==1):
-												$fechaEntrada = $fecha;
-												if($fechaAnterior <> $fechaEntrada ):
-													$con++;
-													$fechaAnterior = $fechaEntrada;
-												endif;
-											else:
-												$fechaAnterior = $fecha;
-												$ban = 1;
-											endif;
-											
-											$workbook->setActiveSheetIndex(0)->setCellValue('A'.$con,$fechaAnterior);
-											$valor = 1+$workbook->getActiveSheet()->getCell('B'.$con)->getValue();
-											$workbook->setActiveSheetIndex(0)->setCellValue('B'.$con,$valor);
-										endforeach;
-										
+								if($tipoInforme==7): //Estudiantes eliminados				
 								else:
 									if($tipoInforme==8): //Empresas eliminadas
 											$con = 6;
@@ -857,7 +836,7 @@
 			$layout1->setShowVal(TRUE);   
 			$plotarea = new PHPExcel_Chart_PlotArea($layout1, array($series));
 			$title    = new PHPExcel_Chart_Title('Informe de '.$nombreInforme);  
-			$xTitle   = new PHPExcel_Chart_Title('Fechas');
+			$xTitle   = new PHPExcel_Chart_Title('Fechas con información');
 			$yTitle   = new PHPExcel_Chart_Title($nombreInforme);
 			$chart    = new PHPExcel_Chart(
 											'chart',        // name
@@ -882,10 +861,6 @@
 			$chart->setBottomRightPosition($endLine.$bottom);
 			$sheet->addChart($chart);
 		endif;
-	
-		// echo '<pre>';
-		// print_r($datos);
-		// echo '</pre>';
 
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 		header('Content-Disposition: attachment;filename="Informe de '.$nombreInforme.'.xlsx"');

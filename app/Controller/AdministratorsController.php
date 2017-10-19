@@ -17,7 +17,7 @@
 				'authorize' => array('Controller'),
 				'authError' => 'Debe estar logueado para continuar',
 				'loginError' => 'Clave de acceso o contraseña incorrectos',
-					'loginRedirect' => array('controller' => 'Administrators', 'action' => 'administrator'),
+					'loginRedirect' => array('controller' => 'Administrators', 'action' => 'addAdministrator'),
 					'logoutRedirect' => array('controller' => 'Administrators', 'action' => 'index'),
 				'authorize' => array('Controller')
 			),
@@ -70,6 +70,11 @@
 			$this->Session->delete('companyJobContractType.id');
 			$this->Session->delete('CompanyCandidateProfile.id');
 			$this->Session->write('Editando', 0);
+
+			// $this->Administrator->recursive = -2;
+			// $this->set('administrator', $this->Administrator->findById($this->Auth->user('id'),['fields'=>'Administrator.*,AdministratorProfile.*']));
+			$this->Administrator->recursive = 0;
+			$this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
 		}
 		
 		public function isAuthorized($administrator) {
@@ -192,12 +197,10 @@
 							// $this->Session->setFlash($mensaje,'alert-info');	
 						endif;
 				endif;
-
 		}		
 
 		public function addAdministrator($id = null){
-			$this->Administrator->recursive = 0;
-			$this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));	
+	
 			$this->administratorAccesos();
 			$this->academicLevel();
 			
@@ -219,11 +222,11 @@
 					$this->request->data['Administrator']['activation'] = 1;
 					
 					if($this->request->data['AdministratorProfile']['start_date_expiration']['year']==''):
-						$this->request->data['AdministratorProfile']['start_date_expiration'] = '0000-00-00';
+						$this->request->data['AdministratorProfile']['start_date_expiration'] = null;
 					endif;
 					
 					if($this->request->data['AdministratorProfile']['end_date_expiration']['year']==''):
-						$this->request->data['AdministratorProfile']['end_date_expiration'] = '0000-00-00';
+						$this->request->data['AdministratorProfile']['end_date_expiration'] = null;
 					endif;
 					
 					
@@ -239,7 +242,6 @@
 					endif;
 				endif;
 			endif;
-
 		}
 		
 		public function editAdministratorProfile($id = null){
@@ -275,11 +277,11 @@
 					$this->request->data['AdministratorProfile']['access'] = $accesosString;
 					
 					if($this->request->data['AdministratorProfile']['start_date_expiration']['year']==''):
-						$this->request->data['AdministratorProfile']['start_date_expiration'] = '0000-00-00';
+						$this->request->data['AdministratorProfile']['start_date_expiration'] = null;
 					endif;
 					
 					if($this->request->data['AdministratorProfile']['end_date_expiration']['year']==''):
-						$this->request->data['AdministratorProfile']['end_date_expiration'] = '0000-00-00';
+						$this->request->data['AdministratorProfile']['end_date_expiration'] = null;
 					endif;
 					
 					if($this->Administrator->saveAll($this->request->data, array('validate' => 'only'))):
@@ -296,8 +298,8 @@
 			endif;
 		}
 		
-		public function editPhoto($id=null){
-			$this->Administrator->id = $id;
+		public function editPhoto(){
+			$this->Administrator->id = $this->Auth->user('id');
 			$this->Administrator->recursive = 0;
 			$this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));	
 					
@@ -320,7 +322,7 @@
 			endif;	
 		}
 		
-		public function deletePhoto($id = null) {
+		public function deletePhoto() {
 			if($this->request->is('post')):	
 				$administrator = $this->Administrator->findById($this->Auth->user('id'));
 				if ($this->Administrator->updateAll(array(
@@ -336,7 +338,7 @@
 							if(file_exists($destino.$administrator['Administrator']['filename'])):
 								unlink($destino.$administrator['Administrator']['filename']);
 							endif;
-							$this->Session->setFlash('Logo de administrador eliminado', 'alert-success');
+							$this->Session->setFlash('Foto de perfil eliminada', 'alert-success');
 							$this->redirect(array('action' => 'editPhoto',$this->Session->read('Auth.User.id')));
 				else:
 					$this->Session->setFlash('Lo sentimos, el logo de administrador no pudo ser eliminado', 'alert-danger');
@@ -349,11 +351,7 @@
 		}
 		
 		public function searchAdministrator($newSearch = null){
-			$this->Administrator->recursive = 0;
-			$this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
 			$this->Session->write('redirectAdmin', 'searchAdministrator');
-
-
 			if($newSearch == 'nuevaBusqueda'):
 				$this->Session->delete('limiteAdmin');
 				$this->Session->delete('palabraBuscadaAdmin');
@@ -417,16 +415,14 @@
 			
 			if($tipoBusqueda == 1):
 				$this->set('tipoDescarga', 'Filtro Por Nombre(s): '.$palabraBuscada);
-					$claves = explode(" ", $palabraBuscada);
-					$indice = 0;
-					foreach ($claves as $clave) {
-						if(strlen($clave)>2):
-							$criterio[$indice]['OR'][] = array('AdministratorProfile.contact_name LIKE' => "%$clave%");
-						endif;
-						$indice++;
-					}
-					
-				// $criterio[] = array('AdministratorProfile.contact_name LIKE' => '%'. $palabraBuscada . '%');
+				$claves = explode(" ", $palabraBuscada);
+				$indice = 0;
+				foreach ($claves as $clave) {
+					if(strlen($clave)>2):
+						$criterio[$indice]['OR'][] = array('AdministratorProfile.contact_name LIKE' => "%$clave%");
+					endif;
+					$indice++;
+				}
 			else:
 				if($tipoBusqueda == 2):
 					$this->set('tipoDescarga', 'Filtro Por Apellido(s): '.$palabraBuscada);
@@ -449,26 +445,11 @@
 			endif;
 
 			$orden = 'AdministratorProfile.contact_last_name DESC';
-			
+
 			if(($newSearch==null) OR ($newSearch == 'nuevaBusqueda')):
-				$this->paginate = array(
-									'conditions' => array(
-															'OR' => array(
-																			$criterio
-																		)
-														),
-									'limit' => $limite,
-									'order' => $orden,
-									);
+				$this->paginate = ['conditions' => ['OR' => [$criterio]],'limit' => $limite,'order' => $orden,];
 			else:
-				$this->paginate = array(
-									'conditions' => array(
-															'OR' => array(
-																			$criterio
-																		)
-														),
-									'order' => $orden,
-									);
+				$this->paginate = ['conditions' => ['OR' => [$criterio]],'order' => $orden];
 			endif;
 			
 			$this->set('administradores', $administradores = $this->paginate('Administrator'));
@@ -507,17 +488,17 @@
 							}
 					
 							$Email = new CakeEmail('gmail');
-							$Email->from(array($this->Auth->user('email') => 'SISBUT UNAM'));
+							$Email->from(array($this->Auth->user('email') => 'bolsabti'));
 							
 							$Email->to($listaCorreosTo);
 							
 							if($this->data['Student']['file']['size'] > 0):
 								$Email->attachments($destino.$this->data['Student']['file']['name']);
 							endif;
-								$Email->subject('Mensaje de SISBUT UNAM');
+								$Email->subject('Mensaje de bolsabti');
 								$Email->replyTo($this->request->data['Student']['email']);
 								$Email->emailFormat('both'); 
-								$contenMail = 	'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" alt="header" width="100%">'.
+								$contenMail = 	'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://ch3302files.storage.live.com/y4p0zc-aKdenRwNjteB3--a8ZKFbEHQ3HWnKQTN2l7nWGPAp-iM0Po85t1H9SEAVoUF52HRQ_2CyGXTWbqNQZ7VO1TlnvtdgVajgE30BwrozrsllLTb-gELTme85mkEwADPLEsZJO5x6gGmnogGweOHWKnuGYK5hYXtE7sn4u7Q7Zvs30yCnxY0tYYDuBAej6x2/header.jpg?psid=1&width=700&height=80" alt="header" width="100%">'.
 												'<strong><h3>'.$this->request->data['Student']['title'].'</h3></strong><br>'.
 												'<p>'.$this->request->data['Student']['message'].'</p><br><br>';
 								if($this->request->data['Student']['sign'] <> ''):
@@ -660,9 +641,9 @@
 		}
 		
 		public function searchStudent($newSearch = null){
-			$this->Administrator->recursive = 0;
-			$administrator = $this->Administrator->findById($this->Auth->user('id'));
-			$this->set('administrator', $administrator);
+			// $this->Administrator->recursive = 0;
+			// $administrator = $this->Administrator->findById($this->Auth->user('id'));
+			// $this->set('administrator', $administrator);
 			$this->Student->recursive = 3;
 
 			$this->Session->write('redirectAdmin', 'searchStudent');
@@ -2230,14 +2211,14 @@
 							}
 					
 							$Email = new CakeEmail('gmail');
-							$Email->from(array($this->Auth->user('email') => 'SISBUT UNAM'));
+							$Email->from(array($this->Auth->user('email') => 'bolsabti'));
 							
 							$Email->to($listaCorreosTo);
 							
 							if($this->data['Student']['file']['size'] > 0):
 								$Email->attachments($destino.$this->data['Student']['file']['name']);
 							endif;
-								$Email->subject('Mensaje de SISBUT UNAM');
+								$Email->subject('Mensaje de bolsabti');
 								$Email->replyTo($this->Auth->user('email'));
 								$Email->emailFormat('both'); 
 								$contenMail = 	'<center><div style="background-color: #F2F2F2; width: 850px; text-align: justify;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" alt="header" width="100%">'.
@@ -2297,7 +2278,7 @@
 						
 							if($this->Student->updateAll(array('Student.password' => "'".AuthComponent::password($this->data['Administrator']['password'])."'"),array('Student.id' => $this->request->data['Administrator']['student_id']))):
 								$Email = new CakeEmail('gmail');
-									$Email->from(array('sisbut@unam.mx' => 'SISBUT UNAM.'));
+									$Email->from(array('sisbut@unam.mx' => 'bolsabti.'));
 									
 									$correosTo = $this->request->data['Administrator']['student_email'];
 									$destinatariosTo = explode(";",$correosTo);
@@ -2324,13 +2305,13 @@
 										$Email->cc($listaCorreosCC);
 									endif;
 
-									$Email->subject('Detalles del cambio de contraseña SISBUT UNAM.');
+									$Email->subject('Detalles del cambio de contraseña bolsabti.');
 									$Email->emailFormat('both');
 									$Email->template('email')->viewVars( array(
 													'aMsg' => 
-													'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" alt="header" width="100%">'.
+													'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://ch3302files.storage.live.com/y4p0zc-aKdenRwNjteB3--a8ZKFbEHQ3HWnKQTN2l7nWGPAp-iM0Po85t1H9SEAVoUF52HRQ_2CyGXTWbqNQZ7VO1TlnvtdgVajgE30BwrozrsllLTb-gELTme85mkEwADPLEsZJO5x6gGmnogGweOHWKnuGYK5hYXtE7sn4u7Q7Zvs30yCnxY0tYYDuBAej6x2/header.jpg?psid=1&width=700&height=80" alt="header" width="100%">'.
 													'<p style="color: #835B06; font-size: 24px; font-weight: bold; text-align: center;">Detalles del cambio de contraseña por administrador</p>'.
-													'<p>Esta es tu información (mantenla en secreto y guárdala bien) para iniciar tu sesión en SISBUT UNAM.</p>'.
+													'<p>Esta es tu información (mantenla en secreto y guárdala bien) para iniciar tu sesión en bolsabti.</p>'.
 													
 													'<p><strong>Usuario: </strong>' . $student['Student']['username']. '<br/>' .
 													'<strong>Contraseña: </strong>' . $this->request->data['Administrator']['password'] . '</p>' .
@@ -2353,8 +2334,8 @@
 		}
 		
 		public function viewStudentPostullation(){
-			$this->Administrator->recursive = 0;
-			$this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
+			// $this->Administrator->recursive = 0;
+			// $this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
 			$this->Session->write('redirectAdmin', 'viewStudentPostullation');
 			// $redirect = $this->redireccionaAdmin();
 			
@@ -2378,7 +2359,11 @@
 			if($this->request->query('regresar')<>''):
 				$this->Session->write('volver', $this->request->query('regresar')); 
 			else:
-				$this->Session->write('volver', 'companyHistory'); 
+				if($this->Session->read('volver')<>''):
+					$this->Session->write('volver', $this->Session->read('volver')); 
+				else:
+					$this->Session->write('volver', 'companyHistory'); 
+				endif;
 			endif;
 				
 			$this->Student->recursive = 0;
@@ -2435,6 +2420,13 @@
 		
 			//Get all offers ids in array for each one applied
 			$aplicadas = array("CompanyJobProfile.id" => Set::extract("/Application/company_job_profile_id", $ofertasAplicadas));
+			foreach ($ofertasAplicadas as $idOferta) {
+				$idOfertas['CompanyJobProfile.id IN'][]=$idOferta['Application']['company_job_profile_id'];
+			}
+			// echo "<pre>";
+			// print_r($ofertasAplicadas);
+			// echo "</pre>";
+
 			
 
 			if($tipoBusqueda == 1):
@@ -2554,7 +2546,8 @@
 															'AND' => array(	
 																			$criterio,
 																			'CompanyJobProfile.expiration >= ' => $hoy,
-																			'CompanyJobContractType.status'  => 1
+																			'CompanyJobContractType.status'  => 1,
+																			$idOfertas
 																		),
 															),
 										'limit' => $limite,
@@ -2566,8 +2559,8 @@
 		}
 		
 		public function searchCompany($newSearch = null){
-			$this->Administrator->recursive = 0;
-			$this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
+			// $this->Administrator->recursive = 0;
+			// $this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
 
 			$this->Session->write('redirectAdmin', 'searchCompany');
 			$this->redireccionaAdmin();
@@ -2608,9 +2601,9 @@
 				$this->Session->write('tipoBusquedaAdmin', $this->request->data['Administrator']['criterio']);
 				$tipoBusqueda = $this->request->data['Administrator']['criterio'];
 			else:
-				if($this->request->query('tipoBusqueda') <> ''):
-					$tipoBusqueda = $this->request->query('tipoBusqueda');
-					$this->Session->write('tipoBusquedaAdmin', $this->request->query('tipoBusqueda'));
+				if($this->request->query('tipoBusquedaAdmin') <> ''):
+					$tipoBusqueda = $this->request->query('tipoBusquedaAdmin');
+					$this->Session->write('tipoBusquedaAdmin', $this->request->query('tipoBusquedaAdmin'));
 				else:
 					if(($this->Session->read('tipoBusquedaAdmin')) <> ''):
 						$tipoBusqueda = $this->Session->read('tipoBusquedaAdmin');
@@ -2624,7 +2617,7 @@
 				$this->Session->write('palabraBuscadaAdmin', $this->request->data['Administrator']['Buscar']);
 				$palabraBuscada  = $this->request->data['Administrator']['Buscar'];
 			else:
-				if($this->request->query('tipoBusqueda') <> ''):
+				if($this->request->query('tipoBusquedaAdmin') <> ''):
 					$palabraBuscada = '';
 				else:
 					if(($this->Session->read('palabraBuscadaAdmin')) <> ''):
@@ -2746,13 +2739,10 @@
 
 		public function searchCompanyAdminExcel(){
 			$this->searchCompany('sinLimite');
-
 			$this->Sector();
 			$this->Rotation();
 			$this->numeroEmpleados();
 			$this->companyType();
-
-
 		}	
 		
 		public function specificSearchCompany($newSearch = null){
@@ -2785,8 +2775,6 @@
 				$this->Session->delete('city');
 				$this->Session->delete('zip');
 			endif;
-			
-	
 		}
 		
 		public function resultsSpecificSearchCompany($newSearch = null){
@@ -2953,18 +2941,18 @@
 		
 		public function deleteCompany($id){
 			if($this->request->is('post')):
+				$this->Session->delete('page');
 				$redirect = $this->redireccionaAdmin();
-					
+				
 				$company = $this->Company->findById($id);
 				$destino = WWW_ROOT.'img'.DS.'uploads'.DS.'company'.DS.'filename'.DS;
 				$this->CompanyDisabled->data['CompanyDisabled']['company_username'] = $company['Company']['username'];
 				$this->CompanyDisabled->data['CompanyDisabled']['rfc'] = $company['CompanyProfile']['rfc'];
-				
+				if(file_exists($destino.$company['Company']['filename']) AND ($company['Company']['filename']<>'')):
+					unlink($destino.$company['Company']['filename']);
+				endif;
 				if($this->Company->delete($id)):
 					$this->CompanyDisabled->save($this->CompanyDisabled->data);
-					if(file_exists($destino.$company['Company']['filename'])):
-						unlink($destino.$company['Company']['filename']);
-					endif;
 					$this->Session->setFlash('Empreso o Institución eliminada', 'alert-success');
 					$this->redirect(array('action' =>  $redirect));
 				else:
@@ -2984,7 +2972,7 @@
 						
 							if($this->Company->updateAll(array('Company.password' => "'".AuthComponent::password($this->data['Administrator']['password'])."'"),array('Company.id' => $this->request->data['Administrator']['company_id']))):
 								$Email = new CakeEmail('gmail');
-									$Email->from(array('sisbut@unam.mx' => 'SISBUT UNAM.'));
+									$Email->from(array('sisbut@unam.mx' => 'bolsabti.'));
 									
 									$correosTo = $this->request->data['Administrator']['company_email'];
 									$destinatariosTo = explode(";",$correosTo);
@@ -3011,13 +2999,13 @@
 										$Email->cc($listaCorreosCC);
 									endif;
 
-									$Email->subject('Detalles del cambio de contraseña SISBUT UNAM.');
+									$Email->subject('Detalles del cambio de contraseña bolsabti.');
 									$Email->emailFormat('both');
 									$Email->template('email')->viewVars( array(
 													'aMsg' => 
-													'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" alt="header" width="100%">'.
+													'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://ch3302files.storage.live.com/y4p0zc-aKdenRwNjteB3--a8ZKFbEHQ3HWnKQTN2l7nWGPAp-iM0Po85t1H9SEAVoUF52HRQ_2CyGXTWbqNQZ7VO1TlnvtdgVajgE30BwrozrsllLTb-gELTme85mkEwADPLEsZJO5x6gGmnogGweOHWKnuGYK5hYXtE7sn4u7Q7Zvs30yCnxY0tYYDuBAej6x2/header.jpg?psid=1&width=700&height=80" alt="header" width="100%">'.
 													'<p style="color: #835B06; font-size: 24px; font-weight: bold; text-align: center;">Detalles del cambio de contraseña por administrador</p>'.
-													'<p>Esta es tu información (mantenla en secreto y guárdala bien) para iniciar tu sesión en SISBUT UNAM.</p>'.
+													'<p>Esta es tu información (mantenla en secreto y guárdala bien) para iniciar tu sesión en bolsabti.</p>'.
 													
 													'<p><strong>Usuario: </strong>' . $company['Company']['username']. '<br/>' .
 													'<strong>Contraseña: </strong>' . $this->request->data['Administrator']['password'] . '</p>' .
@@ -3168,13 +3156,13 @@
 		}	
 		
 		public function companyHistory($sinLimite = null){
-			$this->Administrator->recursive = 0;
-			$this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
-			
+			// $this->Administrator->recursive = 0;
+			// $this->set('administrator', $this->Administrator->findById($this->Auth->user('id')));
+			// $this->CompanyJobProfile->recursive = 3;
 			$this->Session->write('redirectAdmin', 'companyHistory');
 			$redirect = $this->redireccionaAdmin();
 			$this->salary(); 
-			$this->Company->recursive = 3;	
+			// $this->Company->recursive = 3;	
 			
 			if($this->request->query('id')<>''):
 				$this->Session->write('historyCompanyId', $this->request->query('id'));
@@ -3212,7 +3200,7 @@
 			endif;
 			
 			if($newSearch == 'nuevaBusqueda'):
-				$this->Session->delete('limite');
+				$this->Session->delete('limiteAdmin');
 				$this->Session->delete('palabraBuscada');
 				$this->Session->delete('tipoBusqueda');
 				$this->Session->delete('page');
@@ -3221,7 +3209,7 @@
 			
 			if(isset($this->request->data['Administrator']['typeFilter'])):
 					// borra filtros del buscador especifico
-					$this->Session->delete('limite');
+					$this->Session->delete('limiteAdmin');
 					$this->Session->delete('palabraBuscada');
 					$this->Session->delete('tipoBusqueda');
 					$this->Session->delete('page');
@@ -3290,12 +3278,12 @@
 						$page = '';
 					endif;
 					
-					if(isset($this->request->data['Administrator']['limite']) and ($this->request->data['Administrator']['limite'] <> '')):
-						$this->Session->write('limite', $this->request->data['Administrator']['limite']);
-						$limite = $this->request->data['Administrator']['limite'];
+					if(isset($this->request->data['Administrator']['limit']) and ($this->request->data['Administrator']['limit'] <> '')):
+						$this->Session->write('limiteAdmin', $this->request->data['Administrator']['limit']);
+						$limite = $this->request->data['Administrator']['limit'];
 					else:
-						if(($this->Session->read('limite')) <> ''):
-							$limite = $this->Session->read('limite');
+						if(($this->Session->read('limiteAdmin')) <> ''):
+							$limite = $this->Session->read('limiteAdmin');
 						else:
 							$limite = 5; //default limit
 						endif;
@@ -3862,22 +3850,22 @@
 		}
 		
 		public function searchOffer($newSearch = null){
-			$this->Administrator->recursive = 1;
-			$administrador = $this->Administrator->findById($this->Auth->user('id'));
-			$this->set('administrator', $administrador);
+			// $this->Administrator->recursive = 1;
+			// $administrador = $this->Administrator->findById($this->Auth->user('id'));
+			// $this->set('administrator', $administrador);
 			$this->Session->write('redirectAdmin', 'searchOffer');
 		
-			$this->Company->recursive = 1;
-			$this->CompanyJobProfile->recursive = 3;
+			// $this->Company->recursive = 1;
+			$this->CompanyJobProfile->recursive = 2;
 			
 			// $this->set('company', $this->Company->findById($this->Session->read('company_id')));
 			$this->salary(); 
-			
 			$limite = 5; //default limit
 			
 			//Verifica parametros que llegan ya sea por get o post para agregarlas a nuestras variables
 			if($newSearch == 'nuevaBusqueda'):
 				$this->Session->delete('limit');
+				$this->Session->delete('limiteAdmin');
 				$this->Session->delete('palabraBuscada');
 				$this->Session->delete('tipoBusqueda');
 				$this->Session->delete('page');
@@ -3967,7 +3955,7 @@
 			$nivelAcademicoAdministrador[] = array();
 			
 			// Verificamos que sea un subadministrator para que visualice solo las ofertas de su institución
-			if($administrador['Administrator']['role']=='subadministrator'):
+			if($this->Session->read('Auth.User.role')=='subadministrator'):
 						
 				// Si el administrador tiene un nivel lo compara
 				if($administrador['AdministratorProfile']['academic_level_id']==1):
@@ -4443,6 +4431,68 @@
 				$ofertas = $this->paginate('CompanyJobProfile');
 				$this->set('ofertas', $ofertas);
 		}
+		
+		public function deleteOffer($id){
+			if($this->request->is('post')):
+				if($this->Session->read('redirectAdmin') <> ''):
+					$redirect = $this->Session->read('redirectAdmin');
+				else:
+					$redirect = 'searchOffer' ;
+				endif;
+				
+				if(($this->Session->check('Auth.User')) and (($this->Session->read('Auth.User.role') == 'administrator') OR ($this->Session->read('Auth.User.role') == 'subadministrator'))):	
+						$this->CompanyJobProfile->recursive = 2;
+						$oferta = $this->CompanyJobProfile->findById($id);
+						$nombreOferta = $oferta['CompanyJobProfile']['job_name'];
+						
+						$Email = new CakeEmail('gmail');
+						$Email->from(array('sisbut@unam.mx' => 'bolsabti.'));
+						
+						if($oferta['CompanyJobOffer']['same_contact'] == 'n'):
+							$nombreResponsable = $oferta['CompanyJobOffer']['responsible_name'].' '.$oferta['CompanyJobOffer']['responsible_last_name'];
+							$Email->to($oferta['CompanyJobOffer']['company_email'] );
+						else:
+							$nombreResponsable = $oferta['Company']['CompanyContact']['name'].' '.$oferta['Company']['CompanyContact']['last_name'];
+						endif;
+						
+						$Email->to($oferta['Company']['email'] );
+
+						$Email->subject('bolsabti / Oferta eliminada');
+						$Email->emailFormat('both');
+						$Email->template('email')->viewVars( array(
+																						'aMsg' => 
+																						'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://ch3302files.storage.live.com/y4p0zc-aKdenRwNjteB3--a8ZKFbEHQ3HWnKQTN2l7nWGPAp-iM0Po85t1H9SEAVoUF52HRQ_2CyGXTWbqNQZ7VO1TlnvtdgVajgE30BwrozrsllLTb-gELTme85mkEwADPLEsZJO5x6gGmnogGweOHWKnuGYK5hYXtE7sn4u7Q7Zvs30yCnxY0tYYDuBAej6x2/header.jpg?psid=1&width=700&height=80" alt="header" width="100%">'.
+																						'<p style="color: #835B06; font-size: 24px; font-weight: bold;">Sistema de Bolsa Universitaria de Trabajo (SISBUT) UNAM </p>'.
+	
+																						'<p>Estimado(a) reclutador(a) '.$nombreResponsable.' la oferta '. $oferta['CompanyJobProfile']['job_name'].' fue eliminada por uno de los administradores SISBUT. Para cualquier duda o aclaración favor de comunicarse con el administrador responsable o a la Dirección General de Orientación y Atención Educativa (DGOAE).</p></br>'.
+																						
+																						'<p>Si necesita ayuda, favor de comunicarse a:<br/>'.
+																						'Teléfonos:  56 22 04 20 / 56 22 04 21<br/>'.
+																						'Correo electrónico: bolsa@unam.mx</p></div>'
+																		));
+						if($Email->send()):
+							$this->Session->setFlash('Se ha enviado un correo electrónico a la empresa responsable de la oferta notificandole de la modificación.', 'alert-danger'); 
+						else:
+							$this->Session->setFlash('Lo sentimos el correo de notificación de la modificación no pudo ser enviado.', 'alert-danger');
+						endif;
+				endif;
+					
+				if($this->CompanyJobProfile->delete($id)):
+					$this->Session->setFlash('Oferta eliminada', 'alert-success');
+					$revirecciona = (explode("/",$redirect));
+
+					if($revirecciona[0] == 'viewOfferOnline'):
+						$this->redirect(array('action' => 'offerAdmin'));
+					else:
+						$this->redirect(array('action' =>  $redirect));
+					endif;
+				else:
+					$this->Session->setFlash('Lo sentimos, no se pudo eliminar la oferta', 'alert-danger');
+					$this->redirect(array('action' =>  $redirect));
+				endif;
+			endif;
+			//Se envia correo de quien elimina
+		}
 
 		public function searchOfferAdminExcel($newSearch = null){
 			// $this->searchOffer();
@@ -4640,11 +4690,11 @@
 		}
 		
 		public function sendMail($newSearch = null){
-			$this->Administrator->recursive = 0;
+			// $this->Administrator->recursive = 0;
 			$this->Student->recursive = 0;
 			$this->Company->recursive = 0;
-			$administrator = $this->Administrator->findById($this->Auth->user('id'));
-			$this->set('administrator', $administrator);
+			// $administrator = $this->Administrator->findById($this->Auth->user('id'));
+			// $this->set('administrator', $administrator);
 			$this->Session->write('redirectAdmin', 'sendMail');
 			
 			if($newSearch == 'nuevaBusqueda'):
@@ -4672,12 +4722,7 @@
 			$this->companyType();
 			$this->academicLevel();
 			
-			$Estados = $this->State->find('list',
-												array(
-													'fields' => array('State.nombre', 'State.nombre'),
-													'order' => array('State.nombre ASC')
-												)
-											);
+			$Estados = $this->State->find('list',['fields' => ['State.nombre', 'State.nombre'],'order' => ['State.nombre ASC']]);
 			$this->set( compact ('Estados') );
 			
 			$AcademicLevels = $this->AcademicLevel->find('list', array('order' => array('AcademicLevel.id ASC')));
@@ -4718,27 +4763,15 @@
 					endif;
 					
 					if($criterio1<>''):
-						$students = $this->Student->find('all',
-																array(
-																		'fields' => array('Student.id','Student.id'),
-																		'conditions' => array(
-																							$criterio1
-																							)
-																)
-														);
+						$students = $this->Student->find('all',['fields' => array('Student.id','Student.id'),'conditions' => [$criterio1]]);
 					else:
 						$students = '';
 					endif;
 				
 					if($criterio2<>''):
 						$StudentProfessionalProfiles = $this->StudentProfessionalProfile->find('all',
-																array(
-																		'fields' => array('StudentProfessionalProfile.student_id','StudentProfessionalProfile.student_id'),
-																		'conditions' => array(
-																							$criterio2
-																							)
-																)
-														);
+																['fields' => ['StudentProfessionalProfile.student_id','StudentProfessionalProfile.student_id'],
+																'conditions' => [ $criterio2]]);
 					else:
 						$StudentProfessionalProfiles = '';
 					endif;
@@ -4774,16 +4807,7 @@
 							$criterio3[] = $student_id;
 						endforeach;
 					
-						$studentsSendMail = $this->Student->find('list',
-																array(
-																		'fields' => array('Student.email','Student.email'),
-																		'conditions' => array(
-																							'OR' => array(
-																										'Student.id' => $criterio3,
-																										)
-																							)
-																)
-														);
+						$studentsSendMail = $this->Student->find('list',['fields' => ['Student.email','Student.email'],'conditions' => ['OR' => ['Student.id' => $criterio3]]]);
 						$this->set( compact ('studentsSendMail') );
 					else:
 						$this->set( 'studentsSendMail' ,'' );
@@ -4821,27 +4845,15 @@
 					endif;
 					
 					if($criterio1<>''):
-						$companies = $this->Company->find('all',
-																array(
-																		'fields' => array('Company.id','Company.id'),
-																		'conditions' => array(
-																							$criterio1
-																							)
-																)
-														);
+						$companies = $this->Company->find('all',['fields' => ['Company.id','Company.id'],'conditions' => [$criterio1]]);
 					else:
 						$companies = '';
 					endif;
 				
 					if($criterio2<>''):
 						$CompanyProfiles = $this->CompanyProfile->find('all',
-																array(
-																		'fields' => array('CompanyProfile.company_id','CompanyProfile.company_id'),
-																		'conditions' => array(
-																							$criterio2
-																							)
-																)
-														);
+																['fields' => ['CompanyProfile.company_id','CompanyProfile.company_id'],
+																'conditions' => [$criterio2]]);
 					else:
 						$CompanyProfiles = '';
 					endif;
@@ -4877,16 +4889,8 @@
 							$criterio3[] = $company_id;
 						endforeach;
 					
-						$studentsSendMail = $this->Company->find('list',
-																array(
-																		'fields' => array('Company.email','Company.email'),
-																		'conditions' => array(
-																							'OR' => array(
-																										'Company.id' => $criterio3,
-																										)
-																							)
-																)
-														);
+						$studentsSendMail = $this->Company->find('list',['fields' => array('Company.email','Company.email'),
+																'conditions' => ['OR' => ['Company.id' => $criterio3]]]);
 						$this->set( compact ('studentsSendMail') );
 					else:
 						$this->set( 'studentsSendMail' ,'' );
@@ -4927,14 +4931,14 @@
 							foreach($listaCorreosTo as $correo):
 
 									$Email = new CakeEmail('gmail');
-									$Email->from(array($this->Auth->user('email') => 'SISBUT UNAM'));
+									$Email->from(array($this->Auth->user('email') => 'bolsabti'));
 									
 									$Email->to($correo);
 									
 									if($this->data['Student']['file']['size'] > 0):
 										$Email->attachments($destino.$this->data['Student']['file']['name']);
 									endif;
-										$Email->subject('Mensaje de SISBUT UNAM');
+										$Email->subject('Mensaje de bolsabti');
 										// $Email->replyTo($this->request->data['Student']['email']);
 										$Email->emailFormat('both'); 
 										$contenMail = 	'<center><div style="background-color: #F2F2F2; width: 850px; text-align: justify;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" alt="header" width="100%">'.
@@ -4954,15 +4958,10 @@
 											$this->Session->setFlash('Lo sentimos su correo no pudo ser enviado en la siguiente dirección: '.$correo, 'alert-danger');
 										endif;
 										
-										
-										// if($this->data['Student']['file']['size'] > 0):
-											// unlink($destino.$this->data['Student']['file']['name']);
-										// endif;
 							endforeach;	
 						else:
 							$this->Session->setFlash('Verifique los campos marcados.', 'alert-danger');
 						endif;
-						
 						$this->redirect(array('action' =>  $redirect));
 				endif;
 			endif;
@@ -5012,118 +5011,187 @@
 				$fechaFin = strtotime ( $fechaFin ) ;
 				$fechaFin = date ( 'Y-m-d' , $fechaFin );
 				$fecha2 = $fechaFin;
-			
-				if($tipoInforme == 0)://Curriculums
+
+				if($tipoInforme == 0): //Curríulums
+					$this->set('nombreInforme', 'Currículums');
 					$modelo ='Student';	
-					$criterio[] = array( 'AND' => array(
-															'Student.created >= ' => $fecha1,
-															'Student.created <= ' => $fecha2,
-															)
-											);
-					$agrupado = $modelo.'.created';
+					$criterio[] = array( );
+					$this->$modelo->recursive = -1;
+					$datos = $this->$modelo->find('all', ['conditions' => ['AND' => ['Student.created >= ' => $fecha1,'Student.created <= ' => $fecha2]],
+														 'group' => ['Student.status','Student.created'],
+														 'fields'=> ['Student.id','Student.status','Student.created',"COUNT('Student.created') as 'totalStatus'"],
+														 'order' => ['Student.created,Student.status ASC']]);
 				else:
 					if($tipoInforme == 1)://Empresas
+						$this->set('nombreInforme', 'Empresas');
 						$modelo = 'Company';
-						$criterio[] = array( 'AND' => array(
-															'Company.created >= ' => $fecha1,
-															'Company.created <= ' => $fecha2,
-															)
-											);
-						$agrupado = $modelo.'.created';
+						$criterio[] = array( 'AND' => ['Company.created >= ' => $fecha1,'Company.created <= ' => $fecha2]);
+						
+						$this->$modelo->recursive = 0;
+						$datos = $this->Company->find('all', ['conditions' => ['AND' => ['Company.created >= ' => $fecha1,'Company.created <= ' => $fecha2]],
+															'group' => ['Company.status,Company.created,CompanyProfile.company_rotation'],
+															'fields'=> ['Company.id,Company.status,Company.created','COUNT(`Company`.`created`) as `totalStatus`','CompanyProfile.company_rotation','COUNT(`CompanyProfile`.`company_rotation`) as `totalGiro`'],
+															'order' => ['Company.created,Company.status ASC']]);
+
+						$cont = 6; //Excel inicia en fila 6
+						$hoy = date('Y-m-d');
+						$fechaExpira = strtotime ( '+1 month' , strtotime ( $hoy ) ) ;
+						$fechaExpira = date ( 'Y-m-j' , $fechaExpira );	
+						$pendientes = '';
+						$porexpirar = '';
+						$expiradas = '';
+						
+						foreach($datos as $dato):
+							$fechaCreacion[] = ['Company.created' => $dato['Company']['created']];
+							$pendientes[$cont] = $this->$modelo->find('count', ['conditions' => ['AND' => ['CompanyOfferOption.id' => '','Company.created' => $dato['Company']['created'],'Company.status' => $dato['Company']['status'],'CompanyProfile.company_rotation' => $dato['CompanyProfile']['company_rotation']]]]);
+							$porexpirar[$cont] = $this->$modelo->find('count', ['conditions' => ['AND' => ['CompanyOfferOption.id <> ' => '','Company.created' => $dato['Company']['created'],'CompanyOfferOption.end_date_company >= ' => $hoy,'CompanyOfferOption.end_date_company <= ' => $fechaExpira,'Company.status' => $dato['Company']['status'],'CompanyProfile.company_rotation' => $dato['CompanyProfile']['company_rotation']]]]);	
+							$expiradas[$cont] = $this->$modelo->find('count', ['conditions' => ['AND' => ['CompanyOfferOption.id <> ' => '','Company.created' => $dato['Company']['created'],'CompanyOfferOption.end_date_company < ' => $hoy,'Company.status' => $dato['Company']['status'],'CompanyProfile.company_rotation' => $dato['CompanyProfile']['company_rotation']]]]);	
+							$cont++;
+						endforeach;
+						$this->set('pendientes', $pendientes);
+						$this->set('porexpirar', $porexpirar);
+						$this->set('expiradas', $expiradas);
 					else:
 						if($tipoInforme == 2)://Ofertas
 							$modelo = 'CompanyJobProfile';
-							$criterio[] = array( 'AND' => array(
-															'CompanyJobProfile.created >= ' => $fecha1,
-															'CompanyJobProfile.created <= ' => $fecha2,
-															'CompanyJobContractType.status <> ' => ''
-																)
-												);
 							$agrupado = $modelo.'.created';
+
+							$this->set('nombreInforme', 'Ofertas');
+							$this->$modelo->recursive = 0;
+							$datos = $this->$modelo->find('all', ['conditions' => ['AND' => ['CompanyJobProfile.created >= ' => $fecha1,'CompanyJobProfile.created <= ' => $fecha2,'CompanyJobContractType.status <> ' => '']],
+																 'group' => [$agrupado,$modelo.'.rotation','CompanyJobContractType.status'],
+																 'fields'=> [$modelo.'.id','CompanyJobContractType.status',$modelo.'.created','COUNT(`'.$modelo.'`.`created`) as `totalStatus`','CompanyJobProfile.rotation','COUNT(`CompanyJobProfile`.`rotation`) as `totalGiro`'],
+																 'order' => [$modelo.'.created, CompanyJobContractType.status ASC']]);
+		
+							$cont = 6; 
+							$hoy = date('Y-m-d');
+							$fechaExpira = strtotime ( '+15 day' , strtotime ( $hoy ) ) ;
+							$fechaExpira = date ( 'Y-m-j' , $fechaExpira );	
+							$pendientes = '';
+							$porexpirar = '';
+							$expiradas = '';
+							foreach($datos as $dato):
+								$cantidadVacantes[] = $this->$modelo->find('all', ['conditions' => ['AND' => ['CompanyJobContractType.status <> ' => '','CompanyJobProfile.created' => $dato['CompanyJobProfile']['created']]],'fields'=> [$modelo.'.vacancy_number']]);
+								$porexpirar[$cont] = $this->$modelo->find('count', ['conditions' => ['AND' => [ 'CompanyJobProfile.created' => $dato['CompanyJobProfile']['created'],'CompanyJobProfile.expiration >= ' => $hoy,'CompanyJobProfile.expiration <= ' => $fechaExpira,'CompanyJobContractType.status <> ' => '']]]);	
+								$expiradas[$cont] = $this->$modelo->find('count', ['conditions' => ['AND' => ['CompanyJobProfile.created' => $dato['CompanyJobProfile']['created'],'CompanyJobProfile.expiration < ' => $hoy,'CompanyJobContractType.status <> ' => '']]]);	
+								$cont++;
+							endforeach;
+							
+							$index = 6;
+							if(isset($cantidadVacantes)):
+								foreach($cantidadVacantes as $vacante):
+									$todasVacantes = '';
+									foreach($vacante as $numeroVacantes):
+										$todasVacantes[] = $numeroVacantes['CompanyJobProfile']['vacancy_number'];
+									endforeach;
+									$vacantes[$index] = $todasVacantes; 
+									$index++;
+								endforeach;
+							else:
+								$vacantes ='';
+							endif;
+							$this->set('vacantes', $vacantes);
+							$this->set('porexpirar', $porexpirar);
+							$this->set('expiradas', $expiradas);
 						else:
 							if($tipoInforme == 3)://Postulaciones
 								$modelo = 'Application';
-								$this->$modelo->recursive = 2;
+								$this->Application->recursive = 2;
 								$this->CompanyJobContractType->recursive = -1;
-								$ofertasAcitvas = $this->CompanyJobContractType->find('list', array(
-																							'conditions' => array(
-																											'CompanyJobContractType.status >= ' => 1,
-																												),
-																							'fields'=>array('CompanyJobContractType.company_job_profile_id'),
-																							)
-																					);
 								
-
-									
-								$studentPostullation = $this->$modelo->find('all', array(
-																					'conditions' => array(
-																							'Application.created >= ' => $fecha1,
-																							'Application.created <= ' => $fecha2,
-																							'Application.company_job_profile_id' => $ofertasAcitvas,
-																							),
-																			 'group' => array($modelo.'.created'),
-																			 'fields'=>array($modelo.'.created'),
-																			 'order' => array($modelo.'.created,'.$modelo.'.company_job_profile_id ASC')
-																			)
-																	);
+								//Obtenemos las fechas y id de ofertas de postulaciones
+								$studentPostullation = $this->Application->find('all', ['conditions' => ['Application.created >= ' => $fecha1,'Application.created <= ' => $fecha2],
+																			 'group' => ['Application.created'],
+																			 'fields'=> ['Application.created','Application.company_job_profile_id'],
+																			 'order' => ['Application.created,Application.company_job_profile_id ASC']]);
+								
+								$index = 0;
 								if(!empty($studentPostullation)):
 									foreach($studentPostullation as $fechas){
-										$fechasPostulaciones[] = $fechas['Application']['created']; 
+										$fechasPostulaciones[] = $fechas['Application']['created'];
 									}
 								else:
 									$fechasPostulaciones = array();
 								endif;
+								
+								//Se obtienen las ofertas que son activas en las fechas y id de ofertas obtenidos
+								foreach($fechasPostulaciones as $fecha){
+									$ofertasenfecha = $this->Application->find('all', ['conditions' => ['Application.created' => $fecha],
+																				 // 'group' => ['Application.company_job_profile_id'],
+																				 'fields'=> ['Application.company_job_profile_id']]);
+									$arrayIdOfertas[] = $ofertasenfecha;	
+								}
 
-								foreach($fechasPostulaciones as $fecha){
-										$ofertasenfecha = $this->$modelo->find('all', array(
-																							'conditions' => array(
-																								'Application.created ' => $fecha,
-																								'Application.company_job_profile_id' => $ofertasAcitvas,
-																							),
-																							 'group' => array($modelo.'.company_job_profile_id'),
-																							 'fields'=>array($modelo.'.company_job_profile_id'),
-																							)
-																				);
-									$arrayIdOfertas[] = $ofertasenfecha;
-								}
-								
-								foreach($fechasPostulaciones as $fecha){
-										$postulaciones = $this->$modelo->find('all', array(
-																							'conditions' => array(
-																								'Application.created ' => $fecha,
-																								'Application.company_job_profile_id' => $ofertasAcitvas,
-																							),
-																							 'fields'=>array($modelo.'.company_job_profile_id'),
-																							)
-																				);
-									$arrayTotalPostulaciones[] = $postulaciones;
-								}
-								
-								$index = 0;
 								if(!isset($arrayIdOfertas)):
 									$arrayIdOfertas = array();
 								endif;
-								
+
+								//Verificar cuales de estas ofertas son activas 
+								$index = 0;
 								foreach($arrayIdOfertas as $ofertasId){
 									foreach($ofertasId as $ofertaId){
-										$companyJobProfileIds[$index][] = $ofertaId['Application']['company_job_profile_id']; 
+										$companyJobProfileIds[$index][] = $ofertaId['Application']['company_job_profile_id']; //Ofertas con postulaciones por rango de fechas
 									}
+									$idsOfertasActivas = $this->CompanyJobContractType->find('all', ['conditions' => ['CompanyJobContractType.company_job_profile_id' => $companyJobProfileIds[$index], 'CompanyJobContractType.status' => 1],
+																				 // 'group' => ['CompanyJobContractType.company_job_profile_id'],
+																				 'fields'=> ['CompanyJobContractType.company_job_profile_id']]);
+									$idsOfertasActivasArray[] = $idsOfertasActivas;
 									$index++;
 								}
+
+								if(!isset($idsOfertasActivasArray)):
+									$idsOfertasActivasArray = array();
+								endif;
+
+								$index = 0;
+								foreach($idsOfertasActivasArray as $arrayIdOfertas){
+									if(!empty($arrayIdOfertas)):
+										foreach($arrayIdOfertas as $idOferta){
+											$companyJobProfileIdActivas[$index][] = $idOferta['CompanyJobContractType']['company_job_profile_id'];
+										}
+									else:
+										$companyJobProfileIdActivas[$index][] = '';
+									endif;
+									$index++;
+								}
+
+								foreach($fechasPostulaciones as $fecha){
+									$postulaciones = $this->Application->find('all', ['conditions' => ['Application.created ' => $fecha],'fields'=> ['Application.company_job_profile_id']]);
+									$arrayTotalPostulaciones[] = $postulaciones;
+								}
 								
+								if(empty($arrayTotalPostulaciones) ):
+									$arrayTotalPostulaciones = ''; 
+								endif;
+								$this->set('arrayTotalPostulaciones', $arrayTotalPostulaciones);
+
 								// Si no se encuantra datos lo setea a vacio
 								if(empty($fechasPostulaciones) ):
 									$fechasPostulaciones = ''; 
 								endif;
 								$this->set('fechasPostulaciones', $fechasPostulaciones);
+
+								if(empty($companyJobProfileIdActivas) ):
+									$companyJobProfileIdActivas = array(); 
+								endif;
+								$this->set('companyJobProfileIdActivas', $companyJobProfileIdActivas);
+
 								if(empty($companyJobProfileIds) ):
 									$companyJobProfileIds = array(); 
 								endif;
 								$this->set('companyJobProfileIds', $companyJobProfileIds);
-								if(empty($arrayTotalPostulaciones) ):
-									$arrayTotalPostulaciones = ''; 
-								endif;
-								$this->set('arrayTotalPostulaciones', $arrayTotalPostulaciones);
+
+								$this->set('nombreInforme', 'Postulaciones');
+								$this->CompanyJobProfile->recursive = 0;
+								$index = 0;
+
+								foreach($companyJobProfileIds as $ofertasId){
+									$datos[] = $this->CompanyJobProfile->find('all', [ 'conditions' => ['AND' => ['CompanyJobProfile.id' => $ofertasId]],
+																			 'group' => ['CompanyJobProfile.rotation'],
+																			 'fields'=> ['CompanyJobProfile.id','COUNT(`CompanyJobProfile`.`id`) as `total`','CompanyJobProfile.rotation'],
+																			 'order' => ['CompanyJobProfile.id ASC']]);				
+								}
+								$this->set('datos', $datos);
 							else:
 								if(($tipoInforme == 4) OR ($tipoInforme == 5))://Entrevistas telefónicas //Notificaciones presenciales
 									$modelo = 'StudentNotification';
@@ -5134,35 +5202,13 @@
 											$notificacion = 2;
 										endif;
 									endif;
-											
-									$criterio[] = array(
-														'AND' => array(
-																	'StudentNotification.interview_type' => $notificacion
-																	),
-															 
-															);
-									$criterio2[] = array(
-														'AND' => array(
-																	'StudentNotification.company_interview_date >= ' => $fecha1,
-																	'StudentNotification.company_interview_date <= ' => $fecha2,
-																	)
-														);
-									$criterio3[] = array(
-														'AND' => array(
-																	'StudentNotification.student_interview_date >= ' => $fecha1,
-																	'StudentNotification.student_interview_date <= ' => $fecha2,
-																	)
-														);
+									
+									$criterio[] = ['AND' => ['StudentNotification.interview_type' => $notificacion]];
+									$criterio2[] = ['AND' => ['StudentNotification.company_interview_date >= ' => $fecha1,'StudentNotification.company_interview_date <= ' => $fecha2]];
+									$criterio3[] = ['AND' => ['StudentNotification.student_interview_date >= ' => $fecha1,'StudentNotification.student_interview_date <= ' => $fecha2]];
 								else:
 									if($tipoInforme == 6)://Contrataciones
-										$modelo = 'Report';
-										$criterio[] = array( 'AND' => array(
-																	'Report.fecha_contratacion >= ' => $fecha1,
-																	'Report.fecha_contratacion <= ' => $fecha2,
-																	'Report.registered_by' => 'company',	
-																	),
-															 
-															);
+										$criterio[] = array( 'AND' => ['Report.fecha_contratacion >= ' => $fecha1,'Report.fecha_contratacion <= ' => $fecha2,'Report.registered_by' => 'company']);
 									else:
 										if($tipoInforme == 7): //Estudiantes eliminados
 											$modelo = 'StudentDisabled';
@@ -5173,21 +5219,12 @@
 																);
 										else:
 											if($tipoInforme == 8): //Empresas eliminadas
-												$modelo = 'CompanyDisabled';
-												$criterio[] = array( 'AND' => array(
-																			'CompanyDisabled.created >= ' => $fecha1,
-																			'CompanyDisabled.created <= ' => $fecha2,	
-																			),	 
-																	);
+												$criterio[] = [ 'AND' => ['CompanyDisabled.created >= ' => $fecha1,'CompanyDisabled.created <= ' => $fecha2]];
 											else:
 												if($tipoInforme == 9): //Encuestas estudiantes
-													$modelo = 'StudentAnswer';
-													$criterio[] = array( 'AND' => array(
-																				'StudentAnswer.created >= ' => $fecha1,
-																				'StudentAnswer.created <= ' => $fecha2,	
-																				'StudentAnswer.question_id <= ' => 1,	
-																				),	 
-																		);
+													$criterio[] = array( 'AND' => [ 'StudentAnswer.created >= ' => $fecha1,
+																					'StudentAnswer.created <= ' => $fecha2,	
+																					'StudentAnswer.question_id' => 1]);
 												else:
 													if($tipoInforme == 10): //Encuestas empresas
 														$modelo = 'CompanyAnswer';
@@ -5199,12 +5236,7 @@
 																			);
 													else:
 														if($tipoInforme == 11): //Competencias
-															$modelo ='Student';
-															$criterio[] = array( 'AND' => array(
-																									'Student.created >= ' => $fecha1,
-																									'Student.created <= ' => $fecha2,
-																									)
-																					);
+															$criterio[] = array('AND' => ['Student.created >= ' => $fecha1,'Student.created <= ' => $fecha2]);
 														endif;
 													endif;
 												endif;
@@ -5217,315 +5249,103 @@
 					endif;
 				endif;
 				
-					if($modelo<>''):
-						if($tipoInforme == 0)://Curriculums
-							$this->set('nombreInforme', 'Currículums');
-							$this->$modelo->recursive = -1;
+				if(($tipoInforme == 4) OR ($tipoInforme == 5))://Notificaciones telefonicas //Notificaciones presenciales
+					if($tipoInforme == 4):
+						$this->set('nombreInforme', 'Entrevistas Telefónicas');
+					else:
+						$this->set('nombreInforme', 'Entrevistas Presenciales');
+					endif;
+					
+					$this->StudentNotification->recursive = 0;
+					$datos = $this->StudentNotification->find('all', ['conditions' => ['AND' => [$criterio],'OR' => [$criterio2,$criterio3]],
+																	  'fields'=> ['StudentNotification.company_interview_date, StudentNotification.student_interview_date, StudentNotification.company_interview_status, StudentNotification.student_interview_status'],
+																	  'order' => ['StudentNotification.company_interview_date ASC']]);
+				else:
+					if($tipoInforme == 6): //Contrataciones
+						$this->set('nombreInforme', 'Contrataciones');
+						$this->Report->recursive = 0;
+						$datos = $this->Report->find('all', ['conditions' => ['AND' => [$criterio]],
+															 'fields'=> ['Report.fecha_contratacion, Report.response_notification'],
+															 'order' => ['Report.fecha_contratacion ASC']]);
+					else:
+						if($tipoInforme == 7): //Estudiantes eliminados
+							$this->set('nombreInforme', 'Universitarios Eliminados');
+							$this->$modelo->recursive = 0;
 							$datos = $this->$modelo->find('all', array(
-																	'conditions' => array(
-																						$criterio
-																						),
-																	 'group' => array( $modelo.'.status',$agrupado),
-																	 'fields'=>array($modelo.'.id',$modelo.'.status',$modelo.'.created','COUNT(`'.$modelo.'`.`created`) as `totalStatus`'),
-																	 'order' => array($modelo.'.created, '.$modelo.'.status ASC')
-																)
-													);
-						else:
-							if($tipoInforme == 1)://Empresas
-								$this->set('nombreInforme', 'Empresas');
-								$this->$modelo->recursive = 0;
-								$datos = $this->$modelo->find('all', array(
-																		'conditions' => array(
-																							$criterio
-																							),
-																		 'group' => array( $modelo.'.status',$agrupado,'CompanyProfile.company_rotation'),
-																		 'fields'=>array($modelo.'.id',$modelo.'.status',$modelo.'.created','COUNT(`'.$modelo.'`.`created`) as `totalStatus`','CompanyProfile.company_rotation','COUNT(`CompanyProfile`.`company_rotation`) as `totalGiro`'),
-																		 'order' => array($modelo.'.created, '.$modelo.'.status ASC')
-																	)
-														);
-								$cont = 6; //Excel inicia en fila 6
-								$hoy = date('Y-m-d');
-								$fechaExpira = strtotime ( '+1 month' , strtotime ( $hoy ) ) ;
-								$fechaExpira = date ( 'Y-m-j' , $fechaExpira );	
-								$pendientes = '';
-								$porexpirar = '';
-								$expiradas = '';
-									
-								foreach($datos as $dato):
-									$fechaCreacion[] = array(
-															'Company.created' => $dato['Company']['created']
-															);
-
-									$pendientes[$cont] = $this->$modelo->find('count', array(
-																			'conditions' => array (
+																			'conditions' => array(	
 																								'AND' => array(
-																											'CompanyOfferOption.id' => '',
-																											'Company.created' => $dato['Company']['created'],
+																											$criterio,
 																											),
-																									)
-																				)
-																);
-									$porexpirar[$cont] = $this->$modelo->find('count', array(
-																			'conditions' => array (
-																								'AND' => array(
-																											'CompanyOfferOption.id <> ' => '',
-																											'Company.created' => $dato['Company']['created'],
-																											'CompanyOfferOption.end_date_company >= ' => $hoy,
-																											'CompanyOfferOption.end_date_company <= ' => $fechaExpira,
-																											),
-																									)
-																				)
-																);	
-									$expiradas[$cont] = $this->$modelo->find('count', array(
-																			'conditions' => array (
-																								'AND' => array(
-																											'CompanyOfferOption.id <> ' => '',
-																											'Company.created' => $dato['Company']['created'],
-																											'CompanyOfferOption.end_date_company < ' => $hoy,
-																											),
-																									)
-																				)
-																);	
-									$cont++;
-								endforeach;
-								$this->set('pendientes', $pendientes);
-								$this->set('porexpirar', $porexpirar);
-								$this->set('expiradas', $expiradas);
-							else:
-								if($tipoInforme == 2)://Ofertas
-									$this->set('nombreInforme', 'Ofertas');
-									$this->$modelo->recursive = 0;
-									$datos = $this->$modelo->find('all', array(
-																		 'conditions' => array(
-																							$criterio
-																							),
-																		 'group' => array($agrupado,$modelo.'.rotation','CompanyJobContractType.status',),
-																		 'fields'=>array($modelo.'.id','CompanyJobContractType.status',$modelo.'.created','COUNT(`'.$modelo.'`.`created`) as `totalStatus`','CompanyJobProfile.rotation','COUNT(`CompanyJobProfile`.`rotation`) as `totalGiro`'),
-																		 'order' => array($modelo.'.created, CompanyJobContractType.status ASC')
-																	)
-														);
-									
-									$cont = 6; 
-									$hoy = date('Y-m-d');
-									$fechaExpira = strtotime ( '+15 day' , strtotime ( $hoy ) ) ;
-									$fechaExpira = date ( 'Y-m-j' , $fechaExpira );	
-									$pendientes = '';
-									$porexpirar = '';
-									$expiradas = '';
-									foreach($datos as $dato):
-										$cantidadVacantes[] = $this->$modelo->find('all', array(
-																				'conditions' => array (
-																									'AND' => array(
-																												'CompanyJobContractType.status <> ' => '',
-																												'CompanyJobProfile.created' => $dato['CompanyJobProfile']['created'],
-																												),
-																										),
-																				 'fields'=>array($modelo.'.vacancy_number'),
-																					)
+																								),
+																			'fields'=>array($modelo.'.created, '.$modelo.'.student_username'),
+																			'order' => array($modelo.'.created ASC')
+																		) 
 																	);
-
-										$porexpirar[$cont] = $this->$modelo->find('count', array(
-																				'conditions' => array (
-																									'AND' => array(
-																												'CompanyJobProfile.created' => $dato['CompanyJobProfile']['created'],
-																												'CompanyJobProfile.expiration >= ' => $hoy,
-																												'CompanyJobProfile.expiration <= ' => $fechaExpira,
-																												'CompanyJobContractType.status <> ' => ''
-																												),
-																										)
-																					)
-																	);	
-										$expiradas[$cont] = $this->$modelo->find('count', array(
-																				'conditions' => array (
-																									'AND' => array(
-																												'CompanyJobProfile.created' => $dato['CompanyJobProfile']['created'],
-																												'CompanyJobProfile.expiration < ' => $hoy,
-																												'CompanyJobContractType.status <> ' => ''
-																												),
-																										)
-																					)
-																	);	
-										
-										
-										$cont++;
-									endforeach;
+						else:
+							if($tipoInforme == 8): //Empresas eliminadas
+								$this->set('nombreInforme', 'Empresas Eliminadas');
+								$this->CompanyDisabled->recursive = 0;
+								$datos = $this->CompanyDisabled->find('all', ['conditions' => ['AND' => [$criterio]],
+																	'fields'=>['CompanyDisabled.created, CompanyDisabled.company_username'],
+																	'order' => ['CompanyDisabled.created ASC']]);
+							else:
+								if(($tipoInforme == 9) OR ($tipoInforme == 10)): //Encuestas Estudiantes //Encuestas empresas
+									if($tipoInforme == 9):
+										$this->set('nombreInforme', 'Encuestas de Salida de Universitarios');
+									else:
+										$this->set('nombreInforme', 'Encuestas de Salida de Empresas');
+									endif;
 									
-									$index = 6;
-									if(isset($cantidadVacantes)):
-										foreach($cantidadVacantes as $vacante):
-											$todasVacantes = '';
-											foreach($vacante as $numeroVacantes):
-												$todasVacantes[] = $numeroVacantes['CompanyJobProfile']['vacancy_number'];
-											endforeach;
-											$vacantes[$index] = $todasVacantes; 
+									$this->StudentAnswer->recursive = 0;
+									$datos = $this->StudentAnswer->find('all', ['conditions' => [	'AND' => [$criterio]],
+																				'fields'=> ['StudentAnswer.created, StudentAnswer.answer'],
+																				'order' => ['StudentAnswer.created ASC']]);
+								else:
+									if($tipoInforme == 11): //Competencias
+										$this->set('nombreInforme', 'Competencias Profesionales');
+										$this->Student->recursive = -1;
+										$estudiantes = $this->Student->find('all', ['conditions' => [$criterio],
+																				 'fields'=> ['Student.id','Student.created'],
+																				 'order' => ['Student.created ASC']]);	
+										$cont = 6;
+										$index = 0;
+										$fechas = '';
+										$datos = array();
+										foreach($estudiantes as $estudiante):
+											$resultados = $this->Student->StudentProfessionalSkill->find('all', ['conditions' => ['StudentProfessionalSkill.student_id' => $estudiante['Student']['id']],
+																												'fields'=> ['StudentProfessionalSkill.student_id, StudentProfessionalSkill.competency_id']]);
+											if(!empty($resultados)):
+												$fechas[$cont] = $estudiantes[$index]['Student']['created']; 
+												$datos[$cont] = $resultados;
+												$cont++;
+											endif;
 											$index++;
 										endforeach;
-									else:
-										$vacantes ='';
-									endif;
-									$this->set('vacantes', $vacantes);
-									$this->set('porexpirar', $porexpirar);
-									$this->set('expiradas', $expiradas);
-								else:
-									if($tipoInforme == 3)://Postulaciones
-										$this->set('nombreInforme', 'Postulaciones');
-										$modelo = 'CompanyJobProfile';
-										$this->$modelo->recursive = 0;
-										$index = 0;
-	
-										foreach($companyJobProfileIds as $ofertasId){
-											$datos[] = $this->$modelo->find('all', array(
-																							'conditions' => array(	
-																												'AND' => array(
-																															'CompanyJobProfile.id' => $ofertasId
-																															),
-																												),
-																							 'group' => array($modelo.'.rotation'),
-																							 'fields'=>array($modelo.'.id','COUNT(`'.$modelo.'`.`id`) as `total`','CompanyJobProfile.rotation'),
-																							 'order' => array($modelo.'.id ASC')
-																						)
-																			);				
-										}
-									else:
-										if(($tipoInforme == 4) OR ($tipoInforme == 5))://Notificaciones telefonicas //Notificaciones presenciales
-											if($tipoInforme == 4):
-												$this->set('nombreInforme', 'Entrevistas Telefónicas');
-											else:
-												$this->set('nombreInforme', 'Entrevistas Presenciales');
-											endif;
-											
-											$this->$modelo->recursive = 0;
-												$datos = $this->$modelo->find('all', array(
-																								'conditions' => array(	
-																													'AND' => array(
-																																$criterio,
-																																),
-																													'OR' => array (
-																																$criterio2,
-																																$criterio3,
-																																)
-																													),
-																								  'fields'=>array($modelo.'.company_interview_date, '.$modelo.'.student_interview_date, '.$modelo.'.company_interview_status, '.$modelo.'.student_interview_status'),
-																								  'order' => array($modelo.'.company_interview_date ASC')
-																									) 
-																						);
-										else:
-											if($tipoInforme == 6): //Contrataciones
-												$this->set('nombreInforme', 'Contrataciones');
-												$this->$modelo->recursive = 0;
-													$datos = $this->$modelo->find('all', array(
-																									'conditions' => array(	
-																														'AND' => array(
-																																	$criterio,
-																																	),
-																														),
-																									  'fields'=>array($modelo.'.fecha_contratacion, '.$modelo.'.response_notification'),
-																									  'order' => array($modelo.'.fecha_contratacion ASC')
-																										) 
-																							);
-											else:
-												if($tipoInforme == 7): //Estudiantes eliminados
-													$this->set('nombreInforme', 'Universitarios Eliminados');
-													$this->$modelo->recursive = 0;
-													$datos = $this->$modelo->find('all', array(
-																									'conditions' => array(	
-																														'AND' => array(
-																																	$criterio,
-																																	),
-																														),
-																									'fields'=>array($modelo.'.created, '.$modelo.'.student_username'),
-																									'order' => array($modelo.'.created ASC')
-																								) 
-																							);
-												else:
-													if($tipoInforme == 8): //Empresas eliminadas
-														$this->set('nombreInforme', 'Empresas Eliminadas');
-														$this->$modelo->recursive = 0;
-														$datos = $this->$modelo->find('all', array(
-																									'conditions' => array(	
-																														'AND' => array(
-																																	$criterio,
-																																	),
-																														),
-																									'fields'=>array($modelo.'.created, '.$modelo.'.company_username'),
-																									'order' => array($modelo.'.created ASC')
-																									) 
-																								);
-													else:
-														if(($tipoInforme == 9) OR ($tipoInforme == 10)): //Encuestas Estudiantes //Encuestas empresas
-															if($tipoInforme == 9):
-																$this->set('nombreInforme', 'Encuestas de Salida de Universitarios');
-															else:
-																$this->set('nombreInforme', 'Encuestas de Salida de Empresas');
-															endif;
-															
-															$this->$modelo->recursive = 0;
-															$datos = $this->$modelo->find('all', array(
-																										'conditions' => array(	
-																															'AND' => array(
-																																		$criterio,
-																																		),
-																															),
-																										'fields'=>array($modelo.'.created, '.$modelo.'.answer'),
-																										'order' => array($modelo.'.created ASC')
-																									) 
-																						);
-														else:
-															if($tipoInforme == 11): //Competencias
-																$this->set('nombreInforme', 'Competencias Profesionales');
-																$this->$modelo->recursive = -1;
-																$estudiantes = $this->$modelo->find('all', array(
-																										'conditions' => array(
-																															$criterio
-																															),
-																										 'fields'=>array($modelo.'.id',$modelo.'.created'),
-																										 'order' => array($modelo.'.created ASC')
-																														)
-																											);	
-																$cont = 6;
-																$index = 0;
-																$fechas = '';
-																$datos = array();
-																foreach($estudiantes as $estudiante):
-																	$resultados = $this->$modelo->StudentProfessionalSkill->find('all', array(
-																																				'conditions' => array(
-																																								'StudentProfessionalSkill.student_id' => $estudiante['Student']['id']
-																																				),
-																																				'fields'=>array('StudentProfessionalSkill.student_id, StudentProfessionalSkill.competency_id'),
-																																			));
-																	if(!empty($resultados)):
-																		$fechas[$cont] = $estudiantes[$index]['Student']['created']; 
-																		$datos[$cont] = $resultados;
-																		$cont++;
-																	endif;
-																	$index++;
-																endforeach;
-																$this->set('fechas', $fechas);	
-															endif;
-														endif;
-													endif;
-												endif;
-											endif;
-										endif;
+										$this->set('fechas', $fechas);	
 									endif;
 								endif;
 							endif;
 						endif;
-						if(!isset($datos)):
-							$datos = array();
-						else:
-							if(empty($datos)):
-								$datos = array();
-							endif;
-						endif;
-						$this->set('datos', $datos);
-					else:
-						$this->set('datos', '');
 					endif;
-					$this->set('statusFecha', $statusFecha);
-					$this->set('tipoInforme', $tipoInforme);
+				endif;
+
+				if(!isset($datos)):
+					$datos = array();
+				else:
+					if(empty($datos)):
+						$datos = array();
+					endif;
+				endif;
+
+				$this->set('datos', $datos);
+
+			else:
+				$this->set('datos', '');
 			endif;
-			
+
+				$this->set('statusFecha', $statusFecha);
+				$this->set('tipoInforme', $tipoInforme);
+			// endif;
 		}
 		
 		public function studentReportExcel(){
@@ -5591,16 +5411,7 @@
 				$this->set('estatus', 'Sin especificar');
 			endif;
 			
-			$datos = $this->Student->find('all', array(
-																'conditions' => array(
-																						'AND' => array(
-																										$criterio,
-																										'Student.created >= ' => $fecha1,
-																										'Student.created <= ' => $fecha2,
-																									),
-																					)
-															)
-												);
+			$datos = $this->Student->find('all', ['conditions' => ['AND' => [$criterio,'Student.created >= ' => $fecha1,'Student.created <= ' => $fecha2]]]);
 			$this->set('datos', $datos);
 			$this->set('columnas', $this->request->data['Administrator']['columnas_curriculum']);
 		}
@@ -5726,38 +5537,18 @@
 				$criterio = '';
 			endif;
 			
-			$datos = $this->CompanyJobProfile->find('all', array(
-														'conditions' => array(
-																				'AND' => array(
-																								$criterio,
-																								'CompanyJobProfile.created >= ' => $fecha1,
-																								'CompanyJobProfile.created <= ' => $fecha2,
-																								),
-																				)
-														)
-										);
+			$datos = $this->CompanyJobProfile->find('all', ['conditions' => ['AND' => [$criterio,'CompanyJobProfile.created >= ' => $fecha1,'CompanyJobProfile.created <= ' => $fecha2]]]);
 			$this->set('datos', $datos);	
 			$this->set('columnas', $this->request->data['Administrator']['columnas_oferta']);
 
-			$programas = $this->Program->find('list', array('order' => array('Program.id ASC')));
-				$this->set( compact ('programas') );
+			$programas = $this->Program->find('list', ['order' => ['Program.id ASC']]);
+			$this->set( compact ('programas') );
 
-				$programas = $this->PosgradoProgram->find('list',
-												array(
-													'fields' => array('PosgradoProgram.id', 'PosgradoProgram.posgrado_program'),
-													'order' => array('PosgradoProgram.posgrado_program ASC')
-												)
-											);
-
-				$carreras = $this->Career->find('list',
-												array(
-													'fields' => array('Career.id', 'Career.career'),
-													'order' => array('Career.career ASC')
-												)
-											);
+			$programas = $this->PosgradoProgram->find('list',['fields' => ['PosgradoProgram.id', 'PosgradoProgram.posgrado_program'],'order' => ['PosgradoProgram.posgrado_program ASC']]);
+				$carreras = $this->Career->find('list',['fields' => ['Career.id', 'Career.career'],'order' => ['Career.career ASC']]);
 
 			$CarrerasAreas = $carreras + $programas;
-				$this->set('CarrerasAreas', $CarrerasAreas);	
+			$this->set('CarrerasAreas', $CarrerasAreas);	
 		}
 		
 		public function reportContratacionExcel(){
@@ -5828,15 +5619,7 @@
 			
 			$this->StudentNotification->recursive = -1;
 			$idsStudent= array();
-			$notificaciones = $this->StudentNotification->find('all',array(
-																			'conditions' => array ('StudentNotification.interview_type' => 4,
-																										'AND' => array(
-																														'StudentNotification.company_interview_date >= ' => $fecha1,
-																														'StudentNotification.company_interview_date <= ' => $fecha2,
-																														),
-																									)
-																			)
-																);
+			$notificaciones = $this->StudentNotification->find('all', ['conditions' => ['StudentNotification.interview_type' => 4,'AND' => ['StudentNotification.company_interview_date >= ' => $fecha1,'StudentNotification.company_interview_date <= ' => $fecha2]]]);
 			
 			foreach($notificaciones as $notificacion):
 				$idsStudent[] = $notificacion['StudentNotification']['student_id'];
@@ -5844,15 +5627,7 @@
 			
 			$idsStudent = array_unique($idsStudent);			
 			
-			$datos = $this->Student->find('all', array(
-														'conditions' => array(
-																			'AND' => array(
-																							$criterio,
-																							'Student.id' => $idsStudent
-																						),
-																			)
-														)
-										);
+			$datos = $this->Student->find('all', ['conditions' => ['AND' => [$criterio,'Student.id' => $idsStudent]]]);
 										
 			$this->set('datos', $datos);
 			$this->set('columnas', $this->request->data['Administrator']['columnas_seguimiento']);
@@ -5864,31 +5639,19 @@
 			$redirect = $this->redireccionaAdmin();
 			$this->StudentNotification->recursive= -1;
 			$hoy = date('Y-m-d');
+			$fechaLapso = strtotime ( '-1 month' , strtotime ( $hoy ) ) ;
+			$fechaLapso = date ( 'Y-m-j' , $fechaLapso );
 			$detalles = '';
 			
-			$Notificaciones = $this->StudentNotification->find('all', array(
-																			'conditions' => array (
-																							'StudentNotification.company_interview_date < ' => $hoy,
-																							)
-																			)
-																);	
-
+			$Notificaciones = $this->StudentNotification->find('all', ['conditions' => ['StudentNotification.company_interview_date < ' => $fechaLapso]]);	
 			foreach($Notificaciones as $notificacion):
 				//Obtenemos las entrevistas telefonicas confirmadas por ambos y a los que no se les haya enviado mas de 2 correos y que ellos no hayan respondido o que si pero estan en espera type_respons = 0 or = 6
-				if(
-				((($notificacion['StudentNotification']['interview_type'] == 1) OR ($notificacion['StudentNotification']['interview_type'] == 4)) AND ($notificacion['StudentNotification']['company_interview_status'] == 1) AND ($notificacion['StudentNotification']['student_interview_status'] == 1) AND ($notificacion['StudentNotification']['total_mail_send'] < 2)) AND (($notificacion['StudentNotification']['type_respons'] == 0) OR ($notificacion['StudentNotification']['type_respons'] == 6)) AND (($notificacion['StudentNotification']['step_process'] == 0) OR ($notificacion['StudentNotification']['step_process'] == 1))):
+				if(((($notificacion['StudentNotification']['interview_type'] == 1) OR ($notificacion['StudentNotification']['interview_type'] == 4)) AND ($notificacion['StudentNotification']['company_interview_status'] == 1) AND ($notificacion['StudentNotification']['student_interview_status'] == 1) AND (($notificacion['StudentNotification']['total_mail_send'] < 2) OR ($notificacion['StudentNotification']['total_mail_send'] == null))) AND (($notificacion['StudentNotification']['type_respons'] == 0) OR ($notificacion['StudentNotification']['type_respons'] == 6)) AND (($notificacion['StudentNotification']['step_process'] == 0) OR ($notificacion['StudentNotification']['step_process'] == 1))):
 					$telefonicas[] = $notificacion['StudentNotification']['id'];
 				endif;
 				
 				//Obtenemos las entrevistas presenciales confirmadas por ambos y a los que no se les haya enviado mas de 2 correos y que ellos no hayan respondido o que si pero estan en espera type_respons = 0 or = 6
-				if(
-				((($notificacion['StudentNotification']['interview_type'] == 2) OR ($notificacion['StudentNotification']['interview_type'] == 4)) AND 
-				($notificacion['StudentNotification']['company_interview_status'] == 1) AND ($notificacion['StudentNotification']['student_interview_status'] == 1) AND ($notificacion['StudentNotification']['total_mail_send_company'] < 2)) 
-				AND 
-				(($notificacion['StudentNotification']['type_respons'] == 0) OR ($notificacion['StudentNotification']['type_respons'] == 6)  OR ($notificacion['StudentNotification']['type_respons'] == 5)) AND 
-				(($notificacion['StudentNotification']['type_respons_company'] == 0) OR ($notificacion['StudentNotification']['type_respons_company'] == 5)) AND 
-				(($notificacion['StudentNotification']['step_process'] == 0) OR ($notificacion['StudentNotification']['step_process'] == 2))
-				):
+				if(((($notificacion['StudentNotification']['interview_type'] == 2) OR ($notificacion['StudentNotification']['interview_type'] == 4)) AND ($notificacion['StudentNotification']['company_interview_status'] == 1) AND ($notificacion['StudentNotification']['student_interview_status'] == 1) AND ($notificacion['StudentNotification']['total_mail_send_company'] < 2)) AND (($notificacion['StudentNotification']['type_respons'] == 0) OR ($notificacion['StudentNotification']['type_respons'] == 6)  OR ($notificacion['StudentNotification']['type_respons'] == 5)) AND (($notificacion['StudentNotification']['type_respons_company'] == 0) OR ($notificacion['StudentNotification']['type_respons_company'] == 5)) AND (($notificacion['StudentNotification']['step_process'] == 0) OR ($notificacion['StudentNotification']['step_process'] == 2))):
 					$presenciales[] = $notificacion['StudentNotification']['id'];
 				endif;
 			endforeach;
@@ -5900,7 +5663,7 @@
 			if(!isset($presenciales)):
 				$presenciales = array();
 			endif;
-			
+
 			foreach($Notificaciones as $notificacion): //PRIMER CICLO
 				
 				//Recolección de entrevistas que estan en presenciales o en contrataciones
@@ -5909,13 +5672,8 @@
 					//Se crea un segundo ciclo para identificar si la entrevista del segundo ciclo es de tipo presencial o contratación
 					foreach($Notificaciones as $restoNotificaciones): //SEGUNDO CICLO 
 						//Se compara si la entrevista del primer ciclo  que es telefonica es igual a otra que pero que sea presencial o de tipo contratación  para ser marcada como avanzada
-						if(
-							($restoNotificaciones['StudentNotification']['interview_type'] == 2) OR 
-							($restoNotificaciones['StudentNotification']['interview_type'] == 3) OR 
-							(($restoNotificaciones['StudentNotification']['interview_type'] == 4) AND (($restoNotificaciones['StudentNotification']['step_process'] == 2) OR ($restoNotificaciones['StudentNotification']['step_process'] == 3)))):
-							if(( $notificacion['StudentNotification']['student_id'] == $restoNotificaciones['StudentNotification']['student_id']) AND
-								($notificacion['StudentNotification']['company_id'] == $restoNotificaciones['StudentNotification']['company_id']) AND
-								($notificacion['StudentNotification']['company_job_profile_id'] == $restoNotificaciones['StudentNotification']['company_job_profile_id'])):
+						if(($restoNotificaciones['StudentNotification']['interview_type'] == 2) OR ($restoNotificaciones['StudentNotification']['interview_type'] == 3) OR (($restoNotificaciones['StudentNotification']['interview_type'] == 4) AND (($restoNotificaciones['StudentNotification']['step_process'] == 2) OR ($restoNotificaciones['StudentNotification']['step_process'] == 3)))):
+							if(( $notificacion['StudentNotification']['student_id'] == $restoNotificaciones['StudentNotification']['student_id']) AND ($notificacion['StudentNotification']['company_id'] == $restoNotificaciones['StudentNotification']['company_id']) AND ($notificacion['StudentNotification']['company_job_profile_id'] == $restoNotificaciones['StudentNotification']['company_job_profile_id'])):
 								$notificacionesTelefonicasAvanzadas[] = $notificacion['StudentNotification']['id'];
 							endif;
 						endif;
@@ -5928,13 +5686,10 @@
 					//Se crea un segundo ciclo para identificar si la entrevista del primer ciclo es identica a otra de tipo contratación
 					foreach($Notificaciones as $restoNotificaciones)://SEGUNDO CICLO
 					//Se compara si esta entrevista del segundo ciclo es igual a tipo contratación  
-						if(($restoNotificaciones['StudentNotification']['interview_type'] == 3) OR 
-							(($restoNotificaciones['StudentNotification']['interview_type'] == 4) AND ($restoNotificaciones['StudentNotification']['step_process'] == 3))):
+						if(($restoNotificaciones['StudentNotification']['interview_type'] == 3) OR (($restoNotificaciones['StudentNotification']['interview_type'] == 4) AND ($restoNotificaciones['StudentNotification']['step_process'] == 3))):
 							//Si la entrevista del primer ciclo que es presencial es identica a la del segundo ciclo que es contratacion será marcada como avanzada
 							
-							if(( $notificacion['StudentNotification']['student_id'] == $restoNotificaciones['StudentNotification']['student_id']) AND
-								($notificacion['StudentNotification']['company_id'] == $restoNotificaciones['StudentNotification']['company_id']) AND
-								($notificacion['StudentNotification']['company_job_profile_id'] == $restoNotificaciones['StudentNotification']['company_job_profile_id'])):
+							if(($notificacion['StudentNotification']['student_id'] == $restoNotificaciones['StudentNotification']['student_id']) AND ($notificacion['StudentNotification']['company_id'] == $restoNotificaciones['StudentNotification']['company_id']) AND ($notificacion['StudentNotification']['company_job_profile_id'] == $restoNotificaciones['StudentNotification']['company_job_profile_id'])):
 								$notificacionesPresencialesAvanzadas[] = $notificacion['StudentNotification']['id'];
 							endif;
 						endif;
@@ -5953,7 +5708,7 @@
 			
 			$soloTelefonicas = array_diff($telefonicas,$notificacionesTelefonicasAvanzadas); //Se obtienen solo los id de las entrevistas que solo esten en telefonicas confirmadas sin avance
 			$soloPresenciales = array_diff($presenciales,$notificacionesPresencialesAvanzadas); //Se obtienen solo los id de las entrevistas que solo esten en presenciales confirmadas sin avance
-			
+
 			$totalAlumnosTelefonicas = 0;
 			$totalEmpresasPresenciales = 0;
 
@@ -5999,16 +5754,10 @@
 			
 			//Se buscan los correos de los alumnos a los cuales se les enviará la notificación y el seguimiento igual para las empresas respectivamente
 			$this->Student->recursive = -1;
-			$emailsAlumnos = $this->Student->find('list', array(
-																	'conditions' => array ('Student.id' => $idAlumnos),
-																	'fields' => array('Student.email'),
-																	));
+			$emailsAlumnos = $this->Student->find('list', ['conditions' => ['Student.id' => $idAlumnos],'fields' => ['Student.email']]);
 			
 			$this->CompanyJobProfile->recursive = 0;
-			$emailsOffers = $this->CompanyJobProfile->find('all', array(
-																	'conditions' => array ('CompanyJobProfile.id' => $CompanyJobProfileIds),
-																	'fields' => array('Company.email','CompanyJobOffer.company_email'),
-																	));
+			$emailsOffers = $this->CompanyJobProfile->find('all', ['conditions' => ['CompanyJobProfile.id' => $CompanyJobProfileIds],'fields' => ['Company.email','CompanyJobOffer.company_email']]);
 		
 			//Se obtienen los correos tanto de la empresa como del responsable de la oferta si es que tiene
 			foreach($emailsOffers as $email):
@@ -6036,10 +5785,10 @@
 			$correosNoEnviados = '';
 			foreach($emailsAlumnos as $emailAlumno):
 					$Email = new CakeEmail('gmail');
-					$Email->from(array($this->Auth->user('email') => 'SISBUT UNAM'));
+					$Email->from(array($this->Auth->user('email') => 'bolsabti'));
 					$Email->to($emailAlumno);
 					
-					$Email->subject('UNAM – SISBUT / Seguimiento de entrevistas confirmadas');
+					$Email->subject('bolsabti / Seguimiento de entrevistas confirmadas');
 					$Email->template('email')->viewVars( array(
 															'aMsg' => 
 															'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" width="100%">'.
@@ -6064,13 +5813,13 @@
 					endif;
 			endforeach;	
 			
-			//Envio de correos a los alumnos con seguimiento (Si aplicó)
+			//Envio de correos a las empresas con seguimiento (Si aplicó)
 			foreach($emailEmpresas as $emailEmpresa):
 					$Email = new CakeEmail('gmail');
-					$Email->from(array($this->Auth->user('email') => 'SISBUT UNAM'));
+					$Email->from(array($this->Auth->user('email') => 'bolsabti'));
 					$Email->to($emailEmpresa);
 					
-					$Email->subject('UNAM – SISBUT / Seguimiento de entrevistas confirmadas');
+					$Email->subject('bolsabti / Seguimiento de entrevistas confirmadas');
 					$Email->template('email')->viewVars( array(
 															'aMsg' => 
 															'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" width="100%">'.
@@ -6104,10 +5853,7 @@
 			endif;
 			
 			// Actualiza las fechas y estatus de ejecuciones en reclutamientos 
-			$fechasReclutamieto = $this->RecruitmentDate->find('all', array(
-																			'order' => ' RecruitmentDate.id DESC',
-																			'limit' => 1
-			));
+			$fechasReclutamieto = $this->RecruitmentDate->find('all', ['order' => ' RecruitmentDate.id DESC','limit' => 1]);
 
 			if(isset($fechasReclutamieto[0]['RecruitmentDate']['status_ejecucion_fecha1']) AND $fechasReclutamieto[0]['RecruitmentDate']['status_ejecucion_fecha1']==0):
 				$this->RecruitmentDate->updateAll(array('RecruitmentDate.status_ejecucion_fecha1' => "1"),array('RecruitmentDate.id' =>$fechasReclutamieto[0]['RecruitmentDate']['id']));
@@ -6133,18 +5879,13 @@
 				endif;
 			endif;
 			
-			
-			
-			$this->Session->setFlash(
-										'Total de correos para seguimiento de entrevistas telefónicas: '.$totalAlumnosTelefonicas.' <br> 
-										 Total de correos para seguimiento de entrevistas presenciales: '.$totalEmpresasPresenciales.'<br>
-										 Total de correos no enviados: '.$totalNoEnviados.'<br>'.
-										 $detalles , 
-										'alert-success'
-									);
+			$this->Session->setFlash('Total de correos para seguimiento de entrevistas telefónicas: '.$totalAlumnosTelefonicas.' <br> 
+									 Total de correos para seguimiento de entrevistas presenciales: '.$totalEmpresasPresenciales.'<br>
+									 Total de correos no enviados: '.$totalNoEnviados.'<br>'.
+									 $detalles , 
+									'alert-success');
 			
 			$this->redirect(array('action' =>  $redirect));
-
 		}
 		
 		public function studentStatus(){
@@ -6161,13 +5902,7 @@
 			$fechaLimite2 = strtotime ( '-18 month' , strtotime ( $fechaLimite2 ) ) ;
 			$fechaLimite2 = date ( 'Y-m-j' , $fechaLimite2 );
 			
-			$idsStudent = $this->StudentLastUpdate->find('all', array(
-																	'conditions' => array (
-																							'StudentLastUpdate.modified < ' => $fechaLimite,
-																							'StudentLastUpdate.modified > ' => $fechaLimite,
-																							)
-																			)
-																);	
+			$idsStudent = $this->StudentLastUpdate->find('all', ['conditions' => ['StudentLastUpdate.modified < ' => $fechaLimite,'StudentLastUpdate.modified > ' => $fechaLimite]]);	
 			foreach($idsStudent as $student):
 				$ids[] = $student['StudentLastUpdate']['id'];			
 			endforeach;
@@ -6180,12 +5915,7 @@
 			$fechaLimite2 = strtotime ( '-18 month' , strtotime ( $fechaLimite2 ) ) ;
 			$fechaLimite2 = date ( 'Y-m-j' , $fechaLimite2 );
 				
-			$idsStudent2 = $this->StudentLastUpdate->find('all', array(
-																	'conditions' => array (
-																							'StudentLastUpdate.modified < ' => $fechaLimite,
-																							)
-																			)
-																);																
+			$idsStudent2 = $this->StudentLastUpdate->find('all', ['conditions' => ['StudentLastUpdate.modified < ' => $fechaLimite]]);																
 																
 			foreach($idsStudent2 as $student2):
 				$ids2[] = $student2['StudentLastUpdate']['id'];			
@@ -6195,25 +5925,10 @@
 				$ids2[] = 0;
 			endif;
 			
-			$emailsStudent = $this->Student->find('all', array(
-																'conditions' => array (
-																					'Student.status' => 1,
-																					'Student.block' => 0,
-																					'Student.id' => $ids,
-																					),
-																)
-												);
+			$emailsStudent = $this->Student->find('all', ['conditions' => ['Student.status' => 1,'Student.block' => 0,'Student.id' => $ids]]);
 			
-			$emailsStudent2 = $this->Student->find('all', array(
-																'conditions' => array (
-																					'Student.status' => 1,
-																					'Student.block' => 0,
-																					'Student.id' => $ids2,
-																					),
-																)
-												);
+			$emailsStudent2 = $this->Student->find('all', ['conditions' => ['Student.status' => 1,'Student.block' => 0,'Student.id' => $ids2]]);
 												
-			
 			//Envio de correos a los alumnos
 			$totalEnviados = 0;
 			$totalNoEnviados = 0;
@@ -6221,10 +5936,10 @@
 			
 			foreach($emailsStudent as $emailAlumno):
 					$Email = new CakeEmail('gmail');
-					$Email->from(array($this->Auth->user('email') => 'SISBUT UNAM'));
+					$Email->from(array($this->Auth->user('email') => 'bolsabti'));
 					$Email->to($emailAlumno['Student']['email']);
 					
-					$Email->subject('UNAM – SISBUT / Actualiza tu cirrículum');
+					$Email->subject('bolsabti / Actualiza tu cirrículum');
 					$Email->template('email')->viewVars( array(
 															'aMsg' => 
 															'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" width="100%">'.
@@ -6255,10 +5970,10 @@
 					$this->Student->updateAll(array('Student.block' => 1), array('Student.id' => $emailAlumno['Student']['id']));
 					
 					$Email = new CakeEmail('gmail');
-					$Email->from(array($this->Auth->user('email') => 'SISBUT UNAM'));
+					$Email->from(array($this->Auth->user('email') => 'bolsabti'));
 					$Email->to($emailAlumno['Student']['email']);
 						
-					$Email->subject('UNAM – SISBUT / Currículum desactivado');
+					$Email->subject('bolsabti / Currículum desactivado');
 					$Email->template('email')->viewVars( array(
 															'aMsg' => 
 															'<div style="background-color: #F4F4F4; padding: 25px;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" width="100%">'.
@@ -6355,34 +6070,16 @@
 					
 					//Consultas y catalogos
 					$this->Student->recursive = 2;			
-					$estudiantes = $this->Student->find('all', array(
-																	'conditions' => array(
-																							'AND' => array(
-																											'Student.created >= ' => $fecha1,
-																											'Student.created <= ' => $fecha2,
-																										),
-																						)
-																)
-													);
-				
-				
+					$estudiantes = $this->Student->find('all', ['conditions' => ['AND' => ['Student.created >= ' => $fecha1,'Student.created <= ' => $fecha2]]]);
 					$this->set('estudiantes', $estudiantes);
-					
-					
-					
-					$escuelasId = $this->FacultadLicenciatura->find('all', array(
-																			'order' => array('FacultadLicenciatura.id ASC'),
-																			'fields' => array('FacultadLicenciatura.id,FacultadLicenciatura.facultad_licenciatura')
-																			));
+
+					$escuelasId = $this->FacultadLicenciatura->find('all', ['order' => ['FacultadLicenciatura.id ASC'],'fields' => ['FacultadLicenciatura.id,FacultadLicenciatura.facultad_licenciatura']]);
 					$this->set( compact ('escuelasId') );
 					
-					$facultadesId = $this->FacultadPosgrado->find('all', array(
-																			'order' => array('FacultadPosgrado.id ASC'),
-																			'fields' => array('FacultadPosgrado.id,FacultadPosgrado.facultad_posgrado')
-																			));
+					$facultadesId = $this->FacultadPosgrado->find('all', ['order' => ['FacultadPosgrado.id ASC'],'fields' => ['FacultadPosgrado.id,FacultadPosgrado.facultad_posgrado']]);
 					$this->set( compact ('facultadesId') );
 					
-					$Lenguagesid = $this->Lenguage->find('all', array('order' => array('Lenguage.id ASC')));
+					$Lenguagesid = $this->Lenguage->find('all', ['order' => ['Lenguage.id ASC']]);
 					$this->set( compact ('Lenguagesid') );
 					
 					$this->Facultades();
@@ -6397,22 +6094,22 @@
 					$this->Competency();
 					$this->interestArea();
 					
-					$relacionEscuelaCarrera = $this->RelacionEscuelaCarrera->find('all', array('order' => array('RelacionEscuelaCarrera.id ASC')));
+					$relacionEscuelaCarrera = $this->RelacionEscuelaCarrera->find('all', ['order' => ['RelacionEscuelaCarrera.id ASC']]);
 					$this->set( compact ('relacionEscuelaCarrera') );	
 					
-					$relacionFacultadProgramas = $this->RelacionFacultadProgramas->find('all', array('order' => array('RelacionFacultadProgramas.id ASC')));
+					$relacionFacultadProgramas = $this->RelacionFacultadProgramas->find('all', ['order' => ['RelacionFacultadProgramas.id ASC']]);
 					$this->set( compact ('relacionFacultadProgramas') );
 
-					$carrerasComplete = $this->Career->find('all', array('order' => array('Career.id ASC')));
+					$carrerasComplete = $this->Career->find('all', ['order' => ['Career.id ASC']]);
 					$this->set( compact ('carrerasComplete') );	
 					
-					$facultadesComplete = $this->PosgradoProgram->find('all', array('order' => array('PosgradoProgram.id ASC')));
+					$facultadesComplete = $this->PosgradoProgram->find('all', ['order' => ['PosgradoProgram.id ASC']]);
 					$this->set( compact ('facultadesComplete') );	
 						
-					$Lenguages = $this->Lenguage->find('list', array('order' => array('Lenguage.id ASC')));
+					$Lenguages = $this->Lenguage->find('list', ['order' => ['Lenguage.id ASC']]);
 					$this->set( compact ('Lenguages') );
 					
-					$Competencias = $this->Competency->find('list', array('order' => array('Competency.id ASC')));
+					$Competencias = $this->Competency->find('list', ['order' => ['Competency.id ASC']]);
 					$this->set( compact ('Competencias') );
 					
 				endif;
@@ -6462,45 +6159,29 @@
 					$fecha2 = $fechaFin;
 				
 					$this->Company->recursive = 2;
-					$empresas = $this->Company->find('all', array( 
-																'conditions' => array(
-																						'AND' => array(
-																										'Company.created >= ' => $fecha1,
-																										'Company.created <= ' => $fecha2,
-																									),
-																					)
-															)
-												);
-					$this->set('empresas', $empresas);
+					$empresas = $this->Company->find('all', ['conditions' => ['AND' => ['Company.created >= ' => $fecha1,'Company.created <= ' => $fecha2]]]);
+					$this->set( compact ('empresas') );
 			
 					$this->CompanyJobProfile->recursive = 2;
-					$ofertas = $this->CompanyJobProfile->find('all', array( 
-																'conditions' => array(
-																						'AND' => array(
-																										'CompanyJobProfile.created >= ' => $fecha1,
-																										'CompanyJobProfile.created <= ' => $fecha2,
-																									),
-																					)
-															)
-												);
+					$ofertas = $this->CompanyJobProfile->find('all', ['conditions' => ['AND' => ['CompanyJobProfile.created >= ' => $fecha1,'CompanyJobProfile.created <= ' => $fecha2]]]);
 					$this->set('ofertas', $ofertas);
 					
-					$relacionEscuelaCarrera = $this->RelacionEscuelaCarrera->find('all', array('order' => array('RelacionEscuelaCarrera.id ASC')));
+					$relacionEscuelaCarrera = $this->RelacionEscuelaCarrera->find('all', ['order' => ['RelacionEscuelaCarrera.id ASC']]);
 					$this->set( compact ('relacionEscuelaCarrera') );	
 					
-					$relacionFacultadProgramas = $this->RelacionFacultadProgramas->find('all', array('order' => array('RelacionFacultadProgramas.id ASC')));
+					$relacionFacultadProgramas = $this->RelacionFacultadProgramas->find('all', ['order' => ['RelacionFacultadProgramas.id ASC']]);
 					$this->set( compact ('relacionFacultadProgramas') );
 
-					$carrerasComplete = $this->Career->find('all', array('order' => array('Career.id ASC')));
+					$carrerasComplete = $this->Career->find('all', ['order' => ['Career.id ASC']]);
 					$this->set( compact ('carrerasComplete') );	
 					
-					$facultadesComplete = $this->PosgradoProgram->find('all', array('order' => array('PosgradoProgram.id ASC')));
+					$facultadesComplete = $this->PosgradoProgram->find('all', ['order' => ['PosgradoProgram.id ASC']]);
 					$this->set( compact ('facultadesComplete') );	
 						
-					$Lenguages = $this->Lenguage->find('list', array('order' => array('Lenguage.id ASC')));
+					$Lenguages = $this->Lenguage->find('list', ['order' => ['Lenguage.id ASC']]);
 					$this->set( compact ('Lenguages') );
 					
-					$Lenguagesid = $this->Lenguage->find('all', array('order' => array('Lenguage.id ASC')));
+					$Lenguagesid = $this->Lenguage->find('all', ['order' => ['Lenguage.id ASC']]);
 					$this->set( compact ('Lenguagesid') );
 					
 					$this->Competency();
@@ -6538,45 +6219,21 @@
 					$fecha2 = $fechaFin;
 				
 					$this->Report->recursive = 3;
-					$contrataciones = $this->Report->find('all' 
-															, array( 
-																'conditions' => array(
-																						'AND' => array(
-																										'Report.created >= ' => $fecha1,
-																										'Report.created <= ' => $fecha2,
-																									),
-																					)
-															)
-														);
+					$contrataciones = $this->Report->find('all', [ 'conditions' => ['AND' => ['Report.created >= ' => $fecha1,'Report.created <= ' => $fecha2]]]);
 					$this->set('contrataciones', $contrataciones);
 					
 					$this->StudentNotification->recursive = 3;
-					$notificaciones = $this->StudentNotification->find('all'
-																			,array(
-																				'conditions' => array ('StudentNotification.interview_type' => 4,
-																										'AND' => array(
-																														'StudentNotification.company_interview_date >= ' => $fecha1,
-																														'StudentNotification.company_interview_date <= ' => $fecha2,
-																														),
-																									)
-																					)
-																		);
+					$notificaciones = $this->StudentNotification->find('all',['conditions' => ['StudentNotification.interview_type' => 4,'AND' => ['StudentNotification.company_interview_date >= ' => $fecha1,'StudentNotification.company_interview_date <= ' => $fecha2]]]);
 					$this->set('notificaciones', $notificaciones);
 				
 
 					$contratacionesExternas = $this->CompanyExternalOffer->find('count');	
 					$this->set('contratacionesExternas', $contratacionesExternas);
 					
-					$escuelasId = $this->FacultadLicenciatura->find('all', array(
-																			'order' => array('FacultadLicenciatura.id ASC'),
-																			'fields' => array('FacultadLicenciatura.id,FacultadLicenciatura.facultad_licenciatura')
-																			));
+					$escuelasId = $this->FacultadLicenciatura->find('all', ['order' => ['FacultadLicenciatura.id ASC'],'fields' => ['FacultadLicenciatura.id,FacultadLicenciatura.facultad_licenciatura']]);
 					$this->set( compact ('escuelasId') );
 					
-					$facultadesId = $this->FacultadPosgrado->find('all', array(
-																			'order' => array('FacultadPosgrado.id ASC'),
-																			'fields' => array('FacultadPosgrado.id,FacultadPosgrado.facultad_posgrado')
-																			));
+					$facultadesId = $this->FacultadPosgrado->find('all', ['order' => ['FacultadPosgrado.id ASC'],'fields' => ['FacultadPosgrado.id,FacultadPosgrado.facultad_posgrado']]);
 					$this->set( compact ('facultadesId') );
 					
 					$this->Sector();
@@ -6606,19 +6263,12 @@
 				endif;
 				
 				//Competencias
-				
 				if(isset($this->request->data['Administrator']['frecuencias_competencias'])):
 				
-					$escuelasId = $this->FacultadLicenciatura->find('all', array(
-																			'order' => array('FacultadLicenciatura.id ASC'),
-																			'fields' => array('FacultadLicenciatura.id,FacultadLicenciatura.facultad_licenciatura')
-																			));
+					$escuelasId = $this->FacultadLicenciatura->find('all', ['order' => ['FacultadLicenciatura.id ASC'],'fields' => ['FacultadLicenciatura.id,FacultadLicenciatura.facultad_licenciatura']]);
 					$this->set( compact ('escuelasId') );
 					
-					$facultadesId = $this->FacultadPosgrado->find('all', array(
-																			'order' => array('FacultadPosgrado.id ASC'),
-																			'fields' => array('FacultadPosgrado.id,FacultadPosgrado.facultad_posgrado')
-																			));
+					$facultadesId = $this->FacultadPosgrado->find('all', ['order' => ['FacultadPosgrado.id ASC'],'fields' => ['FacultadPosgrado.id,FacultadPosgrado.facultad_posgrado']]);
 					$this->set( compact ('facultadesId') );
 					
 					$this->CompanyJobProfile->recursive = 2;
@@ -6640,7 +6290,6 @@
 					$Competencias = $this->Competency->find('list', array('order' => array('Competency.id ASC')));
 					$this->set( compact ('Competencias') );
 					
-					
 					$relacionEscuelaCarrera = $this->RelacionEscuelaCarrera->find('all', array('order' => array('RelacionEscuelaCarrera.id ASC')));
 					$this->set( compact ('relacionEscuelaCarrera') );
 					
@@ -6655,8 +6304,6 @@
 				
 				endif;
 			endif;
-			
-
 		}
 	
 		public function specificSearchOffer($newSearch = null){
@@ -6672,15 +6319,7 @@
 			$this->banner();
 			
 			// Verifica las ofertas guardadas y las manda para que puedan ser consultadas
-			$this->set('busquedasGuardadas', $this->AdministratorSavedSearch->find('list', array(
-																							'conditions' => array(
-																												'AdministratorSavedSearch.administrator_id' => $this->Session->read('Auth.User.id'),
-																												'AdministratorSavedSearch.search' => 'offer',
-																											),
-																							'order' => 'AdministratorSavedSearch.id DESC',
-																							)
-																			)
-						);
+			$this->set('busquedasGuardadas', $this->AdministratorSavedSearch->find('list', ['conditions' => ['AdministratorSavedSearch.administrator_id' => $this->Session->read('Auth.User.id'),'AdministratorSavedSearch.search' => 'offer'],'order' => 'AdministratorSavedSearch.id DESC']));
 			
 			if($newSearch == 'nuevaBusqueda'):
 				$this->Session->delete('limit');
@@ -6712,15 +6351,9 @@
 			$this->ExperienceArea();
 			$this->ExperienceSubarea();
 			$this->NivelesIdioma();
-			$Estados = $this->State->find('list',
-												array(
-													'fields' => array('State.nombre', 'State.nombre'),
-													'order' => array('State.nombre ASC')
-												)
-											);
+			$Estados = $this->State->find('list',['fields' => ['State.nombre', 'State.nombre'],'order' => ['State.nombre ASC']]);
 			$this->set( compact ('Estados') );
-			$this->softwareLevel();
-			
+			$this->softwareLevel();			
 		}
 		
 		public function specificSearchOfferResults($newSearch = null){
@@ -6738,15 +6371,8 @@
 			$this->Session->write('redirectAdmin', 'specificSearchOfferResults');
 		
 			// Verifica las ofertas guardadas y las manda para que puedan ser consultadas
-			$this->set('busquedasGuardadas', $this->AdministratorSavedSearch->find('list', array(
-																								'conditions' => array(
-																													'AdministratorSavedSearch.administrator_id' => $this->Session->read('Auth.User.id'),
-																													'AdministratorSavedSearch.search' => 'offer',
-																													),
-																								'order' => 'AdministratorSavedSearch.id DESC',
-																								)
-																					)
-					);
+			$this->set('busquedasGuardadas', $this->AdministratorSavedSearch->find('list', ['conditions' => ['AdministratorSavedSearch.administrator_id' => $this->Session->read('Auth.User.id'),'AdministratorSavedSearch.search' => 'offer'],
+																							'order' => 'AdministratorSavedSearch.id DESC']));
 			
 			$this->carrer();
 			$this->posgradoProgrma();
@@ -6766,62 +6392,62 @@
 			$this->softwareLevel();
 			$criterio = array();
 				
-				if(($this->request->is('post')) AND (isset($this->request->data['CompanyJobProfile']['job_name']))):
-					$this->Session->write('serialized_form', $this->request->data);
-					$this->Session->delete('limit');
-					$this->Session->delete('palabraBuscada');
-					$this->Session->delete('CompanyJobContractType');
-					$this->Session->delete('CompanyJobProfile');
-					$this->Session->delete('CompanyCandidateProfile');
-					$this->Session->delete('CompanyJobLanguage');
-					$this->Session->delete('CompanyJobComputingSkill');
-					$this->Session->delete('CompanyJobRelatedCareer');
-					$this->Session->delete('idBusquedaGuardada');
-				endif;
-				
-				if(isset($this->request->data['StudentSavedSearch']['name']) and ($this->request->data['StudentSavedSearch']['name'] <> '')):
-					$this->administratorSavedOfferSearch();
-				else:
-					if((isset($this->request->data['Administrator']['busqueda_guardada'])) and ($this->request->data['Administrator']['busqueda_guardada'] <> '')):
-						$busquedaGuardada = $this->AdministratorSavedSearch->findById($this->request->data['Administrator']['busqueda_guardada']);
-						if(!empty($busquedaGuardada)):
-							$this->Session->write('idBusquedaGuardada', $this->request->data['Administrator']['busqueda_guardada']);
-							$this->request->data = unserialize($busquedaGuardada['AdministratorSavedSearch']['serialize_request']);
-						endif;
-					endif;
-				endif;
-				
-				if($this->request->is('get')):
-					if(($this->Session->read('idBusquedaGuardada')) <> ''):
-						$busquedaGuardada = $this->AdministratorSavedSearch->findById($this->Session->read('idBusquedaGuardada'));
-						if(!empty($busquedaGuardada)):
-							$this->request->data = unserialize($busquedaGuardada['AdministratorSavedSearch']['serialize_request']);
-						endif;
-					else:
-						$this->request->data = $this->Session->read('serialized_form');
-					endif;
-				endif;
-
-				$limit = 5; //default limit
+			if(($this->request->is('post')) AND (isset($this->request->data['CompanyJobProfile']['job_name']))):
+				$this->Session->write('serialized_form', $this->request->data);
+				$this->Session->delete('limit');
+				$this->Session->delete('palabraBuscada');
+				$this->Session->delete('CompanyJobContractType');
+				$this->Session->delete('CompanyJobProfile');
+				$this->Session->delete('CompanyCandidateProfile');
+				$this->Session->delete('CompanyJobLanguage');
+				$this->Session->delete('CompanyJobComputingSkill');
+				$this->Session->delete('CompanyJobRelatedCareer');
+				$this->Session->delete('idBusquedaGuardada');
+			endif;
 			
-				if(isset($this->request->data['Student']['limit']) AND ($this->request->data['Student']['limit']<>'')):
-					$limit = $this->request->data['Student']['limit'];
-				else:
-					if(($this->Session->read('limit')) <> ''):
-						$limit = $this->Session->read('limit');
+			if(isset($this->request->data['StudentSavedSearch']['name']) and ($this->request->data['StudentSavedSearch']['name'] <> '')):
+				$this->administratorSavedOfferSearch();
+			else:
+				if((isset($this->request->data['Administrator']['busqueda_guardada'])) and ($this->request->data['Administrator']['busqueda_guardada'] <> '')):
+					$busquedaGuardada = $this->AdministratorSavedSearch->findById($this->request->data['Administrator']['busqueda_guardada']);
+					if(!empty($busquedaGuardada)):
+						$this->Session->write('idBusquedaGuardada', $this->request->data['Administrator']['busqueda_guardada']);
+						$this->request->data = unserialize($busquedaGuardada['AdministratorSavedSearch']['serialize_request']);
 					endif;
 				endif;
-				
-				if($this->request->query('orden') <> ''):
-					$orden = $this->request->query('orden');
-					$this->set('orden',$orden);
+			endif;
+			
+			if($this->request->is('get')):
+				if(($this->Session->read('idBusquedaGuardada')) <> ''):
 					$busquedaGuardada = $this->AdministratorSavedSearch->findById($this->Session->read('idBusquedaGuardada'));
 					if(!empty($busquedaGuardada)):
 						$this->request->data = unserialize($busquedaGuardada['AdministratorSavedSearch']['serialize_request']);
 					endif;
 				else:
-					$orden = 'CompanyJobProfile.created DESC'; //default order
+					$this->request->data = $this->Session->read('serialized_form');
 				endif;
+			endif;
+
+			$limit = 5; //default limit
+		
+			if(isset($this->request->data['Student']['limit']) AND ($this->request->data['Student']['limit']<>'')):
+				$limit = $this->request->data['Student']['limit'];
+			else:
+				if(($this->Session->read('limit')) <> ''):
+					$limit = $this->Session->read('limit');
+				endif;
+			endif;
+			
+			if($this->request->query('orden') <> ''):
+				$orden = $this->request->query('orden');
+				$this->set('orden',$orden);
+				$busquedaGuardada = $this->AdministratorSavedSearch->findById($this->Session->read('idBusquedaGuardada'));
+				if(!empty($busquedaGuardada)):
+					$this->request->data = unserialize($busquedaGuardada['AdministratorSavedSearch']['serialize_request']);
+				endif;
+			else:
+				$orden = 'CompanyJobProfile.created DESC'; //default order
+			endif;
 				
 				
 			// DEPENDIENDO DEL ADMINISTRADOR SOLO APARECERAN LAS OFERTAS RELACIONADAS A SU ESCUELA O INSTITUCION
@@ -6833,12 +6459,7 @@
 						
 				// Si el administrador tiene un nivel lo compara
 				if($administrador['AdministratorProfile']['academic_level_id']==1):
-					$idsCarreras = $this->RelacionEscuelaCarrera->find('all', array(
-																					'conditions' => array(
-																										'RelacionEscuelaCarrera.facultad_licenciatura_id' => $administrador['AdministratorProfile']['institution'],
-																										),
-																					)
-																	);
+					$idsCarreras = $this->RelacionEscuelaCarrera->find('all', ['conditions' => ['RelacionEscuelaCarrera.facultad_licenciatura_id' => $administrador['AdministratorProfile']['institution']]]);
 					
 					foreach($idsCarreras as $carrera):
 						$idsCarrerasOferta[] = $carrera['RelacionEscuelaCarrera']['career_id'];
@@ -6849,28 +6470,16 @@
 						$idsCarrerasOferta = '';
 					endif;
 					
-					$idsCarrerasAdmin = $this->Career->find('all', array(
-																	'conditions' => array(
-																							'Career.career_id' => $idsCarrerasOferta,
-																						),
-																	)
-													);
+					$idsCarrerasAdmin = $this->Career->find('all', ['conditions' => ['Career.career_id' => $idsCarrerasOferta]]);
 					foreach($idsCarrerasAdmin as $carrera):
 						$carrerasSQL['OR'][] = array('CompanyJobRelatedCareer.career_id' => $carrera['Career']['id']);
 					endforeach;	
-					
-					// $nivelAcademicoAdministrador['AND'][] = array('CompanyCandidateProfile.licenciatura' => 1);
 					
 				endif;
 				
 				// Si el administrador tiene un nivel lo compara
 				if($administrador['AdministratorProfile']['academic_level_id']>1):
-					$idsProgramas = $this->RelacionFacultadPrograma->find('all', array(
-																					'conditions' => array(
-																										'RelacionFacultadPrograma.facultad_posgrado_id' => $administrador['AdministratorProfile']['institution'],
-																										),
-																					)
-																		);
+					$idsProgramas = $this->RelacionFacultadPrograma->find('all', ['conditions' => ['RelacionFacultadPrograma.facultad_posgrado_id' => $administrador['AdministratorProfile']['institution']]]);
 					
 					foreach($idsProgramas as $programa):
 						$idsCarrerasOferta[] = $programa['RelacionFacultadPrograma']['posgrado_program_id'];
@@ -6881,30 +6490,12 @@
 						$idsCarrerasOferta = '';
 					endif;
 					
-					$idsCarrerasAdmin = $this->PosgradoProgram->find('all', array(
-																	'conditions' => array(
-																							'PosgradoProgram.posgrado_program_id' => $idsCarrerasOferta,
-																						),
-																	)
-													);
-													
+					$idsCarrerasAdmin = $this->PosgradoProgram->find('all', ['conditions' => ['PosgradoProgram.posgrado_program_id' => $idsCarrerasOferta]]);							
 					foreach($idsCarrerasAdmin as $carrera):
 						$carrerasSQL['OR'][] = array('CompanyJobRelatedCareer.career_id' => $carrera['PosgradoProgram']['id']);
 					endforeach;
 					
 					$nivelAcademicoAdministrador['AND'][] = array('CompanyCandidateProfile.academic_level_id' => $administrador['AdministratorProfile']['academic_level_id']);
-					
-					// if($administrador['AdministratorProfile']['academic_level_id'] == 2):
-						// $nivelAcademicoAdministrador['AND'][] = array('CompanyCandidateProfile.especialidad' => 1);
-					// endif;
-					
-					// if($administrador['AdministratorProfile']['academic_level_id'] == 3):
-						// $nivelAcademicoAdministrador['AND'][] = array('CompanyCandidateProfile.maestria' => 1);
-					// endif;
-					
-					// if($administrador['AdministratorProfile']['academic_level_id'] == 4):
-						// $nivelAcademicoAdministrador['AND'][] = array('CompanyCandidateProfile.doctorado' => 1);
-					// endif;
 
 				endif;
 			endif;	
@@ -7120,15 +6711,7 @@
 				endforeach;
 			
 				if((isset($carrerasSQL)) AND (!empty($carrerasSQL))):
-					$listaIdsRelatedCareer = $this->CompanyJobRelatedCareer->find('list',
-																array('conditions' => array(
-																							'OR' => array (
-																										 $carrerasSQL 
-																										)
-																							),
-																	  'fields'=>array('CompanyJobRelatedCareer.company_job_profile_id'),
-																	)
-															);
+					$listaIdsRelatedCareer = $this->CompanyJobRelatedCareer->find('list',['conditions' => ['OR' => [$carrerasSQL]],'fields'=> ['CompanyJobRelatedCareer.company_job_profile_id']]);
 															
 					foreach($listaIdsRelatedCareer as $idRelatedCareer):
 						$idsListaRelatedCareer[] =  $idRelatedCareer;
@@ -7160,15 +6743,7 @@
 				endforeach;
 				
 				if((isset($niveles)) AND (!empty($niveles))):
-					$listaOfertasCompanyCandidateProfile = $this->CompanyCandidateProfile->find('all',
-																				array('conditions' => array(
-																											'OR' => array(
-																														$niveles,
-																											),
-																							),
-																	  'fields'=>array('CompanyCandidateProfile.company_job_profile_id'),
-																	)
-															);
+					$listaOfertasCompanyCandidateProfile = $this->CompanyCandidateProfile->find('all',['conditions' => ['OR' => [$niveles]],'fields'=> ['CompanyCandidateProfile.company_job_profile_id']]);
 				else:
 					$listaOfertasCompanyCandidateProfile = array();
 				endif;
@@ -7199,29 +6774,21 @@
 					if($idioma['level']<>''):
 						if($idioma['level'] == 1):
 							$this->Session->write('CompanyJobLanguage.'.$i.'.average', $idioma['level']);
-							$idiomas['OR'][$indice]['AND'][] = array(
-													'CompanyJobLanguage.average >=' => 10,
-													'CompanyJobLanguage.average <=' => 29
-													);
+							$idiomas['OR'][$indice]['AND'][] = ['CompanyJobLanguage.average >=' => 10,'CompanyJobLanguage.average <=' => 29];
 						else:
 							if($idioma['level'] == 2):
 								$this->Session->write('CompanyJobLanguage.'.$i.'.average', $idioma['level']);
-								$idiomas['OR'][$indice]['AND'][] = array(
-													'CompanyJobLanguage.average >=' => 30,
-													'CompanyJobLanguage.average <' => 50
-													);
+								$idiomas['OR'][$indice]['AND'][] = ['CompanyJobLanguage.average >=' => 30,'CompanyJobLanguage.average <' => 50];
 							else:
 								if($idioma['level'] == 3):
 									$this->Session->write('CompanyJobLanguage.'.$i.'.average', $idioma['level']);
-									$idiomas['OR'][$indice]['AND'][] = array(
-													'CompanyJobLanguage.average' => 50,
-													);
+									$idiomas['OR'][$indice]['AND'][] = ['CompanyJobLanguage.average' => 50];
 								endif;
 							endif;
 						endif;
 					else:
 						if(($this->Session->read('CompanyJobLanguage.'.$i.'.average')) <> ''):
-							$idiomas['OR'][$indice]['AND'][] = array('CompanyJobLanguage.average' => $this->Session->read('CompanyJobLanguage.'.$i.'.average'));
+							$idiomas['OR'][$indice]['AND'][] = ['CompanyJobLanguage.average' => $this->Session->read('CompanyJobLanguage.'.$i.'.average')];
 						endif;
 					endif;
 					$i++;
@@ -7229,15 +6796,7 @@
 				endforeach;
 					
 				if((isset($idiomas)) AND (!empty($idiomas))):
-					$listaOfertaslenguajes = $this->CompanyJobLanguage->find('all',
-																				array('conditions' => array(
-																											'OR' => array(
-																														$idiomas,
-																											),
-																							),
-																	  'fields'=>array('CompanyJobLanguage.company_job_profile_id'),
-																	)
-															);
+					$listaOfertaslenguajes = $this->CompanyJobLanguage->find('all',['conditions' => ['OR' => [$idiomas]],'fields'=>['CompanyJobLanguage.company_job_profile_id']]);
 				else:
 					$listaOfertaslenguajes = array();
 				endif;
@@ -7271,15 +6830,7 @@
 					endif;
 
 					if((isset($programsName)) AND (!empty($programsName))):
-						$listaIdsProgramsName = $this->Program->find('list',
-																	array('conditions' => array(
-																								'OR' => array (
-																											 $programsName 
-																											)
-																								),
-																		  'fields'=>array('Program.id'),
-																		)
-																);
+						$listaIdsProgramsName = $this->Program->find('list',['conditions' => ['OR' => [$programsName ]],'fields'=> ['Program.id']]);
 																
 						foreach($listaIdsProgramsName as $IdProgramName):
 							$idsListaProgramName[] = $IdProgramName;
@@ -7292,15 +6843,7 @@
 					endif;
 					
 					if((isset($computosName)) AND (!empty($computosName))):
-						$listaIdsComputingSkillName = $this->CompanyJobComputingSkill->find('list',
-																	array('conditions' => array(
-																								'OR' => array (
-																											 $computosName
-																											)
-																								),
-																		  'fields'=>array('CompanyJobComputingSkill.id'),
-																		)
-																);
+						$listaIdsComputingSkillName = $this->CompanyJobComputingSkill->find('list',['conditions' => ['OR' => [$computosName]],'fields'=> ['CompanyJobComputingSkill.id']]);
 																
 						foreach($listaIdsComputingSkillName as $IdComputingSkillName):
 							$idsListaComputingSkillName[] = $IdComputingSkillName;
@@ -7321,15 +6864,7 @@
 					endif;
 					
 					if((isset($computos)) AND (!empty($computos))):
-						$listaOfertasComputos = $this->CompanyJobComputingSkill->find('list',
-																array('conditions' => array(
-																							'AND' => array(
-																											$computos,
-																											),
-																							),
-																	  'fields'=>array('CompanyJobComputingSkill.id'),
-																	)
-																);
+						$listaOfertasComputos = $this->CompanyJobComputingSkill->find('list',['conditions' => ['AND' => [$computos]],'fields'=> ['CompanyJobComputingSkill.id']]);
 						
 						foreach($listaOfertasComputos as $listaOfertaComputo):
 							$idsListaComputingSkillLavel[] = $listaOfertaComputo;
@@ -7350,15 +6885,7 @@
 				endforeach;
 				
 				if(isset($computoSQL)):
-					$ListaIdsComputo = $this->CompanyJobComputingSkill->find('all',
-																				array('conditions' => array(
-																											'OR' => array(
-																														$computoSQL
-																											),
-																							),
-																	  'fields'=>array('CompanyJobComputingSkill.company_job_profile_id'),
-																	)
-															);
+					$ListaIdsComputo = $this->CompanyJobComputingSkill->find('all',['conditions' => ['OR' => [$computoSQL]],'fields'=> ['CompanyJobComputingSkill.company_job_profile_id']]);
 				else:
 					$ListaIdsComputo = array();
 				endif;
@@ -7374,17 +6901,7 @@
 
 				// Consulta General
 				if(!empty($criterio)):
-					$listaOfertasGeneral = $this->CompanyJobProfile->find('all',
-																	array('conditions' => array(
-																								$criterioAdmin,
-																								'AND' => array(
-																												$criterio,
-																												$nivelAcademicoAdministrador
-																												),
-																								),
-																		'fields'=>array('CompanyJobProfile.id'),
-																		)
-																);
+					$listaOfertasGeneral = $this->CompanyJobProfile->find('all',['conditions' => [$criterioAdmin,'AND' => [$criterio,$nivelAcademicoAdministrador]],'fields'=> ['CompanyJobProfile.id']]);
 				else:
 					$listaOfertasGeneral = array();
 				endif;
@@ -7519,20 +7036,12 @@
 		//Catálogos
 		
 		public function administratorAccesos(){
-			$administratorAccesos = $this->AdministratorAccess->find('list', array(
-																		'fields' => array('AdministratorAccess.id', 'AdministratorAccess.description'),
-																		'order' => array('AdministratorAccess.id ASC')
-																	)
-														);
+			$administratorAccesos = $this->AdministratorAccess->find('list', ['fields' => ['AdministratorAccess.id', 'AdministratorAccess.description'],'order' => ['AdministratorAccess.id ASC']]);
 			$this->set( compact ('administratorAccesos') );
 		}
 		
 		public function Accesos(){
-			$accesos = $this->AdministratorAccess->find('all', array(
-																		'fields' => array('AdministratorAccess.id', 'AdministratorAccess.description'),
-																		'order' => array('AdministratorAccess.id ASC')
-																	)
-														);
+			$accesos = $this->AdministratorAccess->find('all', ['fields' => ['AdministratorAccess.id', 'AdministratorAccess.description'],'order' => ['AdministratorAccess.id ASC']]);
 			$this->set( compact ('accesos') );
 			
 			// Activa o Desactiva el boton de R&S
@@ -7551,10 +7060,7 @@
 				$this->RecruitmentDate->save($Seguimiento);
 			endif;
 			
-			$fechasReclutamieto = $this->RecruitmentDate->find('all', array(
-																			'order' => ' RecruitmentDate.id DESC',
-																			'limit' => 1
-			));
+			$fechasReclutamieto = $this->RecruitmentDate->find('all', ['order' => ' RecruitmentDate.id DESC','limit' => 1]);
 			
 			$this->set('fechaReclutamiento', $fechasReclutamieto[0]);
 			
@@ -7575,11 +7081,7 @@
 				$this->StudentStatus->save($SeguimientoStatus);
 			endif;
 			
-			$fechaStudentEstatus = $this->StudentStatus->find('all', array(
-																			'order' => ' StudentStatus.id DESC',
-																			'limit' => 1
-			));
-			
+			$fechaStudentEstatus = $this->StudentStatus->find('all', ['order' => ' StudentStatus.id DESC','limit' => 1]);
 			$this->set('fechaStudentEstatus', $fechaStudentEstatus[0]);
 
 		}
@@ -7816,7 +7318,5 @@
 			$SubareasExperiencia = $this->ExperienceSubarea->find('list', array('order' => array('ExperienceSubarea.experience_subarea ASC')));
 			$this->set( compact ('SubareasExperiencia') );
 		}
-
-		
 	}
 ?>

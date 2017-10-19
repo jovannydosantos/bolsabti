@@ -4,8 +4,8 @@
 
 	$objPHPExcel = new PHPExcel();
 	 
-	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo UNAM")
-								 ->setLastModifiedBy("Sistema de Bolsa Universitaria de Trabajo UNAM")
+	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo bti")
+								 ->setLastModifiedBy("Sistema de Bolsa Universitaria de Trabajo bti")
 								 ->setTitle("Reporte - Empresas")
 								 ->setSubject("Reporte - Empresas")
 								 ->setDescription("Reporte - Empresas")
@@ -49,7 +49,7 @@
 	/*----/Estilos-----*/
 		
 	// Cargamos los titulos de la hoja
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','Sistema de Bolsa Universitaria de Trabajo UNAM');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','Sistema de Bolsa Universitaria de Trabajo bti');
 		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 		
 	//Se combinan las celdas
@@ -58,7 +58,7 @@
 	// if(!isset($tipoDescarga)):
 	// 	$tipoDescarga = 'Todas las ofertas';
 	// endif;
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2','Descarga de empresas / "Status" ');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2','Descarga de empresas / Status: '.$estatus);
 		$objPHPExcel->getActiveSheet()->getStyle('A2')->applyFromArray($styleTextArray);
 		$objPHPExcel->getActiveSheet()->getStyle('A2:C2')->applyFromArray($styleBorderArray);
 	

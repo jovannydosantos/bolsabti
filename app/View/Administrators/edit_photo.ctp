@@ -1,219 +1,121 @@
 <?php 
 	$this->layout = 'administrator'; 
 ?>
-<script>
-	
-	$(document).ready(function() {
-		// Verifica el tipo de imagen que se subira
-		var file = document.getElementById("AdministratorFilename"); //El input de tipo
-		file.addEventListener("change", function(){
-			var fileSize = this.files[0].size; //Tamaño del archivo en Bytes
-			var mb = 1024, //Cantidad de Bytes en 1 kb
-			pesoFinal = fileSize / mb; //Tamaño del archivo en Megabytes
-				if(pesoFinal.toFixed(2)>100){
-						document.getElementById('AdministratorFilename').value = '';  
-						document.getElementById('AdministratorDir').value = '';
-						document.getElementById('AdministratorMimetype').value = '';
-						document.getElementById('AdministratorFilesize').value = '';
-						jAlert('El archivo con: '+pesoFinal.toFixed(2) + ' Kb excede el límite permitido de 100Kb','Mensaje');
-						return false;
-				} else{
-					comprueba_extension();
-				}
-		}, false
-		);
-	});
-		
+	<script>
+
 		function comprueba_extension() {
-				var archivo = document.getElementById('AdministratorFilename').value;
-				extensiones_permitidas = new Array(".jpg",".png");
-				mierror = "";
-			  
-				if (!archivo) {
-					jAlert ("No has seleccionado ningún archivo","Mensaje");
-					document.getElementById("AdministratorFilename").focus();
+			var archivo = document.getElementById('AdministratorFilename').value;
+			extensiones_permitidas = new Array(".jpg",".jpeg",".png");
+		  
+			if (!archivo) {
+				$.alert({
+					    title: '!Aviso!',
+					    theme: 'supervan',
+					    content: 'No has seleccionado ningún archivo',
+					});
+				document.getElementById("AdministratorFilename").focus();
+				return false;
+			}else{
+				extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
+				permitida = false;
+				for (var i = 0; i < extensiones_permitidas.length; i++) {
+					if (extensiones_permitidas[i] == extension) {
+						permitida = true;
+						break;
+					}
+				}
+
+				if (!permitida) {
+					$.alert({
+					    title: '!Aviso!',
+					    theme: 'supervan',
+					    content: 'Comprueba la extensión de su archivo a subir. Sólo se pueden subir archivos con extensiones: ' + extensiones_permitidas.join(),
+					});
+					document.getElementById('AdministratorFilename').value = '';  
+					document.getElementById('AdministratorDir').value = '';
+					document.getElementById('AdministratorMimetype').value = '';
+					document.getElementById('AdministratorFilesize').value = '';
+					$("#AdministratorFilename").fileinput('refresh', {previewClass: 'bg-info'});
 					return false;
 				}else{
-					  extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
-					  permitida = false;
-					  for (var i = 0; i < extensiones_permitidas.length; i++) {
-						 if (extensiones_permitidas[i] == extension) {
-						 permitida = true;
-						 break;
-						 }
-					  }
-					  
-					  if (!permitida) {
-						document.getElementById('AdministratorFilename').value = '';  
-						document.getElementById('AdministratorDir').value = '';
-						document.getElementById('AdministratorMimetype').value = '';
-						document.getElementById('AdministratorFilesize').value = '';
-						jAlert ("Comprueba la extensión de su imagen a subir. \nSólo se pueden subir imagenes con extensiones: " + extensiones_permitidas.join(),"Mensaje");
-						document.getElementById("AdministratorFilename").focus();
-						return false;
-					   }else{
-						 return true;
-					   }
-			   }
-		} 
-		
-		// function comprueba_extension(formulario, archivo) {
-				// extensiones_permitidas = new Array(".jpg",".png");
-				// mierror = "";
-			  
-				// if (!archivo) {
-					// jAlert('No has seleccionado ningún archivo', 'Mensaje');
-					// document.getElementById("AdministratorFilename").focus();
-					// return false;
-				// }else{
-					  // extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
-					  // permitida = false;
-					  // for (var i = 0; i < extensiones_permitidas.length; i++) {
-						 // if (extensiones_permitidas[i] == extension) {
-						 // permitida = true;
-						 // break;
-						 // }
-					  // }
-					  
-					  // if (!permitida) {
-						// jAlert('Comprueba la extensión de su imagen a subir. \nSólo se pueden subir imagenes con extensiones: ' + extensiones_permitidas.join(), 'Mensaje');
-						// document.getElementById("AdministratorFilename").focus();
-						// return false;
-					   // }else{
-						 // formulario.submit();
-						 // return true;
-					   // }
-			   // }
-		// } 
-		
-		function deletePhoto(){
-			jConfirm('¿Realmente desea eliminar el logo de administrador?', 'Confirmación', function(r){
-				if( r ){						
-						$("#deletePhotoId").click();
+					return true;
 				}
-			});
-		}
-</script>
-<br><br>
-<?php echo $this->Session->flash(); ?>		
+		   }
+		} 
+	</script>
 
-		<?php echo $this->Form->create('Administrator', array(
-							'type' => 'file',
-							'class' => 'form-horizontal', 
-							'role' => 'form',
-							'inputDefaults' => array(
-								'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-								'div' => array('class' => 'form-group'),
-								'class' => 'form-control',
-								'label' => array('class' => 'col-md-2 control-label '),
-								'between' => '<div class="col-md-4" style="padding-left: 0px; padding-right: 0px;">',
-								'after' => '</div>',
-								'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-							),
-							'action' => 'editPhoto',
-		)); ?>		
+	<ol class="breadcrumb">
+	 	<li class="active">Foto de perfil</li>
+	</ol>	
 
-	
+	<div class="col-md-12">
 		<center>
-		<div class="col-md-12"> <p style=" border-width: 0pc; color: #fff;  margin-top: 50px; font-size: 24px;  margin-left: -70px;">Logo de administrador</p></div>
+			<br /><h1>Selecciona foto perfil!</h1><hr /><br />
+		</center>
 
-		<div style="background-color: #835B06; margin-bottom: 15px; padding: 50px 0;" class="col-md-7 col-md-offset-2">
-		
-		<fieldset>
-			<?php echo $this->Form->input('Administrator.filename', array(
-										'type' => 'file',
-										'class' =>'btn  btn-file',
-										'label' => array(
-											'class' => 'col-md-4 control-label ',
-											'style' => 'padding-right: 0px; padding-top: 9px; padding-left: 0px; padding-right: 0px;',
-											'text' => 'Seleccione logo'),
-										'style' => 'color: white;  width: 360px;'
-			)); ?>
-			<?php 	echo $this->Form->input('Administrator.dir', array(
-										'type' => 'hidden',			
-										'label' => array(
-											'class' => 'col-md-2 control-label col-md-offset-2',
-											'text' => 'Dirección de la imagen',),
-										'placeholder' => 'Dirección de la imagen'
-			)); ?>	
-			<?php 	echo $this->Form->input('Administrator.mimetype', array(	
-										'type' => 'hidden',				
-										'label' => array(
-											'class' => 'col-md-2 control-label col-md-offset-2',
-											'text' => 'Tipo de imagen',),
-										'placeholder' => 'Tipo de imagen'
-			)); ?>	
-			<?php 	echo $this->Form->input('Administrator.filesize', array(	
-										'type' => 'hidden',				
-										'label' => array(
-											'class' => 'col-md-2 control-label col-md-offset-2',
-											'text' => 'Tamaño de la imagen',),
-										'placeholder' => 'Tamaño de la imagen'
-			)); ?>	
-			<?php 	echo $this->Form->input('Administrator.id', array(
-										'type' => 'hidden',
-										'label' => array(
-											'class' => 'col-md-2 control-label col-md-offset-2',
-											'text' => 'id',),
-										'placeholder' => 'id',
-										'readonly' => 'readonly'
-			)); ?>	
-			<?php 	echo $this->Form->input('Administrator.username', array(
-										'type' => 'hidden',		
-										'label' => array(
-											'class' => 'col-md-4 control-label ',
-											'text' => 'Número de cuenta UNAM',),
-										'placeholder' => 'Número de cuenta UNAM'
-			)); ?>
+		<div class="col-md-6 col-md-offset-3 fondoBti">
+			<?php echo $this->Form->create('Administrator',[
+								'type' => 'file',
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+										'div' => ['class' => 'form-group'],
+										'class' => 'form-control',
+										'before' => '<div class="col-md-12">',
+										'label' => '',
+										'between' => '<div class="col-md-11">',
+										'after' => '</div></div>',
+										'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style'=>'padding-left: 5px; padding-right: 5px;']]
+								],
+								'action' => 'editPhoto',
+								'onsubmit' => 'return comprueba_extension()'
+			]); ?>		
+
+			<fieldset style="margin-top: 15px">
+				<?= $this->Form->input('Administrator.id'); ?>	
+				<?= $this->Form->input('Administrator.filename',['type' => 'file','class' =>'file','placeholder'=>'Selecciona foto']); ?>
+				<?= $this->Form->input('Administrator.dir',['type' => 'hidden']); ?>
+				<?= $this->Form->input('Administrator.mimetype',['type' => 'hidden']); ?>
+				<?= $this->Form->input('Administrator.filesize',['type' => 'hidden']); ?>
+				<?= $this->Form->input('Administrator.username',['type' => 'hidden']); ?>
+				<?= $this->Form->input('Administrator.password',['type' => 'hidden']); ?>
+				<?= $this->Form->input('Administrator.email',['type' => 'hidden']); ?>
+				<?= $this->Form->input('Administrator.activation',['type' => 'hidden']); ?>
+			</fieldset>	
 			
-			</div>
-			<div class="col-md-6 col-md-offset-2">
-				<?php if($administrator['Administrator']['filename']<>''): ?>
-					<div class="col-md-3 col-md-offset-3">
-				<?php else: ?>
-					<div class="col-md-3 col-md-offset-5">
-				<?php endif; ?>
-				
-				<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-save"></i>&nbsp; Guardar Logo', array(
-								'type' => 'submit',
-								'div' => 'form-group',
-								'class' => 'btn btnBlue btn-default',
-								// 'onclick'=> 'return comprueba_extension(this.form, this.form.AdministratorFilename.value)',
-								'escape' => false,
-				)); ?>
-				</div>
-				<?php echo $this->Form->end(); ?>
-				<?php if($administrator['Administrator']['filename']<>''): ?>
-				<div>
-						<?php
-									echo $this->Html->link('<i class="glyphicon glyphicon-trash"></i>&nbsp; Eliminar Logo','#',
-											array(
-												'style' => 'cursor: pointer;',
-												'class' => 'btn btn-danger',
-												'id' => 'focusPhotoId',
-												'onclick' => 'deletePhoto();',
-												'escape' => false,
-												)
-										);
-										
-								echo $this->Form->postLink(
-														'<i class="glyphicon glyphicon-trash"></i>&nbsp; Eliminar Logo',							
-															array(
-																'controller'=>'Administrators',
-																'action'=>'deletePhoto',$this->Session->read('Auth.User.id')),
-															array(
-																'class' => 'btn btn-danger',
-																'escape' => false,
-																'style' => 'display: none',
-																'id' => 'deletePhotoId',
-																)
-														); 	
-						?>
-				</div>
-				<?php endif; ?>
-			</div>
-		</fieldset>	
-	
 		</div>
-		
-	</center>
+
+		<div class="col-md-6 col-md-offset-3" style="margin-top: 15px">
+			<?php if($administrator['Administrator']['filename']<>''): ?>
+				<div class="col-md-3 col-md-offset-3">
+			<?php else: ?>
+				<div class="col-md-3 col-md-offset-4">
+			<?php endif; ?>
+
+					<?php echo $this->Form->button('<i class="glyphicon glyphicon-floppy-save"></i>&nbsp;&nbsp; Guardar', array(
+									'type' => 'submit',
+									'div' => 'form-group',
+									'class' => 'btn btnBlue btn-info',
+									'escape' => false,
+					)); ?>
+
+				</div>
+
+			<?php echo $this->Form->end(); ?>
+			
+			<?php if($administrator['Administrator']['filename']<>''): ?>
+			<div class="col-md-3">
+				<?php
+					echo $this->Html->link('<i class="glyphicon glyphicon-trash"></i>&nbsp;&nbsp; Eliminar','#',[
+									'style' => 'cursor: pointer;',
+									'class' => 'btn btn-danger',
+									'id' => 'focusPhotoId',
+									'onclick' => 'deletePhoto();',
+									'escape' => false,
+									]);
+				?>
+			</div>
+			<?php endif; ?>
+		</div>
+	</div>

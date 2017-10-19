@@ -6,7 +6,7 @@
 	<script>
 		$(document).ready(function() {
 			
-			<?php if(isset($this->request->data['Administrator']['seleccion'])): ?>
+			<?php if(isset($this->request->data['Administrator']['seleccion']) and ($this->request->data['Administrator']['seleccion']<>'')): ?>
 			
 				if( <?php echo $this->request->data['Administrator']['seleccion']; ?> == 1){
 					$('#AdministratorOptionSelect').val("1");
@@ -20,38 +20,8 @@
 					$('#AdministratorOptionSelect').val("5");
 				}
 			<?php endif; ?>
-			
-			
+			$('.selectpicker').selectpicker('refresh');
 			desabilityconfidencial();
-			
-			$("#AdministratorFechaInicioEmpresasYear").css("width", "65px");
-			$("#AdministratorFechaInicioEmpresasMonth").css("width", "90px");
-			$("#AdministratorFechaInicioEmpresasDay").css("width", "60px");
-			$("#AdministratorFechaFinEmpresasYear").css("width", "65px");
-			$("#AdministratorFechaFinEmpresasMonth").css("width", "90px");
-			$("#AdministratorFechaFinEmpresasDay").css("width", "60px");
-			
-			$("#AdministratorFechaInicioUniversitariosYear").css("width", "65px");
-			$("#AdministratorFechaInicioUniversitariosMonth").css("width", "90px");
-			$("#AdministratorFechaInicioUniversitariosDay").css("width", "60px");
-			$("#AdministratorFechaFinUniversitariosYear").css("width", "65px");
-			$("#AdministratorFechaFinUniversitariosMonth").css("width", "90px");
-			$("#AdministratorFechaFinUniversitariosDay").css("width", "60px");
-			
-			$("#AdministratorFechaInicioContratacionesYear").css("width", "65px");
-			$("#AdministratorFechaInicioContratacionesMonth").css("width", "90px");
-			$("#AdministratorFechaInicioContratacionesDay").css("width", "60px");
-			$("#AdministratorFechaFinContratacionesYear").css("width", "65px");
-			$("#AdministratorFechaFinContratacionesMonth").css("width", "90px");
-			$("#AdministratorFechaFinContratacionesDay").css("width", "60px");
-			
-			$("#AdministratorFechaInicioCompetenciasYear").css("width", "65px");
-			$("#AdministratorFechaInicioCompetenciasMonth").css("width", "90px");
-			$("#AdministratorFechaInicioCompetenciasDay").css("width", "60px");
-			$("#AdministratorFechaFinCompetenciasYear").css("width", "65px");
-			$("#AdministratorFechaFinCompetenciasMonth").css("width", "90px");
-			$("#AdministratorFechaFinCompetenciasDay").css("width", "60px");
-			
 		}); 
 		
 		function desabilityconfidencial(){ 		
@@ -110,7 +80,7 @@
 		}
 		
 		function validateDates(tipoFormulario){
-			
+			// desabilityconfidencial();
 			if(tipoFormulario==1){
 				var year1  = $( "#AdministratorFechaInicioUniversitariosYear" ).val();
 				var month1 = $( "#AdministratorFechaInicioUniversitariosMonth" ).val();
@@ -220,104 +190,40 @@
 			}
 			
 				if((year1 == '') || (month1 == '') || (day1 == '') || (year2 == '') || (month2 == '') || (day2 == '')){
-					jAlert('Seleccione las fechas completas para la búsqueda de coincidencias', 'Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione las fechas completas para la búsqueda de coincidencias.'});
 					return false;
 				} else if(vigenciaFecha1 == false){
-					jAlert('La fecha inicio de reporte es incorrecta', 'Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha inicio de reporte es incorrecta.'});
 					return false;
 				} else if(vigenciaFecha2 == false){
-					jAlert('La fecha fin de reporte es incorrecta', 'Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha fin de reporte es incorrecta.'});
 					return false;
 				} else if(resultadoComparativa==1){
-					jAlert('La fecha inicio de reporte debe ser menor a la final', 'Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha inicio de reporte debe ser menor a la final.'});
 					return false;
 				}else{
 					return true;
 				}
 		}
-		
-		function validarFecha(fecha){
-				 //valida fecha en formato aaaa-mm-dd
-				 var fechaArr = fecha.split('/');
-				 var aho = fechaArr[2];
-				 var mes = fechaArr[1];
-				 var dia = fechaArr[0];
-				 
-				 var plantilla = new Date(aho, mes - 1, dia);//mes empieza de cero Enero = 0
-
-				 if(!plantilla || plantilla.getFullYear() == aho && plantilla.getMonth() == mes -1 && plantilla.getDate() == dia){
-				 return true;
-				 }else{
-				 return false;
-				 }
-		}
-		
-		function validate_fechaMayorQue(fechaInicial,fechaFinal){
 			
-			valuesStart=fechaInicial.split("/");
-            valuesEnd=fechaFinal.split("/");
-			
-            // Verificamos que la fecha no sea posterior a la actual
-
-            var dateStart=new Date(valuesStart[2],(valuesStart[1]-1),valuesStart[0]);
-            var dateEnd=new Date(valuesEnd[2],(valuesEnd[1]-1),valuesEnd[0]);
-
-            if(dateStart>dateEnd)
-            {
-                return 1;
-            }
-            return 0;
-        }
-		
 	</script>
 	
 	<style>
-		.myStyle{
-			font-size: 11px;
-		}
-
-		.panel-title > .chevron:before {
-			font-family: FontAwesome;
-			content:"\f056";
-			padding-right: 5px;
-		}
-		.panel-title > .chevron.collapsed:before {
-			content:"\f055";
-		}
-		.panel-title > .chevron:hover, 
-		.panel-title > .chevron:active, 
-		.panel-title > .chevron:focus  {
-			text-decoration:none;
-		}
-		
-
-		.panel-title > .intoCollaps.collapsed:before {
-			content: "\f054"; 
-		} 
-		
-		.panel-title > .intoCollaps:before {
-			font-family: FontAwesome;
-			content: "\f078";  
-			padding-right: 5px;		
-			float: right;			
-		}
-		
-		.panel-title > .intoCollaps:hover, 
-		.panel-title > .intoCollaps:active, 
-		.panel-title > .intoCollaps:focus  {
-			text-decoration:none;
-		}
+	.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+	   padding: 0px;
+	   border-top: 0px solid #ddd;
+	}
+	.table{
+		border-collapse: initial;
+	}
 	</style>
 	
-	<div class="col-md-12" >	
+	<div class="col-md-10 col-md-offset-1 fondoBti" style="margin-top: 20px; margin-bottom: 30px">
+		<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 15px;margin-bottom: 5px;">
+	        <p style="color: #fff">Seleccione el tipo de frecuencia.</p>
+	    </blockquote>
 
-		<?php echo $this->Session->flash(); ?>	
-		
-		<div class="col-md-10 col-md-offset-2" style="left: -30px;">	<!--contenedor-->
-			<div class="col-md-5 col-md-offset-2" style="margin-top: 50px;">	
-				<p style="font-size: 18px;">Seleccione el tipo de frecuencia</p>
-			</div>
-			<div class="col-md-12"  style="padding-left: 0px;">	
+	    <div class="col-md-12">
 			<?php
 				echo $this->Form->create('Administrator', array(
 								'class' => 'form-horizontal', 
@@ -328,7 +234,7 @@
 									'class' => 'form-control',
 									'label' => array('class' => 'col-md-4 control-label '),
 									'before' => '<div class="col-md-12 ">',
-									'between' => '<div class="col-md-9 ">',
+									'between' => '<div class="col-md-12 ">',
 									'after' => '</div></div>',
 									'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
 								),
@@ -352,635 +258,300 @@
 				<?php
 				echo $this->Form->end(); 
 				?>	
-			</div>
 		</div>
 	
-		<div class="col-md-11 col-md-offset-2" style="left: -30px; display: none;" id="contenedorUniversitariosId">	
-			<div class="col-md-4 col-md-offset-2" >	
-				<p style="font-size: 18px; ">Frecuencias Universitarios</p>
-			</div>
+		<div class="col-md-12" style="display: none;" id="contenedorUniversitariosId">	
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 15px;margin-bottom: 5px;">
+		        <p style="color: #fff">Seleccione el rango de fechas a consultar.</p>
+		    </blockquote>
 			
-			<div class="col-md-12" style="padding-left: 0px;">
-				<?php 
-				echo $this->Form->create('Administrator', array(
-															'class' => 'form-horizontal', 
-															'role' => 'form',
-															'inputDefaults' => array(
-																	'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																	'div' => array('class' => 'form-group '),
-																	'class' => 'form-control',
-																	'before' => '<div class="col-md-6 ">',
-																	'between' => ' <div class="col-md-9">',
-																	'after' => '</div></div>',
-																	'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-															),
-													
-													'onsubmit' =>'return validateDates(1);',
-													'action' => 'consultas',
-				)); ?>	
+				<?= $this->Form->create('Administrator', [
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12  control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'onsubmit' =>'return validateDates(1);',
+								'action' => 'consultas',]); ?>
+
 				<fieldset>
-				<div  class="col-md-4"  style="font-weight: bold;" >
-				   <p> Fecha inicio de frecuencia</p>
-				</div>
-				<div  class="col-md-6" style="font-weight: bold; margin-left: 25px;" >
-				   <p>Fecha fin de frecuencia</p>
-				</div>
-				<div class="col-md-8" style="text-align: center; font-weight: bold; height: 0px; margin-left: 15px; left: -5px;" >
-				   <p> a </p>
-				</div>
-				
-				<div class="col-md-5" style="margin-bottom: 20px; padding-left: 0px;">
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_inicio_universitarios', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>
 					
-					<?php echo $this->Form->input('fecha_inicio_universitarios', array(
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_fin_universitarios', [
 																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
 																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
+																'data-width'=> '33.333%',
 																'dateFormat' => 'YMD',
 																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								));
-					?>
-				</div>
-				
-				<div class="col-md-6" style="margin-bottom: 20px;  left: -60px;">
-					<?php echo $this->Form->input('fecha_fin_universitarios', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								)); 
-					?>
-				</div>
-				
-				<?php  
-					echo $this->Form->input('Administrator.seleccion', array(
-								'type'=>'hidden',
-								'before' => '<div class="col-md-12 ">',
-								'class' => 'selectpicker show-tick form-control show-menu-arrow seleccionClass',
-								'label' => '',
-								));
-			   ?>
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>		
+
+					<?= $this->Form->input('Administrator.seleccion', ['type'=>'hidden','class' => 'seleccionClass']); ?>
+
+					<div class="col-md-2 " style="margin-bottom:15px; ">
+						<?= $this->Form->button('Consultar &nbsp;<i class="fa fa-search" aria-hidden="true"></i>',['type'=>'submit','class' => 'btn btn-default','escape' => false,'style' => 'width:120px;']);?>
+						<?= $this->Form->end(); ?>
+					</div>	
+
 				</fieldset>
-				<div class="col-md-2 col-md-offset-3">
-				<?php 
-					echo $this->Form->button('Consultar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-												array(
-													'type' => 'submit', 
-													'style'=>'width: 115px;',
-													'div' => 'form-group',
-													'class' => 'btn btnBlue btn-default',
-													'escape' => false,
-					));
-								
-					echo $this->Form->end(); 
-				?>
-				</div>
-			</div>	
 		</div>
 		
-		<div class="col-md-11 col-md-offset-2" style="left: -30px; display: none;" id="contenedorEmpresasId">	
-			<div class="col-md-4 col-md-offset-2" >	
-				<p style="font-size: 18px;">Frecuencias Empresas</p>
-			</div>
+		<div class="col-md-12" style="display: none;" id="contenedorEmpresasId">	
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 15px;margin-bottom: 5px;">
+		        <p style="color: #fff">Seleccione el rango de fechas a consultar.</p>
+		    </blockquote>
 			
-			<div class="col-md-12" style="padding-left: 0px;">
-			<?php 
-				echo $this->Form->create('Administrator', array(
-															'class' => 'form-horizontal', 
-															'role' => 'form',
-															'inputDefaults' => array(
-																	'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																	'div' => array('class' => 'form-group '),
-																	'class' => 'form-control',
-																	'before' => '<div class="col-md-6 ">',
-																	'between' => ' <div class="col-md-9">',
-																	'after' => '</div></div>',
-																	'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-															),
-													'action' => 'consultas',
-													'onsubmit' =>'return validateDates(2);'
-				)); ?>	
-				<fieldset>
-				<div  class="col-md-4"  style="font-weight: bold;" >
-				   <p> Fecha inicio de frecuencia</p>
-				</div>
-				<div  class="col-md-6" style="font-weight: bold; margin-left: 25px;" >
-				   <p>Fecha fin de frecuencia</p>
-				</div>
-				<div class="col-md-8" style="text-align: center; font-weight: bold; height: 0px; margin-left: 15px; left: -5px;" >
-				   <p> a </p>
-				</div>
-				
-				<div class="col-md-5" style="margin-bottom: 20px; padding-left: 0px;">
-					
-					<?php echo $this->Form->input('fecha_inicio_empresas', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								));
-					?>
-				</div>
-				
-				<div class="col-md-6" style="margin-bottom: 20px;  left: -60px;">
-					<?php echo $this->Form->input('fecha_fin_empresas', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								)); 
-					?>
-				</div>
+				<?= $this->Form->create('Administrator', [
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12  control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'onsubmit' =>'return validateDates(2);',
+								'action' => 'consultas',]); ?>
 
-				<?php  
-					echo $this->Form->input('Administrator.seleccion', array(
-								'type'=>'hidden',
-								'before' => '<div class="col-md-12 ">',
-								'class' => 'selectpicker show-tick form-control show-menu-arrow seleccionClass',
-								'label' => '',
-								));
-			   ?>
+				<fieldset>
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_inicio_empresas', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>
+					
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_fin_empresas', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>		
+
+					<?= $this->Form->input('Administrator.seleccion', ['type'=>'hidden','class' => 'seleccionClass']); ?>
+
+					<div class="col-md-2 " style="margin-bottom:15px; ">
+						<?= $this->Form->button('Consultar &nbsp;<i class="fa fa-search" aria-hidden="true"></i>',['type'=>'submit','class' => 'btn btn-default','escape' => false,'style' => 'width:120px;']);?>
+						<?= $this->Form->end(); ?>
+					</div>	
 				</fieldset>
-				<div class="col-md-2 col-md-offset-3">
-				<?php 
-					echo $this->Form->button('Consultar &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-												array(
-													'type' => 'submit', 
-													'style'=>'width: 115px;',
-													'div' => 'form-group',
-													'class' => 'btn btnBlue btn-default',
-													'escape' => false,
-					));
-								
-					echo $this->Form->end(); 
-				?>
-				</div>
-			</div>
 		</div>
 		
-		<div class="col-md-11 col-md-offset-2" style="left: -30px; display: none;" id="contenedorOfertasId">	
-			<div class="col-md-4 col-md-offset-2" >	
-				<p style="font-size: 18px;">Frecuencias Ofertas</p>
-			</div>
+		<div class="col-md-12" style="display: none;" id="contenedorOfertasId">	
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 15px;margin-bottom: 5px;">
+		        <p style="color: #fff">Seleccione el rango de fechas a consultar.</p>
+		    </blockquote>
 			
-			<div class="col-md-12" style="padding-left: 0px;">
-			<?php 
-				echo $this->Form->create('Administrator', array(
-															'class' => 'form-horizontal', 
-															'role' => 'form',
-															'inputDefaults' => array(
-																	'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																	'div' => array('class' => 'form-group '),
-																	'class' => 'form-control',
-																	'before' => '<div class="col-md-6 ">',
-																	'between' => ' <div class="col-md-9">',
-																	'after' => '</div></div>',
-																	'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-															),
-													'action' => 'consultas',
-													'onsubmit' =>'return validateDates(3);'
-				)); ?>	
-				<fieldset>
-				<div  class="col-md-4"  style="font-weight: bold;" >
-				   <p> Fecha inicio de frecuencia</p>
-				</div>
-				<div  class="col-md-6" style="font-weight: bold; margin-left: 25px;" >
-				   <p>Fecha fin de frecuencia</p>
-				</div>
-				<div class="col-md-8" style="text-align: center; font-weight: bold; height: 0px; margin-left: 15px; left: -5px;" >
-				   <p> a </p>
-				</div>
-				
-				<div class="col-md-5" style="margin-bottom: 20px; padding-left: 0px;">
-					
-					<?php echo $this->Form->input('fecha_inicio_ofertas', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								));
-					?>
-				</div>
-				
-				<div class="col-md-6" style="margin-bottom: 20px;  left: -60px;">
-					<?php echo $this->Form->input('fecha_fin_ofertas', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								)); 
-					?>
-				</div>
+			<?= $this->Form->create('Administrator', [
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12  control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'onsubmit' =>'return validateDates(3);',
+								'action' => 'consultas',]); ?>
 
-				<?php  
-					echo $this->Form->input('Administrator.seleccion', array(
-								'type'=>'hidden',
-								'before' => '<div class="col-md-12 ">',
-								'class' => 'selectpicker show-tick form-control show-menu-arrow seleccionClass',
-								'label' => '',
-								));
-			   ?>
+				<fieldset>
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_inicio_ofertas', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>
+					
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_fin_ofertas', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>		
+
+					<?= $this->Form->input('Administrator.seleccion', ['type'=>'hidden','class' => 'seleccionClass']); ?>
+
+					<div class="col-md-2 " style="margin-bottom:15px; ">
+						<?= $this->Form->button('Consultar &nbsp;<i class="fa fa-search" aria-hidden="true"></i>',['type'=>'submit','class' => 'btn btn-default','escape' => false,'style' => 'width:120px;']);?>
+						<?= $this->Form->end(); ?>
+					</div>	
 				</fieldset>
-				<div class="col-md-2 col-md-offset-3">
-				<?php 
-					echo $this->Form->button('Consultar &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-												array(
-													'type' => 'submit', 
-													'style'=>'width: 115px;',
-													'div' => 'form-group',
-													'class' => 'btn btnBlue btn-default',
-													'escape' => false,
-					));
-								
-					echo $this->Form->end(); 
-				?>
-				</div>
-			</div>
 		</div>
 		
-		<div class="col-md-11 col-md-offset-2" style="left: -30px; display: none;" id="contenedorVacantesId">	
-			<div class="col-md-4 col-md-offset-2" >	
-				<p style="font-size: 18px;">Frecuencias Vacantes</p>
-			</div>
+		<div class="col-md-12" style="display: none;" id="contenedorVacantesId">	
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 15px;margin-bottom: 5px;">
+		        <p style="color: #fff">Seleccione el rango de fechas a consultar.</p>
+		    </blockquote>
 			
-			<div class="col-md-12" style="padding-left: 0px;">
-			<?php 
-				echo $this->Form->create('Administrator', array(
-															'class' => 'form-horizontal', 
-															'role' => 'form',
-															'inputDefaults' => array(
-																	'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																	'div' => array('class' => 'form-group '),
-																	'class' => 'form-control',
-																	'before' => '<div class="col-md-6 ">',
-																	'between' => ' <div class="col-md-9">',
-																	'after' => '</div></div>',
-																	'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-															),
-													'action' => 'consultas',
-													'onsubmit' =>'return validateDates(4);'
-				)); ?>	
-				<fieldset>
-				<div  class="col-md-4"  style="font-weight: bold;" >
-				   <p> Fecha inicio de frecuencia</p>
-				</div>
-				<div  class="col-md-6" style="font-weight: bold; margin-left: 25px;" >
-				   <p>Fecha fin de frecuencia</p>
-				</div>
-				<div class="col-md-8" style="text-align: center; font-weight: bold; height: 0px; margin-left: 15px; left: -5px;" >
-				   <p> a </p>
-				</div>
-				
-				<div class="col-md-5" style="margin-bottom: 20px; padding-left: 0px;">
-					
-					<?php echo $this->Form->input('fecha_inicio_vacantes', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								));
-					?>
-				</div>
-				
-				<div class="col-md-6" style="margin-bottom: 20px;  left: -60px;">
-					<?php echo $this->Form->input('fecha_fin_vacantes', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								)); 
-					?>
-				</div>
+			<?= $this->Form->create('Administrator', [
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12  control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'onsubmit' =>'return validateDates(4);',
+								'action' => 'consultas',]); ?>
 
-				<?php  
-					echo $this->Form->input('Administrator.seleccion', array(
-								'type'=>'hidden',
-								'before' => '<div class="col-md-12 ">',
-								'class' => 'selectpicker show-tick form-control show-menu-arrow seleccionClass',
-								'label' => '',
-								));
-			   ?>
+				<fieldset>
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_inicio_vacantes', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>
+					
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_fin_vacantes', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>		
+
+					<?= $this->Form->input('Administrator.seleccion', ['type'=>'hidden','class' => 'seleccionClass']); ?>
+
+					<div class="col-md-2 " style="margin-bottom:15px; ">
+						<?= $this->Form->button('Consultar &nbsp;<i class="fa fa-search" aria-hidden="true"></i>',['type'=>'submit','class' => 'btn btn-default','escape' => false,'style' => 'width:120px;']);?>
+						<?= $this->Form->end(); ?>
+					</div>	
 				</fieldset>
-				<div class="col-md-2 col-md-offset-3">
-				<?php 
-					echo $this->Form->button('Consultar &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-												array(
-													'type' => 'submit', 
-													'style'=>'width: 115px;',
-													'div' => 'form-group',
-													'class' => 'btn btnBlue btn-default',
-													'escape' => false,
-					));
-								
-					echo $this->Form->end(); 
-				?>
-				</div>
-			</div>
 		</div>
 
-		<div class="col-md-11 col-md-offset-2" style="left: -30px; display: none;" id="contenedorContratacionesId">	
-			<div class="col-md-4 col-md-offset-2" >	
-				<p style="font-size: 18px;">Frecuencia Contrataciones</p>
-			</div>
+		<div class="col-md-12" style="display: none;" id="contenedorContratacionesId">	
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 15px;margin-bottom: 5px;">
+		        <p style="color: #fff">Seleccione el rango de fechas a consultar.</p>
+		    </blockquote>
 			
-			<div class="col-md-12" style="padding-left: 0px;">
-			<?php 
-				echo $this->Form->create('Administrator', array(
-															'class' => 'form-horizontal', 
-															'role' => 'form',
-															'inputDefaults' => array(
-																	'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																	'div' => array('class' => 'form-group '),
-																	'class' => 'form-control',
-																	'before' => '<div class="col-md-6 ">',
-																	'between' => ' <div class="col-md-9">',
-																	'after' => '</div></div>',
-																	'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-															),
-													'action' => 'consultas',
-													'onsubmit' =>'return validateDates(5);'
-				)); ?>	
+			<?= $this->Form->create('Administrator', [
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12  control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'onsubmit' =>'return validateDates(5);',
+								'action' => 'consultas',]); ?>
+
 				<fieldset>
-				<div  class="col-md-4"  style="font-weight: bold;" >
-				   <p> Fecha inicio de frecuencia</p>
-				</div>
-				<div  class="col-md-6" style="font-weight: bold; margin-left: 25px;" >
-				   <p>Fecha fin de frecuencia</p>
-				</div>
-				<div class="col-md-8" style="text-align: center; font-weight: bold; height: 0px; margin-left: 15px; left: -5px;" >
-				   <p> a </p>
-				</div>
-				
-				<div class="col-md-5" style="margin-bottom: 20px; padding-left: 0px;">
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_inicio_contrataciones', [
+																'type' => 'date',
+																'class' => 'selectpicker show-tick form-control show-menu-arrow',
+																'data-width'=> '33.333%',
+																'dateFormat' => 'YMD',
+																'separator' => '',
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>
 					
-					<?php echo $this->Form->input('fecha_inicio_contrataciones', array(
+					<div class="col-md-6">
+						<?= $this->Form->input('fecha_fin_contrataciones', [
 																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
 																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
+																'data-width'=> '33.333%',
 																'dateFormat' => 'YMD',
 																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								));
-					?>
-				</div>
-				
-				<div class="col-md-6" style="margin-bottom: 20px;  left: -60px;">
-					<?php echo $this->Form->input('fecha_fin_contrataciones', array(
-																'type' => 'date',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">',
-																'between' => '<div class="col-md-12 ">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-width'=> '80px',
-																'label' => array(
-																			'class' => 'col-md-0 col-md-offset-0 control-label',
-																			'text' => '',),
-																'style' => 'width: 120px;  margin-left: -10px; margin-right: 18px;  padding-left: 0px; padding-right: 0px; font-size: 12px;',
-																'div' => array('class' => 'form-inline'),
-																'label' => array(
-																	'class' => 'col-sm-0 col-md-0 control-label',
-																	'text' => '',),
-																'dateFormat' => 'YMD',
-																'separator' => '',
-																'minYear' => date('Y') - 3,
-																'maxYear' => date('Y') - 0,
-																
-																'placeholder' => 'Vigencia que aparecerá en la oferta',
-																'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-								)); 
-					?>
-				</div>
-				<?php  
-					echo $this->Form->input('frecuencias_contrataciones', array(	
-															'type' => 'hidden',
-															'before' => '<div class="col-md-11" style=" ">',			
-															'value' => 1,
-															'placeholder' => 'Prestaciones y apoyos',
-							)); 
-				?>
-				
-				<?php  
-					echo $this->Form->input('Administrator.seleccion', array(
-								'type'=>'hidden',
-								'before' => '<div class="col-md-12 ">',
-								'class' => 'selectpicker show-tick form-control show-menu-arrow seleccionClass',
-								'label' => '',
-								));
-			   ?>
+																'minYear' => date('Y') - 2,
+																'maxYear' => date('Y') - 0]); ?>
+					</div>		
+
+					<?= $this->Form->input('Administrator.seleccion', ['type'=>'hidden','class' => 'seleccionClass']); ?>
+					<?= $this->Form->input('frecuencias_contrataciones', ['type'=>'hidden']); ?>
+
+					<div class="col-md-2 " style="margin-bottom:15px; ">
+						<?= $this->Form->button('Consultar &nbsp;<i class="fa fa-search" aria-hidden="true"></i>',['type'=>'submit','class' => 'btn btn-default','escape' => false,'style' => 'width:120px;']);?>
+						<?= $this->Form->end(); ?>
+					</div>	
 				</fieldset>
-				<div class="col-md-2 col-md-offset-3">
-				<?php 
-					echo $this->Form->button('Consultar &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-												array(
-													'type' => 'submit', 
-													'style'=>'width: 115px;',
-													'div' => 'form-group',
-													'class' => 'btn btnBlue btn-default',
-													'escape' => false,
-					));
-								
-					echo $this->Form->end(); 
-				?>
-				</div>
-			</div>
 		</div>
 		
-		<div class="col-md-11 col-md-offset-2" style="left: -30px; display: none;" id="contenedorCompetenciasId">	
-			<div class="col-md-4 col-md-offset-2" >	
-				<p style="font-size: 18px;">Frecuencia Competencias</p>
-			</div>
+		<div class="col-md-12" style="display: none;" id="contenedorCompetenciasId">	
+			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 15px;margin-bottom: 5px;">
+		        <p style="color: #fff">Seleccione el rango de fechas a consultar.</p>
+		    </blockquote>
 			
-			<div class="col-md-12" style="padding-left: 0px;">
-			<?php 
-				echo $this->Form->create('Administrator', array(
-															'class' => 'form-horizontal', 
-															'role' => 'form',
-															'inputDefaults' => array(
-																	'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																	'div' => array('class' => 'form-group '),
-																	'class' => 'form-control',
-																	'before' => '<div class="col-md-6 ">',
-																	'between' => ' <div class="col-md-9">',
-																	'after' => '</div></div>',
-																	'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-															),
-													'action' => 'consultas',
-													'onsubmit' =>'return validateDates(6);'
-				)); ?>	
+			<?= $this->Form->create('Administrator', [
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12  control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'onsubmit' =>'return validateDates(6);',
+								'action' => 'consultas',]); ?>
+
 				<fieldset>
-			
-				<?php  
-					echo $this->Form->input('frecuencias_competencias', array(	
-															'type' => 'hidden',
-															'before' => '<div class="col-md-11" style=" ">',			
-															'value' => 1,
-															'placeholder' => 'Prestaciones y apoyos',
-							)); 
-				?>
-				
-				<?php  
-					echo $this->Form->input('Administrator.seleccion', array(
-								'type'=>'hidden',
-								'before' => '<div class="col-md-12 ">',
-								'class' => 'selectpicker show-tick form-control show-menu-arrow seleccionClass',
-								'label' => '',
-								));
-			   ?>			
+
+					<?= $this->Form->input('Administrator.seleccion', ['type'=>'hidden','class' => 'seleccionClass']); ?>
+					<?= $this->Form->input('frecuencias_competencias', ['type'=>'hidden']); ?>
+
+					<div class="col-md-2 " style="margin-bottom:15px; ">
+						<?= $this->Form->button('Consultar &nbsp;<i class="fa fa-search" aria-hidden="true"></i>',['type'=>'submit','class' => 'btn btn-default','escape' => false,'style' => 'width:120px;']);?>
+						<?= $this->Form->end(); ?>
+					</div>	
 				</fieldset>
-				<div class="col-md-2 col-md-offset-3">
-				<?php 
-					echo $this->Form->button('Consultar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>', 
-												array(
-													'type' => 'submit', 
-													'style'=>'width: 115px; left: -25px;',
-													'div' => 'form-group',
-													'class' => 'btn btnBlue btn-default',
-													'escape' => false,
-					));
-								
-					echo $this->Form->end(); 
-				?>
-				</div>
-			</div>
 		</div>
 		
 	</div>
@@ -1022,7 +593,7 @@
 
 	?>
 	
-	<div class="col-md-12" style="margin-top: 30px;">	
+	<div class="col-md-12" >	
 	<div class = "panel-group" id = "accordion">
 	   <div class = "panel panel-default">
 		  
@@ -1048,30 +619,37 @@
 				 </h4>
 			  </div>
 			  
-			<div id = "collapse1" class = "panel-collapse collapse in">
-				<div class = "panel-body"> <!-- fin1-->
+<div id = "collapse1" class = "panel-collapse collapse in">
+	<div class = "panel-body"> <!-- fin1-->
 				 
 				   <!-- Inicio de tabla PERFIL UNIVERSITARIO -->
-		<div class="panel-group">
-		<div class="panel panel-default">
-		  <div class="panel-heading">
-			<h4 class="panel-title">
-			  <a class="intoCollaps" data-toggle="collapse" href="#datosPersonalesId">Datos Personales</a>
-			</h4>
-		  </div>
-		  <div id="datosPersonalesId" class="panel-collapse collapse">
-			<div class="panel-body">	   
+			<div class="panel-group">
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+				<h4 class="panel-title">
+				  <a class="intoCollaps" data-toggle="collapse" href="#datosPersonalesId">Datos Personales</a>
+				</h4>
+			  </div>
+			  <div id="datosPersonalesId" class="panel-collapse collapse">
+				<div class="panel-body">	   
 				   
 			
-					<div class="col-md-12" style="margin-top: 30px;" >
+					<div class="col-md-12"  >
 						<table class="table">
 
-								<tr><th colspan="5"><center><p style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Datos Personales</strong></P></center></th></tr>
+								<tr><th colspan="5"><center><p style="color: #000; background-color: #efeeee"><strong>Datos Personales</strong></P></center></th></tr>
 
 								<tbody>			
-									<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Total de Universitarios Inscritos</strong></P></center></th></tr>
+									<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Total de Universitarios Inscritos</strong></P></center></th></tr>
 									<tr>
-										<td>Total de Registros <?php echo count($estudiantes);?></td>
+										<?php 
+										if(isset($estudiantes)):
+											echo '<td>Total de Registros'. count($estudiantes).'</td>';
+										else:
+											echo '<td>Total de Registros 0</td>';
+										endif;
+										?>
+										
 									</tr>
 							
 										<!-- sexos-->	
@@ -1092,7 +670,7 @@
 												endif; 
 											endforeach;
 							
-											$tabla = '<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Sexos</strong></P></center></th></tr>';
+											$tabla = '<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Sexos</strong></P></center></th></tr>';
 							
 											if(count($estudiantes)== 0):
 												$tabla.='<tr><td>Femenino 0.0% - ('.$mujeres.')</td></tr>';
@@ -1189,7 +767,7 @@
 									
 										endforeach;
 						
-										$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Edad</strong></P></center></th></tr>';
+										$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Edad</strong></P></center></th></tr>';
 										if(count($estudiantes)== 0):
 											$tabla.='<tr><td>Menor a 19 0.0% - ('.$edad1.')</td></tr>';
 											$tabla.='<tr><td>De 19 a 24 0.0% - ('.$edad2.')</td></tr>';
@@ -1300,7 +878,7 @@
 											endif;
 										endforeach;
 							
-										$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipo de discapacidad</strong></P></center></th></tr>';	
+										$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipo de discapacidad</strong></P></center></th></tr>';	
 							
 										if(count($estudiantes) == 0):
 											$tabla.='<tr><td>Ceguera 0.0% - ('.$ceguera.')</td></tr>';
@@ -1426,8 +1004,8 @@
 											endif;
 										endforeach;
 						
-										$tabla ='<th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Formación Académica</strong></P></center></th>';
-										$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Nivel Academico</strong></P></center></th></tr>';
+										$tabla ='<th><center><P style="color: #000; background-color: #efeeee"><strong>Formación Académica</strong></P></center></th>';
+										$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Nivel Academico</strong></P></center></th></tr>';
 										
 										if(count($estudiantes) == 0):
 											$tabla.='<tr><td>Licenciatura 0.0% - ('.$licenciatura.')</td></tr>'; 
@@ -1511,7 +1089,7 @@
 											endif;
 										endforeach;
 							
-										$tabla ='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Situación Académica</strong></P></center></th>';
+										$tabla ='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Situación Académica</strong></P></center></th>';
 							
 										if(count($estudiantes) == 0):
 											$tabla.='<tr><td>Estudiante 0.0% - ('.$alumno.')</td></tr>'; 
@@ -1588,7 +1166,7 @@
 											endif;
 										endforeach;
 								
-										$tabla ='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Movilidad Estudiantil</strong></P></center></th>';
+										$tabla ='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Movilidad Estudiantil</strong></P></center></th>';
 								
 								
 										if(count($estudiantes)==0):
@@ -1645,7 +1223,7 @@
 											endif;
 										endforeach;
 
-										$tabla ='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Beca durate sus estudios</strong></P></center></th>';
+										$tabla ='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Beca durate sus estudios</strong></P></center></th>';
 								
 										if(count($estudiantes) == 0):
 											
@@ -1700,7 +1278,7 @@
 										endforeach;
 							 
 										$tabla='';
-										$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Programa de Becas</strong></P></center></th></tr>';
+										$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Programa de Becas</strong></P></center></th></tr>';
 										for($cont=1;$cont<=count($ProgramaBecas); $cont++):
 											if(count($estudiantes)==0):
 												$tabla.='<tr><td colspan="4">'.$ProgramaBecas[$cont].' 0.0% - ('.$programasBeca[$cont].')</td></tr>'; 
@@ -1732,7 +1310,7 @@
 				<tbody>
 	  
 			
-										<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Escuelas / Facultades / Carreras / Programas</strong></P></center></th></tr>
+										<tr><th colspan="5"><center><P style="color: #000; background-color: #efeeee"><strong>Escuelas / Facultades / Carreras / Programas</strong></P></center></th></tr>
 										
 									<?php
 										// INICIALIZADMOS TODAS LAS VARIABLES A 0
@@ -1845,7 +1423,7 @@
 											endforeach;
 										endforeach;
 										
-										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Facultades</strong></P></center></th></tr>';	
+										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Facultades</strong></P></center></th></tr>';	
 
 										foreach($facultadesId as $facultad):
 											if(count($estudiantes)==0):
@@ -1863,14 +1441,14 @@
 											echo '<tr><td>FACULTAD NO UNAM '.number_format(($otraInstitucionFacultad * 100) / count($estudiantes), 2, '.', '').' % - ('.$otraInstitucionFacultad.')</td></tr>';
 										endif;
 										
-										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Facultades / Programas</strong></P></center></th></tr>';	
+										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Facultades / Programas</strong></P></center></th></tr>';	
 										
 										foreach ($facultadesId as $facultadId):	
 											$tabla='';
 											if(count($estudiantes)==0):
-												$tabla.='<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">'.$facultadId['FacultadPosgrado']['facultad_posgrado'].' 0.0% - ('.$facultadPostgrado[$facultadId['FacultadPosgrado']['id']].')</td></tr>';
+												$tabla.='<tr><td style="color: #000; background-color: #efeeee">'.$facultadId['FacultadPosgrado']['facultad_posgrado'].' 0.0% - ('.$facultadPostgrado[$facultadId['FacultadPosgrado']['id']].')</td></tr>';
 											else:
-												$tabla.='<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">'.$facultadId['FacultadPosgrado']['facultad_posgrado'].' '.number_format(($facultadPostgrado[$facultadId['FacultadPosgrado']['id']] * 100) / count($estudiantes), 2, '.', '').' % - ('.$facultadPostgrado[$facultadId['FacultadPosgrado']['id']].')</td></tr>';
+												$tabla.='<tr><td style="color: #000; background-color: #efeeee">'.$facultadId['FacultadPosgrado']['facultad_posgrado'].' '.number_format(($facultadPostgrado[$facultadId['FacultadPosgrado']['id']] * 100) / count($estudiantes), 2, '.', '').' % - ('.$facultadPostgrado[$facultadId['FacultadPosgrado']['id']].')</td></tr>';
 											endif;
 											
 												foreach($relacionFacultadProgramas as $relacionF):
@@ -1900,9 +1478,9 @@
 										endforeach;	 	
 										
 										if(count($estudiantes)==0):
-											echo '<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">FACULTAD NO UNAM 0.0% - ('.$otraInstitucionFacultad.')</td></tr>';
+											echo '<tr><td style="color: #000; background-color: #efeeee">FACULTAD NO UNAM 0.0% - ('.$otraInstitucionFacultad.')</td></tr>';
 										else:
-											echo '<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">FACULTAD NO UNAM '.number_format(($otraInstitucionFacultad * 100) / count($estudiantes), 2, '.', '').' % - ('.$otraInstitucionFacultad.')</td></tr>';
+											echo '<tr><td style="color: #000; background-color: #efeeee">FACULTAD NO UNAM '.number_format(($otraInstitucionFacultad * 100) / count($estudiantes), 2, '.', '').' % - ('.$otraInstitucionFacultad.')</td></tr>';
 										endif;
 											
 										if(count($estudiantes)==0):
@@ -1926,7 +1504,7 @@
 											endforeach;
 										endforeach;
 
-										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Escuelas</strong></P></center></th></tr>';	
+										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Escuelas</strong></P></center></th></tr>';	
 										 
 										foreach ($escuelasId as $escuela):
 											if(count($estudiantes)==0):
@@ -1943,14 +1521,14 @@
 											echo '<tr><td>ESCUELA NO UNAM '.number_format(($otraInstitucionLicenciatura * 100) / count($estudiantes), 2, '.', '').' % - ('.$otraInstitucionLicenciatura.')</td></tr>';
 										endif;
 										
-										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Escuelas / Carreras</strong></P></center></th></tr>';	
+										echo '<tr><th colspan="5"><center><P  style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Escuelas / Carreras</strong></P></center></th></tr>';	
 										
 										foreach ($escuelasId as $escuelaId):
 											$tabla='';
 											if(count($estudiantes)==0):
-												$tabla.='<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">'.$escuelaId['FacultadLicenciatura']['facultad_licenciatura'].' 0.0% - ('.$escuelaLicenciatura[$escuelaId['FacultadLicenciatura']['id']].')</td></tr>';
+												$tabla.='<tr><td style="color: #000; background-color: #efeeee">'.$escuelaId['FacultadLicenciatura']['facultad_licenciatura'].' 0.0% - ('.$escuelaLicenciatura[$escuelaId['FacultadLicenciatura']['id']].')</td></tr>';
 											else:
-												$tabla.='<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">'.$escuelaId['FacultadLicenciatura']['facultad_licenciatura'].' '.number_format(($escuelaLicenciatura[$escuelaId['FacultadLicenciatura']['id']] * 100) / count($estudiantes), 2, '.', '').' % - ('.$escuelaLicenciatura[$escuelaId['FacultadLicenciatura']['id']].')</td></tr>';
+												$tabla.='<tr><td style="color: #000; background-color: #efeeee">'.$escuelaId['FacultadLicenciatura']['facultad_licenciatura'].' '.number_format(($escuelaLicenciatura[$escuelaId['FacultadLicenciatura']['id']] * 100) / count($estudiantes), 2, '.', '').' % - ('.$escuelaLicenciatura[$escuelaId['FacultadLicenciatura']['id']].')</td></tr>';
 											endif;
 											
 												$var = $escuelaLicenciatura[$escuelaId['FacultadLicenciatura']['id']];
@@ -1981,9 +1559,9 @@
 										endforeach;	
 										
 										if(count($estudiantes)==0):
-											echo '<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">INSTITUCION NO UNAM 0.0% - ('.$otraInstitucionLicenciatura.')</td></tr>';
+											echo '<tr><td style="color: #000; background-color: #efeeee">INSTITUCION NO UNAM 0.0% - ('.$otraInstitucionLicenciatura.')</td></tr>';
 										else:
-											echo '<tr><td style="COLOR: #000000; BACKGROUND-COLOR: #426AD2;">INSTITUCION NO UNAM '.number_format(($otraInstitucionLicenciatura * 100) / count($estudiantes), 2, '.', '').' % - ('.$otraInstitucionLicenciatura.')</td></tr>';
+											echo '<tr><td style="color: #000; background-color: #efeeee">INSTITUCION NO UNAM '.number_format(($otraInstitucionLicenciatura * 100) / count($estudiantes), 2, '.', '').' % - ('.$otraInstitucionLicenciatura.')</td></tr>';
 										endif;
 										
 										if(count($estudiantes)==0):
@@ -2037,8 +1615,8 @@
 											endif;
 										endforeach;
 										
-										$tabla ='<tr><th colspan="5"><center><p style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Conocimientos y habilidades profesionales</strong></P></center></th></tr>';
-										$tabla.='<tr><th colspan="5"><center><p style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Totales que presentan una certificación en cómputo</strong></P></center></th></tr>';
+										$tabla ='<tr><th colspan="5"><center><p style="color: #000; background-color: #efeeee"><strong>Conocimientos y habilidades profesionales</strong></P></center></th></tr>';
+										$tabla.='<tr><th colspan="5"><center><p style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Totales que presentan una certificación en cómputo</strong></P></center></th></tr>';
 										
 										if(count($estudiantes)== 0):
 											$tabla.='<tr><td>Si 0.0% - ('.$sic.')</td></tr>';
@@ -2069,7 +1647,7 @@
 										echo $tabla;
 									?>
 
-									<tr><th colspan="5"><center><p style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Idiomas Universitarios</strong></P></center></th></tr>
+									<tr><th colspan="5"><center><p style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Idiomas Universitarios</strong></P></center></th></tr>
 						</tbody>
 				</table>
 									<?php
@@ -2277,8 +1855,8 @@
 										endif;
 									endforeach;
 									
-									$tabla ='<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Experiencia profesional</strong></P></center></th></tr>';
-									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Trabaja actualmente</strong></P></center></th></tr>';
+									$tabla ='<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Experiencia profesional</strong></P></center></th></tr>';
+									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Trabaja actualmente</strong></P></center></th></tr>';
 									
 									if(count($estudiantes) == 0):							
 										$tabla.='<tr><td>Si 0.0% - ('.$sit.')</td></tr>';
@@ -2373,7 +1951,7 @@
 										endforeach;
 									endforeach;
 									
-									$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipo de contrato</strong></P></center></th></tr>';
+									$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipo de contrato</strong></P></center></th></tr>';
 									
 									if(count($estudiantes) == 0):
 										$tabla.='<tr><td>Base 0.0% - ('.$base.')</td></tr>';
@@ -2482,7 +2060,7 @@
 									endforeach;
 								?>
 
-								<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Areas de Experiencia </strong></P></center></th></tr>
+								<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Areas de Experiencia </strong></P></center></th></tr>
 								
 								<?php 
 									$tabla='';
@@ -2533,7 +2111,7 @@
 										endif;
 									endforeach;
 									
-									$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Proyectos Academicos</strong></P></center></th></tr>';
+									$tabla ='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Proyectos Academicos</strong></P></center></th></tr>';
 									
 									if(count($estudiantes) == 0):								
 										$tabla.='<tr><td>Si 0.0% - ('.$sip.')</td></tr>';
@@ -2584,8 +2162,8 @@
 				<tbody>	
 					
 
-								<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Competencias profesionales</strong></P></center></th></tr>
-								<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Competencias</strong></P></center></th></tr>	
+								<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Competencias profesionales</strong></P></center></th></tr>
+								<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Competencias</strong></P></center></th></tr>	
 			
 								<?php
 									$competency = array(); 
@@ -2678,8 +2256,8 @@
 										endforeach;
 									endforeach;
 									
-									$tabla ='<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Expectativas Laborales</strong></P></center></th></tr>';
-									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Areas de Interes</strong></P></center></th></tr>';
+									$tabla ='<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Expectativas Laborales</strong></P></center></th></tr>';
+									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Areas de Interes</strong></P></center></th></tr>';
 									
 									$aux=1;
 									if(count($estudiantes) == 0):
@@ -2727,7 +2305,6 @@
 		    <?php
 			if($ShowPerfilEmpresa == 1):
 			?>
-			<br> 
 			<div class = "panel-heading"> <!-- Empresas -->
 			 <h4 class = "panel-title">
 				<a data-toggle = "collapse" data-parent = "#accordion" class="chevron" href = "#collapse7">
@@ -2761,18 +2338,18 @@
 		  <div id="perfilEmpresaId" class="panel-collapse collapse">
 			<div class="panel-body">	
 			
-			<div class="col-md-12" style="margin-top: 30px;">
+			<div class="col-md-12" >
 			<table class="table ">
 
-			 <tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Perfil de empresas e instituciones</strong></P></center></th></tr>
-			 <tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Total de Empresas</strong></P></center></th></tr>
+			 <tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Perfil de empresas e instituciones</strong></P></center></th></tr>
+			 <tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Total de Empresas</strong></P></center></th></tr>
 
 		<tbody>	
 			<tr>
 				<td colspan="2">Total de Empresas <?php echo count($empresas);?></td>
 			</tr>
 			<tr>
-			  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipos  de Empresas</strong></P></center></th>
+			  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipos  de Empresas</strong></P></center></th>
 			</tr>
 		<?php 		
 	    $corporativo = 0; 
@@ -2852,7 +2429,7 @@
 		endforeach;
 		
 			$tabla='';
-			$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Sectores</strong></P></center></th></tr>';
+			$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Sectores</strong></P></center></th></tr>';
 			if(count($empresas)==0):
 				
 				$tabla.='<tr><td>Privado 0.0% - ('.$privado.')</td></tr>';
@@ -2875,7 +2452,7 @@
  <!-- GIROS -->
 	
 			<tr>
-			  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Giros</strong></P></center></th>
+			  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Giros</strong></P></center></th>
 			</tr>
 		<?php
 		$Rotation = array(); 
@@ -2911,7 +2488,7 @@
 	<!-- EMPLEADOS -->
 	
 		<tr>
-			  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Numero de Empleados</strong></P></center></th>
+			  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Numero de Empleados</strong></P></center></th>
 		</tr>
 	<?php
 		$Empleados = array(); 
@@ -2947,7 +2524,7 @@
 			endforeach;
 		?>	
 		<tr>
-			<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Entidad Federativa (Sede)</strong></P></center></th>
+			<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Entidad Federativa (Sede)</strong></P></center></th>
 		</tr>
 	<?php
 		$estado = array(); 
@@ -2997,7 +2574,6 @@
 			<?php
 			if($ShowOfertas == 1):
 			?>
-			<br> 
 			<div class = "panel-heading"> <!-- Ofertas de empresas-->
 			 <h4 class = "panel-title">
 				<a data-toggle = "collapse" data-parent = "#accordion" class="chevron" href = "#collapse8">
@@ -3030,11 +2606,11 @@
 			<div class="panel-body">	
 		<!-- Inicio de tabla OFERTAS - Empresas -->
 
-			<div class="col-md-12" style="margin-top: 30px;">
+			<div class="col-md-12" >
 						<table class="table">
 
-						<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Perfil de Ofertas</strong></P></center></th></tr>
-						<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Total de Ofertas</strong></P></center></th></tr>
+						<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Perfil de Ofertas</strong></P></center></th></tr>
+						<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Total de Ofertas</strong></P></center></th></tr>
 
 					<tbody>	
 					<tr>
@@ -3058,7 +2634,7 @@
 					endforeach;
 					
 					$tabla='';
-					$tabla.='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Confidencial</strong></P></center></th>';
+					$tabla.='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Confidencial</strong></P></center></th>';
 					if(count($ofertas)==0):
 					
 						$tabla.='<tr><td>Si 0.0% - ('.$si.')</td></tr>';
@@ -3080,7 +2656,7 @@
 				<!-- GIROS OFERTAS -->
 				
 					<tr>
-						<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Giros</strong></P></center></th>
+						<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Giros</strong></P></center></th>
 					</tr>
 				<?php
 
@@ -3135,7 +2711,7 @@
 					endforeach;
 					
 					$tabla='';
-					$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Incluyentes</strong></P></center></th></tr>';
+					$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Incluyentes</strong></P></center></th></tr>';
 					
 					if(count($ofertas)==0):
 					
@@ -3193,7 +2769,7 @@
 					endforeach;
 					
 					$tabla='';
-					$tabla.='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipo de discapacidad</strong></P></center></th>';
+					$tabla.='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipo de discapacidad</strong></P></center></th>';
 						
 					if(count($ofertas)==0):
 						$tabla.='<tr><td>Ceguera 0.0% - ('.$ceguera.')</td></tr>';
@@ -3288,7 +2864,7 @@
 							
 					endforeach;
 					
-					$tabla='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipo de Contrato</strong></P></center></th>';
+					$tabla='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipo de Contrato</strong></P></center></th>';
 					
 					if(count($ofertas)==0):
 						$tabla.='<tr><td>Base 0.0% - ('.$base.')</td></tr>';
@@ -3335,7 +2911,7 @@
 				?>
 				<!-- Jornada Laboral -->
 					<tr>
-						 <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Jornada laboral</strong></P></center></th>
+						 <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Jornada laboral</strong></P></center></th>
 					</tr>
 				<?php 
 					$jornadas = array(); 
@@ -3377,7 +2953,7 @@
 				<!-- SUELDOS -->
 				
 					<tr>
-						<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Sueldos</strong></P></center></th>
+						<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Sueldos</strong></P></center></th>
 					</tr>
 				<?php 
 					$sueldos = array(); 
@@ -3418,7 +2994,7 @@
 				
 				<!-- ENTIDADES FEDERATIVAS -->
 					<tr>
-						<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Lugar de Trabajo</strong></P></center></th>
+						<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Lugar de Trabajo</strong></P></center></th>
 					</tr>
 				<?php 
 					$estado = array(); 
@@ -3470,7 +3046,7 @@
 										endif; 
 									endforeach;
 									
-									$tabla='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Disponibilidad para viajar</strong></P></center></th></tr>';
+									$tabla='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Disponibilidad para viajar</strong></P></center></th></tr>';
 									
 									if(count($ofertas)==0):
 										$tabla.='<tr><td>Si 0.0% - ('.$si.') </td></tr>';
@@ -3498,7 +3074,7 @@
 							endif; 
 						endforeach;
 						
-						$tabla='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>En México</strong></P></center></th></tr>';
+						$tabla='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>En México</strong></P></center></th></tr>';
 							
 							if(count($ofertas)==0):
 								$tabla.='<tr><td>Si 0.0% - ('.$si.')</td></tr>';
@@ -3526,7 +3102,7 @@
 							endif; 
 						endforeach;	
 						
-						$tabla='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Al extranjero</strong></P></center></th></tr>';
+						$tabla='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Al extranjero</strong></P></center></th></tr>';
 							if(count($ofertas)==0):		
 								$tabla.='<tr><td>Si 0.0% - ('.$si.') </td></tr>';
 								$tabla.='<tr><td>No 0.0% - ('.$no.')</td></tr>';	
@@ -3560,7 +3136,7 @@
 		  <div id="perfilCandidatoId" class="panel-collapse collapse">
 			<div class="panel-body">	
 				
-				<div class="col-md-12" style="margin-top: 30px;">
+				<div class="col-md-12" >
 					<table class="table">
 						<tbody>	
 							<?php
@@ -3591,8 +3167,8 @@
 								endforeach;
 							endforeach;
 							
-							$tabla='<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Perfil del candidato</strong></P></center></th></tr>';
-							$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Nivel Academico</strong></P></center></th></tr>';
+							$tabla='<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Perfil del candidato</strong></P></center></th></tr>';
+							$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Nivel Academico</strong></P></center></th></tr>';
 							
 							if(count($ofertas)==0):
 								$tabla.='<tr><td>Licenciatura 0.0% - ('.$licenciatura.')</td></tr>';
@@ -3651,7 +3227,7 @@
 							endforeach;
 							
 							$tabla='';
-							$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Situación Académica</strong></P></center></th></tr>';
+							$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Situación Académica</strong></P></center></th></tr>';
 							
 							if(count ($ofertas)==0):
 							
@@ -3698,12 +3274,12 @@
 		  </div>
 		  <div id="competenciasId" class="panel-collapse collapse">
 			<div class="panel-body">	
-	<div class="col-md-12" style="margin-top: 30px;">
+	<div class="col-md-12" >
 		<table class="table">
 		
 		<tbody>
-		<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Competencias</strong></P></center></th></tr>
-		<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Competencias solicitadas en las ofertas</strong></P></center></th></tr>
+		<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Competencias</strong></P></center></th></tr>
+		<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Competencias solicitadas en las ofertas</strong></P></center></th></tr>
 
 	<?php 
 		$competency = array(); 
@@ -3768,14 +3344,14 @@
 		  <div id="conocimientosId" class="panel-collapse collapse">
 			<div class="panel-body">	
 		
-		<div class="col-md-12" style="margin-top: 30px;">
+		<div class="col-md-12" >
 		
 		<table class="table">
 		
 		<tbody>
 	
-		<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Conocimientos y habilidades técnico-profesionales</strong></P></center></th></tr>	
-		<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Idiomas requeridos en las ofertas</strong></P></center></th></tr>
+		<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Conocimientos y habilidades técnico-profesionales</strong></P></center></th></tr>	
+		<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Idiomas requeridos en las ofertas</strong></P></center></th></tr>
 					<?php 
 						$Idiomas = array(); 
 						$Lbajo = array(); 
@@ -3947,7 +3523,6 @@
 			<?php
 			if($ShowVacantes == 1):
 			?>
-			<br> 
 			<div class = "panel-heading"> <!-- vacantes-->
 			 <h4 class = "panel-title">
 				<a data-toggle = "collapse" data-parent = "#accordion" class="chevron" href = "#collapse11">
@@ -3980,7 +3555,7 @@
 		  <div id="perfilVacantesId" class="panel-collapse collapse">
 			<div class="panel-body">	
 			
-						<div class="col-md-12" style="margin-top: 30px;">
+						<div class="col-md-12" >
 							<table class="table">
 								<tbody>
 								
@@ -3991,8 +3566,8 @@
 									endforeach;
 									?>
 												
-								<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Perfil de Vacantes</strong></P></center></th></tr>
-								<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Total de vacantes publicadas</strong></P></center></th></tr>	
+								<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Perfil de Vacantes</strong></P></center></th></tr>
+								<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Total de vacantes publicadas</strong></P></center></th></tr>	
 								<tr>
 									<td colspan="2">Total de Vacantes <?php echo ($totalVacantes);?></td>
 								</tr>
@@ -4013,7 +3588,7 @@
 												endforeach;
 												
 												$tabla='';
-												$tabla.='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Confidencial</strong></P></center></th>';
+												$tabla.='<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Confidencial</strong></P></center></th>';
 												
 												if($si==0):
 													$tabla.='<tr><td>Si 0.0% - ('.$si.')</td></tr>';
@@ -4037,7 +3612,7 @@
 									
 							<!-- GIROS OFERTAS -->
 								<tr>
-									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Giros</strong></P></center></th>
+									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Giros</strong></P></center></th>
 								</tr>
 							<?php
 								$Rotation = array(); 
@@ -4094,7 +3669,7 @@
 												endforeach;
 												
 												$tabla='';
-												$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Incluyentes</strong></P></center></th></tr>';
+												$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Incluyentes</strong></P></center></th></tr>';
 												
 												if($totalVacantes==0):
 													$tabla.='<tr><td>Si 0.0% - ('.$si.')</td></tr>';
@@ -4163,7 +3738,7 @@
 								endforeach;
 										
 										$tabla='';
-										$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipo de discapacidad</strong></P></center></th></tr>';
+										$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipo de discapacidad</strong></P></center></th></tr>';
 										
 										if($totalVacantes==0):
 										
@@ -4262,7 +3837,7 @@
 								endforeach;
 								
 								$tabla='';
-								$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipo de contrato</strong></P></center></th></tr>';
+								$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipo de contrato</strong></P></center></th></tr>';
 								
 								if($totalVacantes==0):
 								
@@ -4363,7 +3938,7 @@
 							
 							<!-- Jornada Laboral -->
 								<tr>
-									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Jornada laboral</strong></P></center></th>
+									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Jornada laboral</strong></P></center></th>
 								</tr>
 							<?php
 							
@@ -4405,7 +3980,7 @@
 							<!-- SUELDOS -->
 							
 								<tr>
-									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Sueldos</strong></P></center></th>
+									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Sueldos</strong></P></center></th>
 								</tr>
 							<?php
 								$sueldos = array(); 
@@ -4442,7 +4017,7 @@
 							
 							<!-- ENTIDADES FEDERATIVAS -->
 								<tr>
-									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Lugar de Trabajo</strong></P></center></th>
+									<th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Lugar de Trabajo</strong></P></center></th>
 								</tr>
 							<?php
 								$estado = array(); 
@@ -4496,7 +4071,7 @@
 												endforeach;
 												
 												$tabla='';
-												$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Disponibilidad para viajar</strong></P></center></th></tr>';
+												$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Disponibilidad para viajar</strong></P></center></th></tr>';
 												
 												if($totalVacantes==0):
 													
@@ -4541,7 +4116,7 @@
 									endforeach;
 									
 									$tabla='';
-									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>En México</strong></P></center></th></tr>';
+									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>En México</strong></P></center></th></tr>';
 												
 									if($totalVacantes==0):
 									
@@ -4584,7 +4159,7 @@
 									endforeach;	
 									
 									$tabla='';
-									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Al extranjero</strong></P></center></th></tr>';
+									$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Al extranjero</strong></P></center></th></tr>';
 									
 									if($totalVacantes==0):
 										
@@ -4630,7 +4205,7 @@
 		  <div id="perfilCandidatoVacantesId" class="panel-collapse collapse">
 			<div class="panel-body">	
 			
-						<div class="col-md-12" style="margin-top: 30px;">
+						<div class="col-md-12" >
 							<table class="table">		
 						
 							<tbody>
@@ -4664,8 +4239,8 @@
 									endforeach;
 								endforeach;
 								
-								$tabla='<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Perfil del candidato</strong></P></center></th></tr>';
-								$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Nivel academico</strong></P></center></th></tr>';
+								$tabla='<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Perfil del candidato</strong></P></center></th></tr>';
+								$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Nivel academico</strong></P></center></th></tr>';
 								
 								if($totalVacantes==0):
 								
@@ -4754,7 +4329,7 @@
 								endforeach;
 								
 								$tabla='';
-								$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Stuación Académica</strong></P></center></th></tr>';
+								$tabla.='<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Stuación Académica</strong></P></center></th></tr>';
 								
 								if($totalVacantes==0):
 								
@@ -4829,15 +4404,15 @@
 		  <div id="competenciasVacantesId" class="panel-collapse collapse">
 			<div class="panel-body">	
 			
-						<div class="col-md-12" style="margin-top: 30px;">
+						<div class="col-md-12" >
 							<table class="table">		
 						
 							<tbody>						
 							
 							<!-- Competencias requeridas para la oferta -->
 							
-							<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Competencias</strong></P></center></th></tr>
-							<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Competencias solicitadas en las vacantes</strong></P></center></th></tr>
+							<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Competencias</strong></P></center></th></tr>
+							<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Competencias solicitadas en las vacantes</strong></P></center></th></tr>
 							<?php
 								$competency = array(); 
 		$sinCompetency = 0;
@@ -4902,7 +4477,6 @@
 			<?php
 			if($ShowContrataciones == 1):
 			?>
-			<br> 
 			<div class = "panel-heading"> <!-- Contrataciones y seguimientos-->
 			 <h4 class = "panel-title">
 				<a data-toggle = "collapse" data-parent = "#accordion" class="chevron"  href = "#collapse13">
@@ -4936,13 +4510,13 @@
 						  <div id="escuelasFacultadesContratacionId" class="panel-collapse collapse">
 							<div class="panel-body">	
 					
-						<div class="col-md-12" style="margin-top: 30px;">
+						<div class="col-md-12" >
 							<table class="table">
 							<tbody>
 
-							<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Seguimiento Universitario</strong></P></center></th></tr>
+							<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Seguimiento Universitario</strong></P></center></th></tr>
 							<tr>
-							  <th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Total de alumnos en un proceso de R&S </strong></P></th>
+							  <th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Total de alumnos en un proceso de R&S </strong></P></th>
 							</tr>
 
 						
@@ -4960,7 +4534,7 @@
 						<!-- En proceso --> 
 						
 							<tr>
-							  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>En Proceso</strong></P></center></th>
+							  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>En Proceso</strong></P></center></th>
 							</tr>
 						<?php
 						
@@ -4997,10 +4571,10 @@
 						<!-- En proceso --> 
 						
 							<tr>
-							  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Contratados</strong></P></center></th>
+							  <th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Contratados</strong></P></center></th>
 							</tr>
 							<tr>
-							  <th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Total contratados </strong></P></th>
+							  <th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Total contratados </strong></P></th>
 							</tr>
 					<?php
 					
@@ -5024,7 +4598,7 @@
 					?> 
 					
 					<tr>
-						<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Rango de sueldos</strong></P></th>
+						<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Rango de sueldos</strong></P></th>
 					</tr>
 					
 					<?php
@@ -5086,8 +4660,8 @@
 
 								<table class="table">
 								<tbody>
-									<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación Universitario Perfil</strong></P></center></th></tr>
-									<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Escuela / Carrera</strong></P></th></tr>
+									<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación Universitario Perfil</strong></P></center></th></tr>
+									<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Escuela / Carrera</strong></P></th></tr>
 
 										<?php
 										
@@ -5211,7 +4785,7 @@
 												
 											
 											//Imprimir Facultades 
-												echo '<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Facultades / Programas</strong></P></center></th></tr>';	
+												echo '<tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Facultades / Programas</strong></P></center></th></tr>';	
 												
 												$tabla='';
 												foreach ($facultadesId as $facultadId):	
@@ -5269,8 +4843,8 @@
 								<table class="table">
 								<tbody>
 
-											<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación Universitario Formación</strong></P></center></th></tr>
-											<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Nivel academico</strong></P></th></tr>
+											<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación Universitario Formación</strong></P></center></th></tr>
+											<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Nivel academico</strong></P></th></tr>
 											
 											<?php
 											
@@ -5311,7 +4885,7 @@
 											?>
 											
 											<tr>
-												<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Situación Académica</strong></P></th>
+												<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Situación Académica</strong></P></th>
 											</tr>
 											
 											<?php
@@ -5353,7 +4927,7 @@
 											?>
 											
 											<tr>
-												<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipos de discapacidad</strong></P></th>
+												<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipos de discapacidad</strong></P></th>
 											</tr>
 											
 											<?php
@@ -5416,8 +4990,8 @@
 										<tbody>
 							  
 							  
-										<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación Universitario Experiencia</strong></P></center></th></tr>
-										<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Experiencia profesional</strong></P></th></tr>
+										<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación Universitario Experiencia</strong></P></center></th></tr>
+										<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Experiencia profesional</strong></P></th></tr>
 							
 							<?php
 							
@@ -5476,15 +5050,15 @@
 									<table class="table">
 									<tbody>
 						
-										<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación Universitarios Externos</strong></P></center></th></tr>
+										<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación Universitarios Externos</strong></P></center></th></tr>
 										<tr>
-											<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Contratados externos</strong></P></th>
+											<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Contratados externos</strong></P></th>
 										</tr>
 											
 										<tr><td>Contratados externos <?php echo($contratacionesExternas)?></td></tr>
 									
 										<tr>
-											<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Giros</strong></P></th>
+											<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Giros</strong></P></th>
 										</tr>
 										
 										<?php
@@ -5526,7 +5100,7 @@
 										?>
 										
 										<tr>
-											<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Sectores</strong></P></th>
+											<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Sectores</strong></P></th>
 										</tr>
 										
 										<?php
@@ -5590,8 +5164,8 @@
 									<!--TOTAL POR EMPRESAS EN EL UNIVERSO DE UNIVERSITARIOS CONTRATADOS-->
 									
 
-									<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación por Empresa e Institución</strong></P></center></th></tr>
-									<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Por Empresa / universitario</strong></P></th></tr>
+									<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación por Empresa e Institución</strong></P></center></th></tr>
+									<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Por Empresa / universitario</strong></P></th></tr>
 									
 									<?php
 									
@@ -5613,19 +5187,23 @@
 									
 									
 									$tabla = '';
-									foreach($indices as $indice):
-										if($totalEmpresas[$indice]==0):
-											$tabla.='<tr><td>'.$nombreEmpresas[$indice].' 0.0% - ('.$totalEmpresas[$indice].')</td></tr>';
-										else:
-											$tabla.='<tr><td>'.$nombreEmpresas[$indice].' '.number_format(($totalEmpresas[$indice] * 100) /count($contrataciones), 2, '.', '').'% - ('.$totalEmpresas[$contratacion['Company']['id']].')</td></tr>';
-										endif;
-									endforeach;	
+									if(isset($indices)):
+										foreach($indices as $indice):
+											if($totalEmpresas[$indice]==0):
+												$tabla.='<tr><td>'.$nombreEmpresas[$indice].' 0.0% - ('.$totalEmpresas[$indice].')</td></tr>';
+											else:
+												$tabla.='<tr><td>'.$nombreEmpresas[$indice].' '.number_format(($totalEmpresas[$indice] * 100) /count($contrataciones), 2, '.', '').'% - ('.$totalEmpresas[$contratacion['Company']['id']].')</td></tr>';
+											endif;
+										endforeach;	
+									else:
+										$tabla.='<tr><td>Sin empresas con contrataciones</td></tr>';
+									endif;
 									echo $tabla;
 
 									 ?>
 									
 									<tr>
-										<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Giros</strong></P></th>
+										<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Giros</strong></P></th>
 									</tr>
 
 									<?php
@@ -5667,7 +5245,7 @@
 									?>
 									
 									<tr>
-										<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Sectores</strong></P></th>
+										<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Sectores</strong></P></th>
 									</tr>
 									
 									<?php								
@@ -5728,8 +5306,8 @@
 								<table class="table">
 								<tbody>
 									
-									<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación Oferta </strong></P></center></th></tr>
-									<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Rango de sueldos</strong></P></th></tr>
+									<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación Oferta </strong></P></center></th></tr>
+									<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Rango de sueldos</strong></P></th></tr>
 									
 									<?php
 									
@@ -5803,8 +5381,8 @@
 								<table class="table">
 								<tbody>
 								
-								<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación Oferta Carreras</strong></P></center></th></tr>
-								<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Carrera / áreas</strong></P></th></tr>
+								<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación Oferta Carreras</strong></P></center></th></tr>
+								<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Carrera / áreas</strong></P></th></tr>
 								
 								
 								<?php
@@ -5927,7 +5505,7 @@
 										
 									echo $tabla;
 									// Imprimir Facultades 
-										// echo '<thead><tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Facultades / Programas</strong></P></center></th></tr></thead>';	
+										// echo '<thead><tr><th colspan="5"><center><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Facultades / Programas</strong></P></center></th></tr></thead>';	
 										
 										$tabla='';
 										foreach ($facultadesId as $facultadId):	
@@ -5984,8 +5562,8 @@
 								<table class="table">
 								<tbody>
 								
-								<tr><th><center><P style="COLOR: #000000; BACKGROUND-COLOR: rgb(66, 106, 210);"><strong>Contratación Oferta Perfil</strong></P></center></th></tr>
-								<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Nivel Academico</strong></P></th></tr>
+								<tr><th><center><P style="color: #000; background-color: #efeeee"><strong>Contratación Oferta Perfil</strong></P></center></th></tr>
+								<tr><th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Nivel Academico</strong></P></th></tr>
 								
 								<?php
 								
@@ -6026,7 +5604,7 @@
 								?>
 								
 								<tr>
-									<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Situación Académica</strong></P></th>
+									<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Situación Académica</strong></P></th>
 								</tr>
 								
 								<?php
@@ -6068,7 +5646,7 @@
 								?>
 								
 								<tr>
-									<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Tipos de discapacidad</strong></P></th>
+									<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Tipos de discapacidad</strong></P></th>
 								</tr>
 								
 								<?php
@@ -6110,7 +5688,7 @@
 								
 								
 								<tr>
-									<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #AD8D51;"><strong>Experiencia profesional</strong></P></th>
+									<th colspan="5"><P style="COLOR: #000000; BACKGROUND-COLOR: #efeeee;"><strong>Experiencia profesional</strong></P></th>
 								</tr>
 								
 								<?php
@@ -6172,4 +5750,3 @@
 
 
 <?php endif; ?>
-

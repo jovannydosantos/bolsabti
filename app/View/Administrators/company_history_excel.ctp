@@ -159,8 +159,9 @@
 
 		
 	$i=6;
-	$indiceColumna = 'A';
+	
 	foreach ($ofertas as $dato){
+		$indiceColumna = 'A';
 		if(isset($dato['CompanyJobOffer']['same_contact'])):
 			if($dato['CompanyJobOffer']['same_contact'] == 's'):
 				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,$dato['Company']['CompanyContact']['name']);

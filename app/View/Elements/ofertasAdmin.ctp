@@ -60,14 +60,7 @@
 			
 			<span><strong>Número de vacantes: </strong><?= $oferta['CompanyJobProfile']['vacancy_number']; ?></span><br />
 			<span><strong>Fecha publicación:</strong> <?= ' ' . date("d/m/Y",strtotime($oferta['CompanyJobContractType']['created'])); ?> </span><br />
-			<?php
-				if(!empty($oferta['CompanyLastUpdate']['Administrator'])):
-					$administrador = ' por: '.$oferta['CompanyLastUpdate']['Administrator']['AdministratorProfile']['contact_name'].' '.$oferta['CompanyLastUpdate']['Administrator']['AdministratorProfile']['contact_last_name'];
-				else:
-					$administrador = '';
-				endif;
-			?>
-			<span><strong>Fecha de actualización: </strong><?php  echo ' ' . date("d/m/Y",strtotime($oferta['CompanyLastUpdate']['modified']));  echo $administrador; ?> </span><br />
+			<span><strong>Fecha de actualización: </strong><?php  echo ' ' . date("d/m/Y",strtotime($oferta['CompanyLastUpdate']['modified'])); ?> </span><br />
 			<span><strong>Vigencia:</strong><?php  echo ' ' . date("d/m/Y",strtotime($oferta['CompanyJobProfile']['expiration'])); ?> </span><br />
 			<span><strong>Responsable de la oferta:</strong></span><br />
 				
@@ -104,6 +97,48 @@
 			</style>
 
 			<div class="col-md-12">
+				<?php 
+					if($oferta['CompanyJobContractType']['status'] == null):
+						echo $this->Html->image('student/noActiva.png',
+									['title' => 'Oferta incompleta',
+									'data-toggle'=>'tooltip',
+									'data-placement'=>'left',
+									'class' => 'icono',
+									'onclick' => 'ofertaIncompleta();']);	
+					else:	
+						if(strtotime($oferta['CompanyJobProfile']['expiration']) < strtotime(date('Y-m-d'))):
+							echo $this->Html->image('student/noActiva.png',
+										['title' => 'Oferta expirada',
+										'data-toggle'=>'tooltip',
+										'data-placement'=>'left',
+										'class' => 'icono',
+										'onclick' => 'ofertaExpirada();']);	
+						else:		
+							if($oferta['CompanyJobContractType']['status'] == 0):
+								echo $this->Html->image('student/noActiva.png',
+										['title' => 'Oferta inactiva',
+										'data-toggle'=>'tooltip',
+										'data-placement'=>'left',
+										'class' => 'icono',
+										'url' => [	'controller'=>'Administrators',
+													'action'=>'enableDisableOffer',
+														'?' => ['id' => $oferta['CompanyJobContractType']['id'],
+																'estatus' => $oferta['CompanyJobContractType']['status']]]]);
+							else:
+								echo $this->Html->image('student/activa.png',
+										['title' => 'Oferta activa',
+										'data-toggle'=>'tooltip',
+										'data-placement'=>'left',
+										'class' => 'icono',
+										'url' => ['controller'=>'Administrators',
+												'action'=>'enableDisableOffer',
+												'?' => ['id' => $oferta['CompanyJobContractType']['id'],
+														'estatus' => $oferta['CompanyJobContractType']['status']]]]);
+							endif;
+						endif;
+					endif;
+				?>
+
 				<?= $this->Html->image('student/lista.png',
 									['title' => 'Ver candidatos dentro de oferta',
 									'data-toggle'=>'tooltip',
@@ -148,49 +183,7 @@
 													'id' => $oferta['CompanyJobProfile']['id'],
 													'editingAdmin' => 'yes']]]);?>
 
-				<?php 
-					if($oferta['CompanyJobContractType']['status'] == null):
-						echo $this->Html->image('student/noActiva.png',
-									['title' => 'Oferta incompleta',
-									'data-toggle'=>'tooltip',
-									'data-placement'=>'left',
-									'class' => 'icono',
-									'onclick' => 'ofertaIncompleta();']);	
-					else:	
-						if(strtotime($oferta['CompanyJobProfile']['expiration']) < strtotime(date('Y-m-d'))):
-							echo $this->Html->image('student/noActiva.png',
-										['title' => 'Oferta expirada',
-										'data-toggle'=>'tooltip',
-										'data-placement'=>'left',
-										'class' => 'icono',
-										'onclick' => 'ofertaExpirada();']);	
-						else:		
-							if($oferta['CompanyJobContractType']['status'] == 0):
-								echo $this->Html->image('student/noActiva.png',
-										['title' => 'Oferta inactiva',
-										'data-toggle'=>'tooltip',
-										'data-placement'=>'left',
-										'class' => 'icono',
-										'url' => [	'controller'=>'Administrators',
-													'action'=>'enableDisableOffer',
-														'?' => ['id' => $oferta['CompanyJobContractType']['id'],
-																'estatus' => $oferta['CompanyJobContractType']['status']]]]);
-							else:
-								echo $this->Html->image('student/activa.png',
-										['title' => 'Oferta activa',
-										'data-toggle'=>'tooltip',
-										'data-placement'=>'left',
-										'class' => 'icono',
-										'url' => ['controller'=>'Administrators',
-												'action'=>'enableDisableOffer',
-												'?' => ['id' => $oferta['CompanyJobContractType']['id'],
-														'estatus' => $oferta['CompanyJobContractType']['status']]]]);
-							endif;
-						endif;
-					endif;
-				?>
-				
-				<?= $this->Html->link($this->Html->image('student/descargar.png'),
+				<?= $this->Html->link($this->Html->image('student/descargar.png',['class' => 'icono','style'=>'width: 22px; height:22px']),
 								['controller' => 'Companies', 
 								'action' => 'viewOnlyOfferPdf',$oferta['CompanyJobProfile']['id'],
 								'?'=>['editingAdmin' => 'yes',
@@ -198,15 +191,16 @@
 								['target' => '_blank','escape' => false,
 								'title' => 'Descargar oferta en PDF',
 								'data-toggle'=>'tooltip',
-								'data-placement'=>'left',
-								'class' => 'icono',]);
+								'data-placement'=>'left']);
 				?>
 
 				<?php 
 					 echo $this->Html->image('student/eliminarAzul.png',
 									['title' => 'Eliminar oferta',
 									'style' => 'cursor: pointer;',
-									'class' => 'class="img-responsive center-block"',
+									'data-toggle'=>'tooltip',
+									'data-placement'=>'left',
+									'class' => 'icono',
 									'id' => 'focusStudentId'.$oferta['CompanyJobProfile']['id'],
 									'onclick' => 'deleteRegister('.$oferta['CompanyJobProfile']['id'].',"'.$oferta['CompanyJobProfile']['job_name'].'");']);
 							

@@ -1,11 +1,14 @@
 <?php
+	ini_set('max_execution_time', 300);
+	ini_set('memory_limit', '2048M');
 	// Importamos la clase PHPExcel
+	header( 'Content-type: text/html; charset=utf-8' );
 	App::import('Vendor', 'Classes/PHPExcel');
 
 	$objPHPExcel = new PHPExcel();
 	 
-	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo UNAM")
-								 ->setLastModifiedBy("SISBUT UNAM")
+	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo bti")
+								 ->setLastModifiedBy("SISBUT bti")
 								 ->setTitle("Reporte - Universitarios")
 								 ->setSubject("Reporte - Universitarios")
 								 ->setDescription("Reporte - Universitarios")
@@ -49,7 +52,7 @@
 	/*----/Estilos-----*/
 		
 	// Cargamos los titulos de la hoja
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','Sistema de Bolsa Universitaria de Trabajo UNAM');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','Sistema de Bolsa Universitaria de Trabajo bti');
 		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 		
 	//Se combinan las celdas
@@ -269,8 +272,7 @@
 
 	$i=6;
 	foreach ($datos as $dato){
-		
-
+    ob_flush(); 
 	$accesa = 0;
 	foreach ($columnas as $c):
 		if(($c == 1) OR ($c == 0)):
@@ -398,9 +400,27 @@
 		foreach($dato['StudentInterestJob'] as $expectativa):
 			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $Giros[$expectativa['business_activity']]);
 			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $AreasExperiencia[$expectativa['interest_area_id']]);
-			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $TiposContratos[$dato['StudentProspect']['contract_type']]);
-			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $JornadasLaborales[$dato['StudentProspect']['workday']]);
-			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $Salarios[$dato['StudentProspect']['economic_pretension']]);
+			if($dato['StudentProspect']['contract_type']<>''):
+				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $TiposContratos[$dato['StudentProspect']['contract_type']]);
+			else:
+				$indiceColumna++;
+			endif;
+			if($dato['StudentProspect']['workday']<>''):
+				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $JornadasLaborales[$dato['StudentProspect']['workday']]);
+			else:
+				$indiceColumna++;
+			endif;
+			if($dato['StudentProspect']['economic_pretension']<>''):
+				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $Salarios[$dato['StudentProspect']['economic_pretension']]);
+			else:
+				$indiceColumna++;
+			endif;
+			
+			// echo "<pre>";
+			// print_r($dato);
+			// echo "</pre>";
+			// exit;
+			$indiceColumna++;$indiceColumna++;$indiceColumna++;
 			if($dato['StudentProspect']['can_travel'] == 's'):
 				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, 'Si');
 			else:
@@ -675,7 +695,6 @@
 				foreach($studentProfessionalExperience['StudentWorkArea'] as $studentWorkArea):
 					$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna.'3', $arrayExperiencia[$indiceArray++]);
 					$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $studentWorkArea['job_name']);
-					
 					$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna.'3', $arrayExperiencia[$indiceArray++]);
 					if($studentProfessionalExperience['contract_type']<> ''):
 						$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i, $TiposContratos[$studentProfessionalExperience['contract_type']]);
@@ -746,7 +765,8 @@
 
 				endforeach;
 				
-				$numeroPuestos = count($studentProfessionalExperience['StudentWorkArea']);
+				// $numeroPuestos = count($studentProfessionalExperience['StudentWorkArea']);
+				$numeroPuestos = 2;
 				$puestosFaltantes = 3 - $numeroPuestos ;
 				$columnasFaltantes = $puestosFaltantes * 8;
 				for($j = 0; $j < $columnasFaltantes; $j++):

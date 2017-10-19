@@ -4,8 +4,8 @@
 
 	$objPHPExcel = new PHPExcel();
 	 
-	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo UNAM")
-								 ->setLastModifiedBy("SISBUT UNAM")
+	$objPHPExcel->getProperties()->setCreator("Sistema de Bolsa Universitaria de Trabajo bti")
+								 ->setLastModifiedBy("Sistema de Bolsa Universitaria de Trabajo bti")
 								 ->setTitle("Universitarios")
 								 ->setSubject("Universitarios")
 								 ->setDescription("Universitarios")
@@ -49,7 +49,7 @@
 	/*----/Estilos-----*/
 		
 	// Cargamos los titulos de la hoja
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','Sistema de Bolsa Universitaria de Trabajo UNAM');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','Sistema de Bolsa Universitaria de Trabajo bti');
 		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 		
 	//Se combinan las celdas

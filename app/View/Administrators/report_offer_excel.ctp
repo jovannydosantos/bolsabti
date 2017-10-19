@@ -4,8 +4,8 @@
 
 	$objPHPExcel = new PHPExcel();
 	 
-	$objPHPExcel->getProperties()->setCreator("SISBUT UNAM")
-								 ->setLastModifiedBy("SISBUT UNAM")
+	$objPHPExcel->getProperties()->setCreator("SISBUT bti")
+								 ->setLastModifiedBy("SISBUT bti")
 								 ->setTitle("Reporte - Ofertas & Vacantes")
 								 ->setSubject("Reporte - Ofertas & Vacantes")
 								 ->setDescription("Ejemplo de integracion cakephp 2.x y phpExcel.")
@@ -49,13 +49,13 @@
 	/*----/Estilos-----*/
 		
 	// Cargamos los titulos de la hoja
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','SISBUT UNAM');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A1','SISBUT bti');
 		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
 		
 	//Se combinan las celdas
 		$objPHPExcel->setActiveSheetIndex(0)->mergeCells('A2:C2');
 
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2','Descarga de ofertas / "Status" ');
+		$objPHPExcel->setActiveSheetIndex(0)->setCellValue('A2','Descarga de ofertas / Status: '.$estatus);
 		$objPHPExcel->getActiveSheet()->getStyle('A2')->applyFromArray($styleTextArray);
 		$objPHPExcel->getActiveSheet()->getStyle('A2:C2')->applyFromArray($styleBorderArray);
 	
@@ -303,9 +303,9 @@
 				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,'Sin especificar');
 			endif;
 		endif;
-
+		
 		if(isset($dato['CompanyJobProfile']['interest_area'])):
-			if($dato['CompanyJobProfile']['interest_area'] <> ''):
+			if(($dato['CompanyJobProfile']['interest_area'] <> '') AND (array_key_exists($dato['CompanyJobProfile']['interest_area'], $AreasInteres))) :
 				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,$AreasInteres[$dato['CompanyJobProfile']['interest_area']]);
 			else:
 				$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,'Sin especificar');
@@ -526,18 +526,6 @@
 		endif;
 	endif;
 
-	if(count($dato['CompanyJobLanguage'])):
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,count($dato['CompanyJobLanguage']));
-	else:
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,'');
-	endif;
-
-	if(count($dato['CompanyJobComputingSkill']) <> '' ):
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,count($dato['CompanyJobComputingSkill']));
-	else:
-		$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,'');
-	endif;
-	
 	//Idiomas
 	//Nomnbre Idiomas
 	$accesa = 0;
@@ -549,6 +537,18 @@
 	endforeach;
 
 	if($accesa == 1):
+		if(count($dato['CompanyJobLanguage'])):
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,count($dato['CompanyJobLanguage']));
+		else:
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,'');
+		endif;
+
+		if(count($dato['CompanyJobComputingSkill']) <> '' ):
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,count($dato['CompanyJobComputingSkill']));
+		else:
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($indiceColumna++.$i,'');
+		endif;
+		
 		if(isset($dato['CompanyJobLanguage'])):
 			$idiomasString = '';
 			$numIdiomas = count($dato['CompanyJobLanguage']);
@@ -756,6 +756,11 @@
 	$i++;
 	}
 	
+	// echo "<pre>";
+	// print_r($datos);
+	// print_r($AreasInteres);
+	// echo "</pre>";
+	// exit;
 	
 	$objPHPExcel->getActiveSheet()->setTitle('Reporte - Ofertas & Vacantes');
 	$objPHPExcel->setActiveSheetIndex(0);
