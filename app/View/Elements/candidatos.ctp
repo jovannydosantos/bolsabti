@@ -1,9 +1,15 @@
 <?php 
 	foreach($candidatos as $k => $candidato):
+
 ?>
+<script>
+
+
+</script>
 
 <div class="col-md-12 sombra" style="border: 1px solid #1a75bb; margin-bottom: 15px; background: url('/bolsabti/img/satinweave.png');">    	
 	<div class="col-md-2 visible-lg visible-md" style="margin-top: 1%; padding-left: 0px; padding-right: 0px;">
+		<center>
 		<?php
 			if (isset($candidato)):
 				if(isset($candidato['Student']['filename'])):
@@ -49,6 +55,7 @@
 		<p class="blackText" style="margin-top: 5px;">
 			<?php echo $candidato['StudentProfile']['name'].' '.$candidato['StudentProfile']['last_name'].' '.$candidato['StudentProfile']['second_last_name']; ?>
 		</p>
+		</center>
 	</div>			
 				
 	<div class="col-md-5" style="margin-top: 5px;margin-bottom: 5px;">
@@ -133,17 +140,15 @@
 							 break;
 						endif;
 					endforeach;
-
 					if($vista == 0):
-						echo $this->Html->image('student/visto.png',
+						echo $this->Html->image('student/noVisto.png',
 								['title' => 'Perfil no visto',
 								'data-toggle'=>'tooltip',
 								'data-placement'=>'left',
 								'class' => 'icono',]);
 						
 					else:
-					
-						echo $this->Html->image('student/noVisto.png',
+						echo $this->Html->image('student/visto.png',
 							['title' => 'Perfil visto',
 								'data-toggle'=>'tooltip',
 								'data-placement'=>'left',
@@ -217,7 +222,8 @@
 							'data-placement'=>'left',
 							'onclick' => 'saveReportarContratacion('.$candidato['Student']['id'].');',
 							'class' => 'icono',]);
-				?>
+				?>  
+				
 				<?php 
 					echo $this->Html->image('student/arroba.png',
 						['title' => 'Enviar correo',
@@ -235,48 +241,52 @@
 					endif;
 				?>
 				<?php 
-				 // Descargar cv del estudiante
 				 if($cvCompleto == 'Si'):
 					if($company['CompanyOfferOption']['max_cv_download'] <> null):
 						if($totalDescargas>=$company['CompanyOfferOption']['max_cv_download']):
-							echo $this->Html->image('student/descargado.png',
-														array(
-															'title' => 'Descargar CV en PDF',
-															'class' => 'class="img-responsive center-block"',
-															'onclick' => 'mensajeLimiteDescargas();',
-															'style' => 'width: 17px; height: 20px; cursor: help; '
-															)
-													);	
+							echo $this->Html->image('student/noDescargado.png',
+								array(
+									'title' => 'Descargar CV en PDF',
+									'class' => 'icono',
+									'data-toggle'=>'tooltip',
+									'data-placement'=>'left',
+									'onclick' => 'mensajeLimiteDescargas();',
+									));	
 						else:
 							echo $this->Html->link(
-										$this->Html->image('student/descargado.png', array('escape' => false,'style' => 'width: 17px; height: 20px; cursor: pointer; ')),
-										array(
-											'controller' => 'Companies', 
-											'action' => 'viewCvPdf',$candidato['Student']['id'] 
-											), 
-										array('target' => '_blank','escape' => false,'title' => 'Descargar CV en PDF',)
-							);
+								$this->Html->image('student/noDescargado.png', array('escape' => false,'style' => 'width: 17px; height: 20px; margin-right: 6px; cursor: pointer; ')),
+								array(
+									'controller' => 'Companies', 
+									'action' => 'viewCvPdf',$candidato['Student']['id'] 
+									), 
+								array('target' => '_blank',
+									'escape' => false,
+									'title' => 'Descargar CV en PDF',
+									'class' => 'icono',
+									'data-toggle'=>'tooltip',
+									'data-placement'=>'left',
+									));
+							endif;
+						else:
+							echo $this->Html->image('student/noDescargado.png',
+								array(
+									'title' => 'Descargar CV en PDF',
+									'class' => 'icono',
+									'data-toggle'=>'tooltip',
+									'data-placement'=>'left',
+									'onclick' => 'mensajeSinConfigurar();', 
+									));	
+							endif;
+						else:
+							echo $this->Html->image('student/noDescargado.png',
+									array(
+										'title' => 'Descargar CV en PDF',
+										'class' => 'icono',
+										'data-toggle'=>'tooltip',
+										'data-placement'=>'left',
+										'onclick' => 'cvIncompleto();',
+										));	
 						endif;
-					else:
-						echo $this->Html->image('student/descargado.png',
-														array(
-															'title' => 'Descargar CV en PDF',
-															'class' => 'class="img-responsive center-block"',
-															'onclick' => 'mensajeSinConfigurar();',
-															'style' => 'width: 17px; height: 20px; cursor: help; '
-															)
-													);	
-					endif;
-				else:
-					echo $this->Html->image('student/descargado.png',
-							array(
-								'title' => 'Descargar CV en PDF',
-								'class' => 'class="img-responsive center-block"',
-								'onclick' => 'cvIncompleto();',
-								'style' => 'width: 17px; height: 20px;  cursor: help; '
-								)
-								);	
-				endif;
 				?>
 			</div>
 				<span><strong>Correo: </strong><?php  echo $candidato['Student']['email']; ?></span><br />
@@ -289,33 +299,15 @@
 								'action'=>'viewCvOnline', $candidato['Student']['id']],
 								['class' => 'btn btn btn-bti col-md-12',
 								'escape' => false]); ?>
+			
 			</div>
 		</center>
 	</div>
 	
-	<?php endforeach; ?>
+
 	
 </div>
-		
-<div class="col-md-11" style="margin-left:10px;">
-	<?php 
-			if(!empty($candidatos)):
-		?>
-	<center>
-		<p>
-			<?php echo $this->Paginator->counter(
-				array('format' => 'Página {:page} de {:pages}, mostrando {:current} registro de {:count}')
-			); ?>
-		</p>
+	<?php endforeach; ?>
 
-		<div class="pagination" style="margin-top:5px; margin-bottom:15px">
-			<?php echo $this->Paginator->first('<< primero');?>
-			<?php echo $this->Paginator->prev('< anterior', array(), null, array('class' => 'prev disabled')); ?>
-			<?php echo $this->Paginator->numbers(array('separator'=>'')); ?>
-			<?php echo $this->Paginator->next('siguiente >', array(), null, array('class' => 'next disabled'));?>
-			<?php echo $this->Paginator->last('último >>');?>
-		</div>	
-	</center>
-	<?php endif; ?>
-</div>
+
 

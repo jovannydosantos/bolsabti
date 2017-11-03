@@ -186,7 +186,7 @@
 								'data-placement'=>'left',
 								'class' => 'icono',
 								'url' => ['controller'=>'Students',
-										'action'=>'report', $oferta['CompanyJobProfile']['id'] ]]
+								'action'=>'report', $oferta['CompanyJobProfile']['id'] ]]
 						);
 					else:
 						echo $this->Html->image('student/contratado.png',

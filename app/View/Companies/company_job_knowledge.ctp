@@ -29,7 +29,8 @@
 						'<div class=" divIdiomas">'+
 							'<button type="button" class="btn btn-danger eliminar" style="margin-right: -15px; float: right; margin-bottom: -30px; margin-top: 0px;"><i class="glyphicon glyphicon-trash"></i></button>'+
 							'<div class="col-md-4 col-md-offset-1">'+
-								'<p>Idioma</p>'+
+						
+								'<p style="color:#588BAD">Idioma:</p>'+
 							'</div>'+
 							'<div class="form-group row"><div class="col-md-12 "><label for="CompanyJobLanguage0LanguageId"></label><div class="col-md-10 col-md-offset-1">'+
 							'<select name="data[CompanyJobLanguage]['+x+'][language_id]" class="selectpicker show-tick form-control idioma'+x+'" data-live-search="true" id="CompanyJobLanguage'+x+'LanguageId">'+
@@ -110,7 +111,8 @@
 		});
 		
 		<?php if(empty($this->request->data['CompanyJobLanguage'])): ?>
-			jAlert('Para que cada bloque de idiomas y cómputo se guarde debe de completar cada uno de sus campos','Mensaje');
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Para que cada bloque de idiomas y cómputo se guarde debe de completar cada uno de sus campos'});
+				
 		<?php endif; ?>
 	});	
 
@@ -166,166 +168,149 @@
 	}
 	
 </script>
-	
-	<?php echo $this->Session->flash(); ?>	
-	
-	<?php 
-				echo $this->Html->link(	'<i class="glyphicon glyphicon-arrow-left"></i> &nbsp; Regresar',
-													array(
-															'controller'=>'Companies',
-															'action'=>'companyCandidateProfile',
-															),
-													array(
-															'class' => 'btn btn-default btnBlue ',
-															'style' => 'width: 120px; border-bottom-width: 0px; margin-bottom: 15px;',
-															'escape' => false,
-															)	
-										); 
-		?>	
-		
 	<div class="col-md-12" style="margin-top: 15px;">
 		<?php 
 			echo $this->Form->create('Company', array(
-												'class' => 'form-horizontal' , 
-												'role' => 'form',
-												'id'=> 'idForm',
-												'inputDefaults' => array(
-														'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-														'div' => array('class' => 'form-group row'),
-														'class' => 'form-control',
-														'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="top" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-														'between' => ' <div class="col-md-6">',
-														'after' => '</div></div>',
-														'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-												),
-												'action' => 'companyJobKnowledge',
+									'class' => 'form-horizontal' , 
+									'role' => 'form',
+									'id'=> 'idForm',
+									'inputDefaults' => array(
+									'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
+									'div' => array('class' => 'form-group row'),
+									'class' => 'form-control',
+									'before' => '<div class="col-md-12 ">',
+									'between' => ' <div class="col-md-6">',
+									'after' => '</div></div>',
+									'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
+											),
+									'action' => 'companyJobKnowledge',
 		)); ?>	
 				
 		<div class="col-md-6">
 			<div class="col-md-12">	
 				<div id="contenedorIdiomas">	
-						<div class="col-md-12 col-md-offset-1">
-							<p>Idioma</p>
-						</div>
-						<?php 	echo $this->Form->input('CompanyJobLanguage.0.language_id', array(
-										'type'=>'select',
-									    'before' => '<div class="col-md-12 "><img data-toggle="tooltip" id="" data-placement="top" title=""Seleccione otro idioma requerido para el perfil de la oferta, además de la lengua nativa, e indique el nivel para las tres habilidades: lectura, escritura y conversación.Ejemplos:Inglés Portugués" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-										'between' => ' <div class="col-md-10 col-md-offset-1">',
-										'class' => 'selectpicker show-tick form-control',
-										'data-live-search' => "true",
-										'label' => '',
-										'options' => $Lenguages,'default'=>'0', 'empty' => 'Idioma'
-						));?>
-						<?php 	echo $this->Form->input('CompanyJobLanguage.0.reading_level', array(
-										'type'=>'select',
-										'before' => '<div class="col-md-12 col-md-offset-1">',
-										'class' => 'selectpicker show-tick form-control',
-										'label' => array(
-												'class' => 'col-md-4 control-label',
-												'text' => 'Lectura'),
-										'placeholder' => 'Nivel',
-										'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-						));	?>
-						<?php 	echo $this->Form->input('CompanyJobLanguage.0.writing_level', array(
-										'type'=>'select',
-										'before' => '<div class="col-md-12 col-md-offset-1">',
-										'class' => 'selectpicker show-tick form-control',
-										'label' => array(
-												'class' => 'col-md-4 control-label',
-												'text' => 'Escritura'),
-										'placeholder' => 'Nivel',
-										'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-						));	?>
-						<?php 	echo $this->Form->input('CompanyJobLanguage.0.conversation_level', array(
-										'type'=>'select',
-										'before' => '<div class="col-md-12 col-md-offset-1">',
-										'class' => 'selectpicker show-tick form-control',
-										'label' => array(
-												'class' => 'col-md-4 control-label',
-												'text' => 'Conversación'),
-										'placeholder' => 'Nivel',
-										'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-						));	?>
-						
+					<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+						<p style="color:#588BAD">Idiomas</p>
+					</blockquote>
+					<?php 	echo $this->Form->input('CompanyJobLanguage.0.language_id', array(
+									'type'=>'select',
+									'before' => '<div class="col-md-12 ">',
+									'between' => ' <div class="col-md-10 col-md-offset-1">',
+									'class' => 'selectpicker show-tick form-control',
+									'data-live-search' => "true",
+									'label' => '',
+									'options' => $Lenguages,'default'=>'0', 'empty' => 'Idioma'
+					));?>
+					<?php 	echo $this->Form->input('CompanyJobLanguage.0.reading_level', array(
+									'type'=>'select',
+									'before' => '<div class="col-md-12 col-md-offset-1">',
+									'class' => 'selectpicker show-tick form-control',
+									'label' => array(
+											'class' => 'col-md-4 control-label',
+											'text' => 'Lectura'),
+									'placeholder' => 'Nivel',
+									'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
+					));	?>
+					<?php 	echo $this->Form->input('CompanyJobLanguage.0.writing_level', array(
+									'type'=>'select',
+									'before' => '<div class="col-md-12 col-md-offset-1">',
+									'class' => 'selectpicker show-tick form-control',
+									'label' => array(
+											'class' => 'col-md-4 control-label',
+											'text' => 'Escritura'),
+									'placeholder' => 'Nivel',
+									'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
+					));	?>
+					<?php 	echo $this->Form->input('CompanyJobLanguage.0.conversation_level', array(
+									'type'=>'select',
+									'before' => '<div class="col-md-12 col-md-offset-1">',
+									'class' => 'selectpicker show-tick form-control',
+									'label' => array(
+											'class' => 'col-md-4 control-label',
+											'text' => 'Conversación'),
+									'placeholder' => 'Nivel',
+									'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
+					));	?>
+					<script languaje="javascript">
+						var x = 1;
+					</script> 
+					<?php 
+						$cont = 0;
+						if(!empty($this->request->data['CompanyJobLanguage'])):
+							foreach($this->request->data['CompanyJobLanguage'] as $k => $idioma): 
+								if($cont > 0):
+					?>
+						<div id="divIdiomas"> 	
+							<button type="button" class="btn btn-danger eliminar"  style="float: right; margin-bottom: -30px; margin-top: -5px; margin-right: -18px;"><i class="glyphicon glyphicon-trash"></i></button>
+							<div class="col-md-4 col-md-offset-1">
+								<p>Idioma</p>
+							</div>
+							<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.language_id', array(
+											'type'=>'select',
+											'before' => '<div class="col-md-12 ">',
+											'between' => ' <div class="col-md-10 col-md-offset-1">',
+											'class' => 'selectpicker show-tick form-control',
+											'data-live-search' => "true",
+											'label' => '',
+											'options' => $Lenguages,'default'=>'0', 'empty' => 'Idioma'
+							));?>
+							<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.reading_level', array(
+											'type'=>'select',
+											'before' => '<div class="col-md-12 col-md-offset-1">',
+											'class' => 'selectpicker show-tick form-control',
+											'label' => array(
+													'class' => 'col-md-4 control-label',
+													'text' => 'Lectura'),
+											'placeholder' => 'Nivel',
+											'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
+							));	?>
+							<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.writing_level', array(
+											'type'=>'select',
+											'before' => '<div class="col-md-12 col-md-offset-1">',
+											'class' => 'selectpicker show-tick form-control',
+											'label' => array(
+													'class' => 'col-md-4 control-label',
+													'text' => 'Escritura'),
+											'placeholder' => 'Nivel',
+											'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
+							));	?>
+							<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.conversation_level', array(
+								'type'=>'select',
+								'before' => '<div class="col-md-12 col-md-offset-1">',
+								'class' => 'selectpicker show-tick form-control',
+								'label' => array(
+								'class' => 'col-md-4 control-label',
+								'text' => 'Conversación'),
+								'placeholder' => 'Nivel',
+								'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
+								));	
+							?>
+						</div> 
 						<script languaje="javascript">
-							var x = 1;
+							x++;
 						</script> 
-					
-						<?php 
-							$cont = 0;
-							if(!empty($this->request->data['CompanyJobLanguage'])):
-								foreach($this->request->data['CompanyJobLanguage'] as $k => $idioma): 
-									if($cont > 0):
-						?>
-										<div id="divIdiomas"> 	
-											<button type="button" class="btn btn-danger eliminar"  style="float: right; margin-bottom: -30px; margin-top: -5px; margin-right: -18px;"><i class="glyphicon glyphicon-trash"></i></button>
-											<div class="col-md-4 col-md-offset-1">
-												<p>Idioma</p>
-											</div>
-											<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.language_id', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12 ">',
-															'between' => ' <div class="col-md-10 col-md-offset-1">',
-															'class' => 'selectpicker show-tick form-control',
-															'data-live-search' => "true",
-															'label' => '',
-															'options' => $Lenguages,'default'=>'0', 'empty' => 'Idioma'
-											));?>
-											<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.reading_level', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12 col-md-offset-1">',
-															'class' => 'selectpicker show-tick form-control',
-															'label' => array(
-																	'class' => 'col-md-4 control-label',
-																	'text' => 'Lectura'),
-															'placeholder' => 'Nivel',
-															'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-											<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.writing_level', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12 col-md-offset-1">',
-															'class' => 'selectpicker show-tick form-control',
-															'label' => array(
-																	'class' => 'col-md-4 control-label',
-																	'text' => 'Escritura'),
-															'placeholder' => 'Nivel',
-															'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-											<?php 	echo $this->Form->input('CompanyJobLanguage.'.$cont.'.conversation_level', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-12 col-md-offset-1">',
-															'class' => 'selectpicker show-tick form-control',
-															'label' => array(
-																	'class' => 'col-md-4 control-label',
-																	'text' => 'Conversación'),
-															'placeholder' => 'Nivel',
-															'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-										</div>
-							
-									<script languaje="javascript">
-										x++;
-									</script> 
 						<?php
-									endif;
-									$cont++;
-								endforeach; 
-							endif;
+								endif;
+								$cont++;
+							endforeach; 
+						endif;
 						?>
-						
-				</div>
-					<div class="col-md-offset-7">
-						<p>Agregar otro idioma <img  id="agregarIdioma" src="<?php echo $this->webroot; ?>/img/add.png" ALT="add.png" style='background-color: transparent; width: 25px;cursor:pointer;margin-top: -5px;'></p>
-					</div>
+				</div> 
+				<div class="col-md-offset-7">
+					<span>Agregar otro nivel</span>
+					<button type="button" class="btn btn-primary btn-sm" id="agregarIdioma">
+						<span class="glyphicon glyphicon-plus"></span>
+					</button>	
 				</div>
 			</div>
+		</div>
 		
 		<div class="col-md-6">
-			<div class="col-md-12" style="color: #fff">	
+			<div class="col-md-12">	
 				<div id="contenedorComputo"> 	
-					<div class="col-md-12">
-						<p>Cómputo</p>
-					</div>
+					<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+						<p style="color:#588BAD">Computo</p>
+					</blockquote>
 					<?php 	echo $this->Form->input('CompanyJobComputingSkill.0.category_id', array(
 									'type'=>'select',
 									'before' => '<div class="col-md-11">',
@@ -339,7 +324,7 @@
 									'type'=>'select',
 									'class' => 'selectpicker show-tick form-control',
 									'data-live-search' => "true",
-									'before' => '<div class="col-md-11 "><img data-toggle="tooltip" id="" data-placement="top" title="Nombre del lenguaje de programación, software, sistema operativo o herramienta requerido por la oferta." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+									'before' => '<div class="col-md-11 ">',
 									'between' => ' <div class="col-md-11">',
 									'label' => '',
 									'placeholder' => 'Nombre',
@@ -350,7 +335,7 @@
 					<div id="contentOther0">
 					<?php	echo $this->Form->input('CompanyJobComputingSkill.0.other', array(
 									'class' => 'form-control',
-									'before' => '<div class="col-md-11 "><img data-toggle="tooltip" id="" data-placement="top" title="En el caso de no encontrar el nombre del lenguaje de programación, software, sistema operativo o herramienta deberá escribirlo en este campo." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
+									'before' => '<div class="col-md-11 ">',
 									'between' => ' <div class="col-md-11">',
 									'label' => '',
 									'placeholder' => 'Otro',
@@ -366,102 +351,96 @@
 									'placeholder' => 'Nivel',
 									'options' => $NivelesSoftware,'default'=>'0', 'empty' => 'Nivel'
 					));	?>
-				
-				
 					<script languaje="javascript">
 						var xComputo = 1;
 					</script> 
-					
-						<?php 
-							$cont = 0;
-							if(!empty($this->request->data['CompanyJobComputingSkill'])):
-								foreach($this->request->data['CompanyJobComputingSkill'] as $k => $computo): 
-									if($cont > 0):
-						?>
-										<div id="divComputo"> 	
-											<button type="button" class="btn btn-danger eliminar" style="margin-right: 15px; float: right; margin-bottom: -30px; margin-top: 0px;"><i class="glyphicon glyphicon-trash"></i></button>
-											<div class="col-md-4">
-												<p>Cómputo</p>
-											</div>
-											<?php 	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.category_id', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-11">',
-															'between' => ' <div class="col-md-11">',
-															'class' => 'selectpicker show-tick form-control',
-															'label' => '',
-															'options' => $Tecnologias,'default'=>'0', 'empty' => 'Categoría'
-											));?>
-											<div id="contentName<?php echo $cont; ?>">
-											<?php 	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.name', array(
-															'type'=>'select',
-															'class' => 'selectpicker show-tick form-control',
-															'data-live-search' => "true",
-															'before' => '<div class="col-md-11 ">',
-															'between' => ' <div class="col-md-11">',
-															'label' => '',
-															'placeholder' => 'Nombre',
-															'onchange' => 'hideOther('.$cont.')',
-															'options' => $Programas,'default'=>'0', 'empty' => 'Nombre'
-											));	?>
-											</div>
-											<div id="contentOther<?php echo $cont; ?>">
-											<?php	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.other', array(
-															'before' => '<div class="col-md-11 "><img data-toggle="tooltip" id="" data-placement="top" title="En el caso de no encontrar el nombre del lenguaje de programación, software, sistema operativo o herramienta deberá escribirlo en este campo." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-															'between' => ' <div class="col-md-11">',
-															'label' => '',
-															'placeholder' => 'Otro',
-															'onblur' => 'restart('.$cont.')'
-											));	?>
-											</div>
-											<?php 	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.level', array(
-															'type'=>'select',
-															'before' => '<div class="col-md-11">',
-															'between' => ' <div class="col-md-11">',
-															'class' => 'selectpicker show-tick form-control',
-															'label' => '',
-															'placeholder' => 'Nivel',
-															'options' => $NivelesSoftware,'default'=>'0', 'empty' => 'Nivel'
-											));	?>
-										</div>
-									<script languaje="javascript">
-											xComputo++;
-									</script> 
-							<?php   endif; ?>
-									
-									<script languaje="javascript">
-											// xComputo++;
-											<?php if($computo['name'] <> ''): ?>
-												hideOther(<?php echo "'".$cont."'"; ?>);
-											<?php else: 
-													if($computo['other'] <> ''):
-											?>
-														restart(<?php echo "'".$cont."'"; ?>);
-											<?php 	endif;
-												endif; 
-											?>
-									</script> 
-						<?php
-									$cont++;
-								endforeach; 
-							endif;
-						?>
-						
+					<?php 
+						$cont = 0;
+						if(!empty($this->request->data['CompanyJobComputingSkill'])):
+							foreach($this->request->data['CompanyJobComputingSkill'] as $k => $computo): 
+								if($cont > 0):
+					?>
+					<div id="divComputo"> 	
+						<button type="button" class="btn btn-danger eliminar" style="margin-right: 15px; float: right; margin-bottom: -30px; margin-top: 0px;"><i class="glyphicon glyphicon-trash"></i>
+						</button>
+						<div class="col-md-4">
+							<p>Cómputo</p>
+						</div>
+							<?php 	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.category_id', array(
+											'type'=>'select',
+											'before' => '<div class="col-md-11">',
+											'between' => ' <div class="col-md-11">',
+											'class' => 'selectpicker show-tick form-control',
+											'label' => '',
+											'options' => $Tecnologias,'default'=>'0', 'empty' => 'Categoría'
+							));?>
+							<div id="contentName<?php echo $cont; ?>">
+							<?php 	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.name', array(
+											'type'=>'select',
+											'class' => 'selectpicker show-tick form-control',
+											'data-live-search' => "true",
+											'before' => '<div class="col-md-11 ">',
+											'between' => ' <div class="col-md-11">',
+											'label' => '',
+											'placeholder' => 'Nombre',
+											'onchange' => 'hideOther('.$cont.')',
+											'options' => $Programas,'default'=>'0', 'empty' => 'Nombre'
+							));	?>
+							</div>
+							<div id="contentOther<?php echo $cont; ?>">
+							<?php	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.other', array(
+											'before' => '<div class="col-md-11 ">',
+											'between' => ' <div class="col-md-11">',
+											'label' => '',
+											'placeholder' => 'Otro',
+											'onblur' => 'restart('.$cont.')'
+							));	?>
+							</div>
+							<?php 	echo $this->Form->input('CompanyJobComputingSkill.'.$cont.'.level', array(
+											'type'=>'select',
+											'before' => '<div class="col-md-11">',
+											'between' => ' <div class="col-md-11">',
+											'class' => 'selectpicker show-tick form-control',
+											'label' => '',
+											'placeholder' => 'Nivel',
+											'options' => $NivelesSoftware,'default'=>'0', 'empty' => 'Nivel'
+							));	?>
+					</div>
+					<script languaje="javascript">
+							xComputo++;
+					</script> 
+					<?php   endif; ?>		
+					<script languaje="javascript">
+							// xComputo++;
+							<?php if($computo['name'] <> ''): ?>
+								hideOther(<?php echo "'".$cont."'"; ?>);
+							<?php else: 
+									if($computo['other'] <> ''):
+							?>
+										restart(<?php echo "'".$cont."'"; ?>);
+							<?php 	endif;
+								endif; 
+							?>
+					</script> 
+					<?php
+								$cont++;
+							endforeach; 
+						endif;
+					?>	
 				</div>
-				
 				<div class="col-md-offset-6">
-					<p style="margin-left: -15px;">Agregar otro cómputo <img  id="agregarComputo" src="<?php echo $this->webroot; ?>/img/add.png" ALT="add.png" style='background-color: transparent; width: 25px; cursor:pointer;margin-top: -5px;'></p>
+					<span>Agregar otro cómputo </span>
+						<button type="button" class="btn btn-primary btn-sm" id="agregarComputo"><span class="glyphicon glyphicon-plus"></span>
+						</button>	
 				</div>
 			</div>
-				
-				<div style="margin-left: 35px;">
-					<p>Conocimientos y habilidades profesionales</p>
-				</div>
-				
+			<div class="col-md-12">
+				<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+					<p style="color:#588BAD">Conocimientos y habilidades profesionales</p>
+				</blockquote>
 				<?php echo $this->Form->input('CompanyJobProfile.id'); ?>
-				
 				<?php 	echo $this->Form->input('CompanyJobProfile.professional_skill', array(
-													'before' => '<div class="col-md-11 "><img data-toggle="tooltip" id="" data-placement="top" title="Descripción de entrenamientos y metodologías específicas, manejo de equipo especializado,entre otros.
-Le recordamos que cuenta con 316 caracteres como máximo." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: 100px;margin-left: 20px;">',
+													'before' => '<div class="col-md-11 ">',
 													'between' => ' <div class="col-md-10">',
 													'maxlength' => '316',
 													'label' => '',
@@ -471,40 +450,37 @@ Le recordamos que cuenta con 316 caracteres como máximo." class="img-circle cam
 				<div class="col-md-11" style="text-align: right; right; top: -10px;margin-left: -50px;">
 					<span id="contadorTaComentario">0/316</span><span> caracteres máx.</span>
 				</div>
-				
-				
-							<div class="col-md-12" style="margin-top: 30px;">
-								<div class="col-md-6 col-md-offset-0">
-								<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-save"></i>&nbsp; Guardar',array(
-														'type' => 'submit', 
-														'div' => 'form-group',
-														'escape' => false,
-														'class' => 'btn btnBlue btn-default col-md-9',
-														'escape' => false,
-											));
-								echo $this->Form->end(); 
-								?>
-								</div>
-								<?php if($this->Session->check('CompanyCandidateProfile.id') == true): ?>
-								<div class="col-md-6">
-									<div class="btn-group">
-											<?php 
-													echo $this->Html->link('Continuar &nbsp; <i class="glyphicon glyphicon-arrow-right"></i>',
-																				array(
-																					'controller'=>'Companies',
-																					'action'=>'viewOfferOnline',$this->Session->read('CompanyJobProfile.id'),
-																				),
-																				array(
-																					'class' => 'btn btn-default btnBlue ',
-																					'style' => 'width: 130px;',
-																					'escape' => false,
-																					)	
-												); 	?> 
-									</div>
-								</div>
-								<?php endif; ?>
-							</div>
-			
-		</div>	
-		
+				<div class="col-md-12" style="margin-top: 30px;">
+					<div class="col-md-6 col-md-offset-0">
+						<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-disk"></i>&nbsp; Guardar',array(
+												'type' => 'submit', 
+												'div' => 'form-group',
+												'escape' => false,
+												'class' => 'btn btn-primary btn-bti',
+												'escape' => false,
+									));
+						echo $this->Form->end(); 
+						?>
+					</div>
+					<?php if($this->Session->check('CompanyCandidateProfile.id') == true): ?>
+					<div class="col-md-6">
+						<div class="btn-group">
+								<?php 
+									echo $this->Html->link('Continuar &nbsp; <i class="glyphicon glyphicon-arrow-right"></i>',
+																array(
+																	'controller'=>'Companies',
+																	'action'=>'viewOfferOnline',$this->Session->read('CompanyJobProfile.id'),
+																),
+																array(
+																	'class' => 'btn btn-primary btn-bti',
+																	'style' => 'width: 130px;',
+																	'escape' => false,
+																	)	
+								); 	?> 
+						</div>
+					</div>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>
 	</div>

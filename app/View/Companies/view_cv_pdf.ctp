@@ -1,30 +1,10 @@
 <?php 
-	$this->layout = 'pdf'; 
+	$this->layout = 'company'; 
 ?>
-<script>
-	<?php
-		if($show==1):
-	?>
-		setTimeout ("alert('El número de visualizaciones y/o descargas en pdf ha llegado a su límite', 'Mensaje');  window.close() ", 3000);
-	<?php
-		endif;
-	?>
-</script>
-<?php
-if($descargas<$company['CompanyOfferOption']['max_cv_download']):
-ini_set('memory_limit', '256M');
-	ini_set('max_execution_time', 60);
-	function numero_de_meses($hoy,$fecha_anterior)
-	{
-	$meses=0;
-	while($fecha_anterior<=$hoy)
-	{
-	$meses++;
-	$fecha_anterior=date("Y-m-d", strtotime("$fecha_anterior +1 month"));
-	}
 
-	return $meses;
-	}
+<?php
+	ini_set('memory_limit', '256M');
+	ini_set('max_execution_time', 60);
     
 	$companyexp = ''; 
 	$areaexp = ''; 
@@ -48,11 +28,11 @@ ini_set('memory_limit', '256M');
             $mesesToYear = 0;
             $resAnosExperiencia = 0;
             $fecha1 = new DateTime($puesto['start_date'] . "00:00:00");
-			if($puesto['end_date'] == '0000-00-00'):
+			if(($puesto['end_date'] == '0000-00-00') || ($puesto['end_date'] == null)):
                 $puesto['end_date'] = date ("Y/m/d");
-                $fechexp = '<table width="100%" border="0"><br><tr><td width="83%"><strong>'. $companyName .'</strong></td><td width="10%"><strong>'.date("m-Y",strtotime($puesto['start_date'])).' /</strong></td><td width="10%"><strong> Actual</strong></td></tr></table>';
+                $fechexp = '<br /><table width="100%"><tr><td width="79%"><strong>'. $companyName .'</strong></td><td width="10%" style="text-align: center"><strong>'.date("m-Y",strtotime($puesto['start_date'])).'</strong></td><td width="1%">/</td><td width="10%" style="text-align: center"><strong>Actual</strong></td></tr></table>';
             else:
-                $fechexp = '<table width="100%" border="0"><tr><td width="80%"><strong>'. $companyName .'</strong></td><td width="10%"><strong>'.date("m-Y",strtotime($puesto['start_date'])).' /</strong></td><td width="10%"><strong> '.date("m-Y",strtotime($puesto['end_date'])).'</strong></td></tr></table>';
+                $fechexp = '<br /><table width="100%"><tr><td width="79%"><strong>'. $companyName .'</strong></td><td width="10%" style="text-align: center"><strong>'.date("m-Y",strtotime($puesto['start_date'])).'</strong></td><td width="1%">/</td><td width="10%" style="text-align: center"><strong>'.date("m-Y",strtotime($puesto['end_date'])).'</strong></td></tr></table>';
             endif;
             
 			$fecha1 = new DateTime($puesto['start_date'] . "00:00:00");
@@ -64,42 +44,40 @@ ini_set('memory_limit', '256M');
             $resAnosExperiencia = $anosExperiencia + $mesesToYear;
             
 			if($resAnosExperiencia==0):
-                $resAnosExperiencia = '<br> menor a 6 meses';
+                $resAnosExperiencia = '<br /> menor a 6 meses';
             endif;
 
-			$areaexp = '<table width="100%" border="0"><tr><td width="78%">'.$puesto['ExperienceArea']['experience_area'].'</td><td width="38%">Años de experiencia: '.$resAnosExperiencia.' </td></tr></table>';
-			$puestexp = '<table width="100%" border="0"><br><tr><td width="100%"><strong>'.$contador.'.- ' .$puesto['job_name'].'</strong></td></tr></table>';  
+			$areaexp = '<table width="100%" ><tr><td width="78%">'.$puesto['ExperienceArea']['experience_area'].'</td><td width="38%">Años de experiencia: '.$resAnosExperiencia.' </td></tr></table>';
+			$puestexp = '<table width="100%" ><br /><tr><td width="100%"><strong>'.$contador.'.- ' .$puesto['job_name'].'</strong></td></tr></table>';  
    
 			if(!empty($puesto['StudentResponsability'])): 
-				$titexp = '<table width="100%" border="0"><tr><td width="100%"><strong>Principales Responsabilidades</strong></td></tr></table>';              
+				$titexp = '<table width="100%" ><tr><td width="100%"><strong>Principales Responsabilidades:</strong></td></tr></table>';              
 
 				foreach($puesto['StudentResponsability'] as $k => $experiencias):
-					$arearesp .= '<table width="100%" border="0"><tr><td width="98%">-' . $experiencias['responsability'] . '</td><td width="2%"></td></tr></table>';
+					$arearesp .= '<table width="100%" ><tr><td width="98%"><ul><li>' . $experiencias['responsability'] . '</li></ul></td><td width="2%"></td></tr></table>';
                 endforeach;
 			endif;
 		   
 			if(!empty($puesto['StudentAchievement'])):           
-				$titlogs = '<br><table width="100%" border="0"><tr><td width="100%"><strong>Principales Logros</strong></td></tr></table>';
+				$titlogs = '<br /><table width="100%" ><tr><td width="100%"><strong>Principales Logros:</strong></td></tr></table>';
 				foreach($puesto['StudentAchievement'] as $k => $logros):
-                    $areaslogr .='<table width="100%" border="0"><tr><td width="98%">-' . $logros['achievement'] .'</td><td width="2%"></td></tr></table>';
+                    $areaslogr .='<table width="100%" ><tr><td width="98%"><ul><li>' . $logros['achievement'] .'</li></ul></td><td width="2%"></td></tr></table>';
 				endforeach; 
 			endif; 
 			
 			$experienciasall .= $fechexp.$areaexp.$puestexp.$titexp.$arearesp.$titlogs.$areaslogr;      
 			$companyexp = ''; $areaexp = '';$fechexp = ''; $puestexp = ''; $titref = ''; $titexp = ''; $arearesp = '';$areaslogr = '';
 			$contador++;
-	  
         endforeach;
-	
-    endforeach; 
+	endforeach; 
 
 	if($experienciasall<>''):
-		$experiencias1 = '<table width="100%" border="0"><tr><td><strong>EXPERIENCIA PROFESIONAL</strong></td></tr></table>';
+		$experiencias1 = '<br /><span><strong>EXPERIENCIA PROFESIONAL</strong></span><br />';
 		$experiencias2 = $experiencias1.$experienciasall; 
 	else:
 		$experiencias2 = ''; 
-	endif; 
-
+	endif;
+	 
 //------------------------ VALIDA PROYECTOS EXTRACURICULAES -------------------------------------------------
 
   $experiencias1p = '';
@@ -108,32 +86,24 @@ ini_set('memory_limit', '256M');
    if(!empty($student['StudentAcademicProject'])):   
          $experienciasallp = '';
         foreach($student['StudentAcademicProject'] as $k => $proyecto):
-            $areaexpp = '';
-            $fechexpp = ''; 
-            $empInst = ''; 
-            $nomPais = ''; 
-            $titexpp = ''; 
-            $arearespp = '';
-            $titlogsp = '';
-            $areaslogrp = ''; 
+            $areaexpp = ''; $fechexpp = ''; $empInst = ''; $nomPais = '';  $titexpp = ''; $arearespp = ''; $titlogsp = ''; $areaslogrp = ''; 
         
-            $fechexpp = '<table width="100%" border="0"><br><tr><td><strong>Nombre del proyecto:'.$proyecto['name'].'</strong></td></tr></table>';
-            $empInst  = '<table width="100%" border="0"><tr><td><strong>Empresa / institucion:'.$proyecto['company'].'</strong></td></tr></table>';
-            $nomPais  = '<table width="100%" border="0"><tr><td><strong>Pais: '.$Paises[$proyecto['country']].'</strong></td></tr></table>';
+            $fechexpp = '<br /><span><strong>'.$proyecto['name'].'</strong></span>';
+            $empInst  = '<br /><span><strong>'.$proyecto['company'].'</strong></span>';
+            $nomPais  = '<br /><span><strong>País: '.$Paises[$proyecto['country']].'</strong></span>';
             
-            $titexpp   = '<table width="100%" border="0"><br><tr><td width="100%"><strong>Principales Responsabilidades</strong></td></tr></table>';              
-            $arearespp = '<table width="100%" border="0"><tr><td width="95%">' . $proyecto['responsability'] . '</td><td width="5%"></td></tr></table>';
+            $titexpp   = '<br /><br /><span><strong>Principales Responsabilidades</strong></span>';              
+            $arearespp = '<br /><table width="100%"><tr><td width="98%"><ul><li>'.$proyecto['responsability'].'</li></ul></td></tr></table>';
 
-            $titlogsp   = '<table width="100%" border="0"><br><tr><td width="100%"><strong>Principales Logros</strong></td></tr></table>';
-            $areaslogrp = '<table width="100%" border="0"><tr><td width="95%">' . $proyecto['achievement'].  '</td><td width="5%"></td></tr></table>';
+            $titlogsp   = '<span><strong>Principales Logros</strong></span>';
+            $areaslogrp = '<br /><table width="100%"><tr><td width="98%"><ul><li>'.$proyecto['achievement'].'</li></ul></td></tr></table>';
 
             $experienciasallp .= $fechexpp.$empInst.$nomPais.$titexpp.$arearespp.$titlogsp.$areaslogrp;
 
         endforeach;
-        $experiencias1p = '<br><table width="100%" border="0"><tr><td><strong>PROYECTOS EXTRACURRICULARES</strong></td></tr></table>';
+        $experiencias1p = '<span><strong>PROYECTOS EXTRACURRICULARES</strong></span>';
         $experiencias2p = $experiencias1p.$experienciasallp;   
   endif; 
-
 
 	//------------------------ CIERRE VALIDA PROYECTOS ACADEMICOS -------------------------------------------------
 
@@ -150,9 +120,9 @@ ini_set('memory_limit', '256M');
 			$numidio++;
         endforeach; 
 		
-		$idio2 = '<br><table width="100%" border="0"><tr><td><strong>IDIOMA</strong></td></tr></table><br>';
+		$idio2 = '<br /><table width="100%" ><tr><td><strong>IDIOMAS</strong></td></tr></table>';
         if($numidio > 0):
-			$idio2 .='<table width="100%" border="0">'.$idio1.'</table>';
+			$idio2 .='<table width="100%" >'.$idio1.'</table>';
 		endif;
     endif;
 	
@@ -169,12 +139,11 @@ ini_set('memory_limit', '256M');
 			$numcono++;
         endforeach; 
 
-		$cono2 = '<br><table width="100%" border="0"><tr><td><strong>CONOCIMIENTOS Y HABILIDADES PROFESIONALES</strong></td></tr></table>';
+		$cono2 = '<br /><table width="100%"><tr><td><strong>CONOCIMIENTOS Y HABILIDADES PROFESIONALES</strong></td></tr></table>';
         if($numcono > 0):
-			$cono2 .='<table width="100%" border="0"><br>'.$cono1.'</table>';
+			$cono2 .='<table width="100%" >'.$cono1.'</table>';
 		endif;
     endif;
-
 
 	// atrapa computo
 	$compu1 = '';
@@ -184,7 +153,7 @@ ini_set('memory_limit', '256M');
 	if(!empty($student['StudentTechnologicalKnowledge'])):
 
 		foreach($student['StudentTechnologicalKnowledge'] as $k => $computo):
-            $compu1 .= '<tr><td width="45%" style="text-align: left">'.$computo['Tecnology']['tecnology'].': ';
+            $compu1 .= '<tr><td width="45%">'.$computo['Tecnology']['tecnology'].': ';
 					
 			if($computo['name']<>''):
 				$compu1.= $software[$computo['name']].'</td>';
@@ -192,15 +161,22 @@ ini_set('memory_limit', '256M');
 				$compu1.= $computo['other'].'</td>';
 			endif;
 					
-			$compu1 .='<td width="15%" style="text-align: left">'.$NivelesSoftware[$computo['level']].'</td><td width="35%" style="text-align: left">'.$computo['institution'].'</td></tr>';  
+			$compu1 .='<td width="25%">'.$NivelesSoftware[$computo['level']].'</td><td width="30%">';
+
+			if($computo['institution']<>''):
+				$compu1.= $computo['institution'].'</td></tr>'; 
+			else:
+				$compu1.= 'Ninguna</td></tr>';  
+			endif;
+
 			$numcompu++;
            
         endforeach; 
 		
-		$compu2 = '<br><table width="100%" border="0"><tr><td><strong>CÓMPUTO</strong></td></tr></table>';
-        $titulo = '<tr><td width="45%"><strong>Categoría y Nombre </strong></td><td  width="15%"><strong>Nivel </strong></td><td  width="35%"><strong>Certificación</strong></td></tr>';
+		$compu2 = '<table width="100%" ><tr><td><strong>CÓMPUTO</strong></td></tr></table>';
+        $titulo = '<table width="100%" ><tr><td width="45%"><strong>Categoría y Nombre </strong></td><td  width="25%"><strong>Nivel </strong></td><td  width="30%"><strong>Certificación</strong></td></tr></table>';
 		if($numcompu > 0):
-			$compu2 .='<table width="100%" border="0"><br>'.$titulo.$compu1.'</table>';
+			$compu2 .= $titulo.'<table width="100%" >'.$compu1.'</table>';
 		endif;
     endif;
 
@@ -208,228 +184,43 @@ ini_set('memory_limit', '256M');
 	$dispchange = '';
 
     if($student['StudentProspect']['can_travel']=='s'):
-        $dispviaj = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para viajar:</strong> Si</td></tr></table>';
+        $dispviaj = '<table width="100%" ><tr><td><strong>Disponibilidad para viajar:</strong> Si</td></tr></table>';
         if($student['StudentProspect']['can_travel_option']=='1'):
-            $dispviaj = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para viajar:</strong> Si, dentro del país</td></tr></table>';
+            $dispviaj = '<table width="100%" ><tr><td><strong>Disponibilidad para viajar:</strong> Si, dentro del país</td></tr></table>';
         else:
-            $dispviaj = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para viajar:</strong> Si, fuera del país</td></tr></table>';
+            $dispviaj = '<table width="100%" ><tr><td><strong>Disponibilidad para viajar:</strong> Si, fuera del país</td></tr></table>';
         endif;
     else:
-        $dispviaj = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para viajar:</strong> No</td></tr></table>';
+        $dispviaj = '<table width="100%" ><tr><td><strong>Disponibilidad para viajar:</strong> No</td></tr></table>';
     endif;
                     
 	if($student['StudentProspect']['change_residence']=='s'):
-        $dispchange = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> Si</td></tr></table>';
+        $dispchange = '<table width="100%" ><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> Si</td></tr></table>';
         if($student['StudentProspect']['change_residence_option']=='1'):
-			$dispchange = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> Si, dentro del país</td></tr></table>';
+			$dispchange = '<table width="100%" ><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> Si, dentro del país</td></tr></table>';
         else:
-            $dispchange = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> Si, fuera del país</td></tr></table>';
+            $dispchange = '<table width="100%" ><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> Si, fuera del país</td></tr></table>';
 		endif;
     else:
-        $dispchange = '<table width="100%" border="0"><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> No</td></tr></table>';
+        $dispchange = '<table width="100%" ><tr><td><strong>Disponibilidad para cambiar de residencia:</strong> No</td></tr></table>';
     endif;
 
-	//------------------------ VALIDA FORMACIÓN ACADEMICA INICIALIZA EN VACIOS -------------------------------------------------
-		
-		$aclevel10 = ''; 
-		$aclevel11 = ''; 
-		$aclevel12 = ''; 
-		$aclevel13 = ''; 
-		$licunam = ''; 
-		$licunamid = ''; 
-		$licunamsemester = ''; 
-		$licunamingreso = ''; 
-		$licunamegreso = '';
-		$espeunam = ''; 
-		$areaposid = ''; 
-		$espeunamsemester =''; 
-		$espeunamingreso = ''; 
-		$espeunamegreso = ''; 
-		$masterunam = ''; 
-		$areaposidmaster = ''; 
-		$masterunamsemester ='';
-		$masterunamingreso = ''; 
-		$masterunamegreso = ''; 
-		$doctoradounam = ''; 
-		$areaposiddoctorado = ''; 
-		$doctoradounamsemester =''; 
-		$doctoradounamingreso = '';
-		$doctoradounamegreso = ''; 
-		$licunamegresado = ''; 
-		$espeunamegresado = ''; 
-		$masterunamegresado = ''; 
-		$doctoradounamegresado = ''; 
-		$licenciaturas ='';
-		$especialidades = ''; 
-		$maestrias = '';  
-		$doctorados = '';
-
-	//----------------------------------- LICENCIATURA ----------------------------------------------------	
-        foreach($student['StudentProfessionalProfile'] as $k => $formacionAcademica):
-		
-			if($formacionAcademica['academic_level_id']== 1):
-	
-				if($formacionAcademica['egress_year_degree']<>''):
-					$licunamegresado = ': ';
-				endif;
-
-				$aclevel10 = '<table width="100%" border=""><tr><td width="55%"><strong>'.$formacionAcademica['AcademicLevel']['academic_level'].$licunamegresado.'</strong></td>';
-
-				if($formacionAcademica['AcademicSituation']['academic_situation'] <> 'Estudiante'):
-					$licunamegreso = '<td width="25%"><strong>Año de egreso: </strong>'.date("Y",strtotime($formacionAcademica['egress_year_degree'])).'</td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';
-				else:
-					$licunamegreso = '<td width="25%"><strong>Actual </strong></td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';
-				endif;
-
-				if($formacionAcademica['undergraduate_institution']<>''):
-					$licunam = '<table width="100%" border=""><tr><td width="100%">Universidad Nacional Autónoma de México</td></tr></table><table width="100%" border=""><tr><td width="100%">'.$Escuelas[$formacionAcademica['undergraduate_institution']].'</td></tr></table>';
-					$licunamid = '<table width="100%" border=""><tr><td width="100%">'.$carreras[$formacionAcademica['career_id']].'</td></tr></table>';                             
-				else:
-                    $licunam = '<table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_undergraduate_institution'].'</td></tr></table>';
-                    $licunamid = '  <table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_career'].'</td></tr></table>';
-                endif;
-
-				if($formacionAcademica['AcademicSituation']['academic_situation'] === 'Estudiante'):
-					$licunamsemester = '<table width="100%" border=""><tr><td width="100%"><strong>Semestre: </strong>' . $formacionAcademica['semester'].'</td></tr></table>';
-                else:
-					$licunamsemester = '';
-                endif;
-                    
-				$licenciaturas .=$aclevel10.$licunamegreso.$licunam.$licunamid.$licunamsemester;
-				
-			endif;
-		endforeach; 
-		
-	//-----------------------------  CIERRE LICENCIATURA ----------------------------------------------------            
-	
-	
-	//-----------------------------  ESPECIALIDAD  ------------------------------------------  
-        foreach($student['StudentProfessionalProfile'] as $k => $formacionAcademica):
-
-			if($formacionAcademica['academic_level_id']== 2):
-
-				if($formacionAcademica['egress_year_degree']<>''):
-					$espeunamegresado = ': ';
-				endif;
-
-				$aclevel11 = '<table width="100%" border=""><tr><td width="55%"><strong>'.$formacionAcademica['AcademicLevel']['academic_level'].':</strong></td>';
-      
-				if($formacionAcademica['AcademicSituation']['academic_situation'] <> 'Estudiante'):
-					$espeunamegreso = '<td width="25%"><strong>Año de egreso: </strong>' . date("Y",strtotime($formacionAcademica['egress_year_degree'])).'</td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';
-				else:
-					$espeunamegreso = '<td width="25%"><strong>Actual </strong></td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';                                  
-				endif;
-
-				if($formacionAcademica['undergraduate_institution']<>''):
-					$espeunam = '<table width="100%" border=""><tr><td width="100%">Universidad Nacional Autónoma de México</td></tr></table><table width="100%" border=""><tr><td width="100%">' .$Facultades[$formacionAcademica['undergraduate_institution']].'</td></tr></table>';
-					$areaposid = '<table width="100%" border=""><tr><td width="100%">'.$programas[$formacionAcademica['posgrado_program_id']].'</td></tr></table>';      
-				else:
-					$espeunam = '<table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_undergraduate_institution'].'</td></tr></table>';
-					$areaposid = '<table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_career'].'</td></tr></table>';
-				endif;
-
-                if($formacionAcademica['AcademicSituation']['academic_situation'] === 'Estudiante'):
-					$espeunamsemester = '<table width="100%" border=""><tr><td width="100%" ><strong> Semestre: </strong>' .$formacionAcademica['semester'].'</td></tr></table><br>';
-				else:
-					$espeunamsemester = ''; 
-				endif;
-				
-				$especialidades .=$aclevel11.$espeunamegreso.$espeunam.$areaposid.$espeunamsemester;
-				
-            endif;
-			
-        endforeach; 
-	//-----------------------------  CIERRE ESPECIALIDAD  ------------------------------------------
-           
-	//-----------------------------  MAESTRIA  ------------------------------------------               
-        foreach($student['StudentProfessionalProfile'] as $k => $formacionAcademica):
-			if($formacionAcademica['academic_level_id']== 3):
-
-				if($formacionAcademica['egress_year_degree']<>''):
-					$masterunamegresado = ':';
-				endif;
-				  
-				$aclevel12 = '<table width="100%" border=""><tr><td width="55%"><strong>'.$formacionAcademica['AcademicLevel']['academic_level'].$masterunamegresado.'</strong></td>';
-
-				if($formacionAcademica['AcademicSituation']['academic_situation'] <> 'Estudiante'):
-					$masterunamegreso = '<td width="25%"><strong>Año de egreso: </strong>' . date("Y",strtotime($formacionAcademica['egress_year_degree'])).'</td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';
-				else:
-					$masterunamegreso = '<td width="25%"><strong>Actual </strong></td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';    
-				endif;
-		
-				if($formacionAcademica['undergraduate_institution']<>''):
-					$masterunam = '<table width="100%" border=""><tr><td width="100%">Universidad Nacional Autónoma de México</td></tr></table><table width="100%" border=""><tr><td width="100%">'.$Facultades[$formacionAcademica['undergraduate_institution']].'</td></tr></table>';
-					$areaposidmaster = '<table width="100%" border=""><tr><td width="100%">'.$programas[$formacionAcademica['posgrado_program_id']].'</td></tr></table>';    
-				else:
-					$masterunam = '<table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_undergraduate_institution'].'</td></tr></table>';
-					$areaposidmaster = '<table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_career'].'</td></tr></table>';
-				endif;
-
-				if($formacionAcademica['AcademicSituation']['academic_situation'] === 'Estudiante'):
-					$masterunamsemester = '<table width="100%" border=""><tr><td width="100%" ><strong> Semestre: </strong>'.$formacionAcademica['semester'].'</td></tr></table><br>';
-				else:
-					$masterunamsemester = '';
-				endif;
-				
-				$maestrias .=$aclevel12.$masterunamegreso.$masterunam.$areaposidmaster.$masterunamsemester;
-				
-			endif;
-        endforeach; 
-
-	//-----------------------------  CIERRE MAESTRIA  ------------------------------------------
-  
-	//-----------------------------  DOCTORADO  ------------------------------------------
-		foreach($student['StudentProfessionalProfile'] as $k => $formacionAcademica):
-            if($formacionAcademica['academic_level_id']== 4):
-
-				if($formacionAcademica['egress_year_degree']<>''):
-					$doctoradounamegresado = ':';
-				endif;
-    
-				$aclevel13 ='<table width="100%" border=""><tr><td width="55%"><strong>'.$formacionAcademica['AcademicLevel']['academic_level'].$doctoradounamegresado.'</strong></td>';
-				
-				if($formacionAcademica['AcademicSituation']['academic_situation'] <> 'Estudiante'):
-					$doctoradounamegreso = '<td width="25%"><strong>Año de egreso: </strong>' . date("Y",strtotime($formacionAcademica['egress_year_degree'])).'</td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';
-				else:
-					$doctoradounamegreso = '<td width="25%"><strong>Actual </strong></td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';               
-				endif;
-
-				if($formacionAcademica['undergraduate_institution']<>''):
-					$docunam = '<table width="100%" border=""><tr><td width="100%">Universidad Nacional Autónoma de México</td></tr></table><table width="100%" border=""><tr><td width="100%">'.$Facultades[$formacionAcademica['undergraduate_institution']].'</td></tr></table>';
-					$areaposiddoctorado = '<table width="100%" border=""><tr><td width="100%">'.$AreasPosgrado[$formacionAcademica['posgrado_program_id']].'</td></tr></table>';    
-				else:
-					$docunam = '<table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_undergraduate_institution'].'</td></tr></table>';
-					$areaposiddoctorado = '<table width="100%" border=""><tr><td width="100%">'.$formacionAcademica['another_career'].'</td></tr></table>';
-				endif;
-
-
-                if($formacionAcademica['AcademicSituation']['academic_situation'] === 'Estudiante'):
-					$doctoradounamsemester = 'Semestre: ' . $formacionAcademica['semester'].'<br>';
-				else:
-					$doctoradounamsemester = '';
-				endif;
-				
-				$doctorados .=$aclevel13.$doctoradounamegreso.$docunam.$areaposiddoctorado.$doctoradounamsemester;
-
-              endif;
-        endforeach;
-		
-	//-----------------------------  CIERRE DOCTORADO  ------------------------------------------  
-
-
 	//------------------------ CIERRE VALIDA FORMACIÓN ACADEMICA -------------------------------------------------
-		if($student['StudentHeader']['header'] <> ''):
-            $header = '';
-            $header = $student['StudentHeader']['header'];
-        else:
-            $header = '';
-        endif;
+	if($student['StudentHeader']['header'] <> ''):
+        $header = $student['StudentHeader']['header'];
+    else:
+        $header = '';
+    endif;
 		
 	//imagen de CV
 	$dir1 = 'img/uploads/student/filename/'.$student['Student']['filename'];
-	$mime1 = $student['Student']['mimetype'];
-	$mime2 = substr($mime1, -3);
+	$existe = is_file( $dir1 );
 
+	if ($existe):
+		$mime1 = $student['Student']['mimetype'];
+		$porciones = explode(".", $student['Student']['filename']);
+		$mime2 = $porciones[1];
+	endif;
 
 	// atrapa las competencias
 	$compet = '';
@@ -447,16 +238,14 @@ ini_set('memory_limit', '256M');
 			($numeroCompetencias > 0) ? $compet .= ' / ' : '';
         }
     endif;
-	
-	$compet1 = '<table width="100%" border="0"><tr><td width="38%"><strong>COMPETENCIAS PROFESIONALES:</strong></td><td width="60%">'.$compet.'</td></tr></table>';
+	$compet1 = '<span><strong>COMPETENCIAS PROFESIONALES: </strong>'.$compet.'</span>';
 
-	// atrapa area de interes
-
+	//atrapa area de interes
 	$areainter1 = '';
 	if(!empty($student['StudentInterestJob'])): 
 		$contador1 = 1;
         foreach($student['StudentInterestJob'] as $k => $areaInteres):
-            $areainter1 .= $contador1.'.- '.$areaInteres['InterestArea']['interest_area'].'  ';
+            $areainter1 .= '    '.$contador1.'.- '.$areaInteres['InterestArea']['interest_area'];
 			$contador1++;
         endforeach; 
 	endif;
@@ -472,19 +261,19 @@ ini_set('memory_limit', '256M');
 		if($formacionAcademica['student_mobility'] == 's'):
             if(!empty($formacionAcademica['Country'])):
 				$fcm = $formacionAcademica['Country']['country'];
-                if($formacionAcademica['mobility_start_date']<>'0000-00-00'):
+                if(($formacionAcademica['mobility_start_date']<>'0000-00-00') && ($formacionAcademica['mobility_start_date']<>null)):
 					$fcmd = ' / ' . date("Y",strtotime($formacionAcademica['mobility_start_date']));
                 endif;
             endif;  
             
-			$mob1 .= '<tr><td style="text-align: left">'.$formacionAcademica['student_mobility_institution'].' </td><td style="text-align: left">'.$formacionAcademica['student_mobility_program'] .' </td><td style="text-align: left">'.$fcm.$fcmd.'</td></tr><br>';  
+			$mob1 .= '<tr><td>'.$formacionAcademica['student_mobility_institution'].' </td><td>'.$formacionAcademica['student_mobility_program'] .' </td><td>'.$fcm.$fcmd.'</td></tr><br />';  
 			$numFormaciones++;
 		endif;
 	endforeach;
 
-	$mob2 = '<br><table width="100%" border=""><tr><td><strong>MOVILIDAD ESTUDIANTIL</strong></td></tr></table><br>';
+	$mob2 = '<br /><table width="100%"><tr><td><strong>MOVILIDAD ESTUDIANTIL</strong></td></tr></table>';
     if($numFormaciones > 0):
-		$mob2 .='<table border=""><tr width="100%" style="text-align: left"><td width="40%" style="text-align: left"><strong>Institución edicucativa</strong></td><td width="40%" style="text-align: left"><strong>Nombre del Programa</strong></td><td width="20%" style="text-align: left"><strong>País / Año</strong></td></tr>'.$mob1.'</table>';
+		$mob2 .='<table><tr width="100%"><td width="40%"><strong>Institución edicucativa</strong></td><td width="40%"><strong>Nombre del Programa</strong></td><td width="20%"><strong>País / Año</strong></td></tr>'.$mob1.'</table>';
     else: 
 		$mob2 = '';
 	endif;
@@ -502,130 +291,82 @@ ini_set('memory_limit', '256M');
 		
 	$objetivop = '';
 	if(!empty($student['StudentJobProspect']['professional_objective'])): 
-		$objetivop = '<table width="100%" border="0"><tr><td width="100%"><strong>OBJETIVO PROFESIONAL</strong></td></tr></table><table width="100%" border="0"><tr><td width="100%"><p>'.$student['StudentJobProspect']['professional_objective'].'</p></td></tr></table>';
+		$objetivop = '<span><strong>OBJETIVO PROFESIONAL</strong><br />'.$student['StudentJobProspect']['professional_objective'].'</span>';
     endif;
-
 
 //-----------------------------------------ARMADO CV PDF---------------------------------------------
 App::import('Vendor','tcpdf');
 App::import('Vendor','eng');
- global $l;
+global $l;
 $l = Array();
-
-// PAGE META DESCRIPTORS --------------------------------------
-
 $l['a_meta_charset'] = 'UTF-8';
 $l['a_meta_dir'] = 'ltr'; 
 $l['a_meta_language'] = 'en';
-
-// TRANSLATIONS --------------------------------------
 $l['w_page'] = 'page';
  
-// Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
-  //Page header
-// Page footer
   public function Footer() {
-    // Position at 15 mm from bottom
     $this->SetY(-15);
-      $this->SetX(300);
-    // Set font
-    $this->SetFont('helvetica', 'I', 8);
-    // Page number
-    $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    $this->SetX(300);
+    $this->SetFont('helvetica', 'I', 10.5);
+    $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');   // Page number
   }
 }
 
-// create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
 $pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Bolsa de trabajo UNAM');
-$pdf->SetTitle('TCPDF Example 051');
-$pdf->SetSubject('TCPDF Tutorial');
+$pdf->SetAuthor('Bolsa de trabajo bti');
+$pdf->SetTitle('Currículum');
+$pdf->SetSubject('Currículum');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
-
-// set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-//set margins
 $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_RIGHT);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// remove default footer
 $pdf->setPrintFooter(false);
-
-//set auto page breaks
 $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-//set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-//set some language-dependent strings
 $pdf->setLanguageArray($l);
-
-// ---------------------------------------------------------
-
-// set font
-$pdf->SetFont('pdfahelvetica', '', 14);
-
-// add a page
-$pdf->AddPage();// -- set new background ---
-
-
-// get the current page break margin
+$pdf->SetFont('pdfahelvetica', '', 16);
+$pdf->AddPage();
 $bMargin = $pdf->getBreakMargin();
-// get current auto-page-break mode
 $auto_page_break = $pdf->getAutoPageBreak();
-// disable auto-page-break
 $pdf->SetAutoPageBreak(false, 0);
-// set bacground image
-$img_file = K_PATH_IMAGES.'image_demo.jpg';
+$img_file = K_PATH_IMAGES.'image_demo2.jpg';
 $pdf->setPrintFooter(true);
 $pdf->Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
-// restore auto-page-break status
 $pdf->SetAutoPageBreak($auto_page_break, $bMargin);
-// set the starting point for the page content
-if ($student['Student']['filename'] <> ''):
-$pdf->Image($dir1, 179.8, 5, 27.7, 31, $mime2, '#', '', true, 150, '', false, false, 1, false, false, false);
+if ($existe):
+	$pdf->Image($dir1, 175, 5, 27.7, 31, $mime2, '', '', true, 150, '', false, false, 1, false, false, false);
 endif;
 
 $pdf->setPageMark();
 $txt = <<<EOD
 EOD;
 
-$dicapacidad = '';
+	$dicapacidad = '';
+	if($student['StudentProfile']['disability'] == 's'):
+	    $dicapacidad .= '<br /><br /><span><strong>TIPO DE DISCAPACIDAD: </strong>'.$TiposDiscapacidad[$student['StudentProfile']['disability_type']].'</span>';
+	else:
+	    $dicapacidad .= '<br /><br /><span><strong>TIPO DE DISCAPACIDAD: </strong>Ninguna'.'</span>';
+	endif;
 
-    if($student['StudentProfile']['disability'] == 's'):
-        $dicapacidad .= $TiposDiscapacidad[$student['StudentProfile']['disability_type']];
-      else:
-        $dicapacidad .= 'Ninguna';
-      endif;
-
-
-
-// print a block of text using Write()
-$pdf->Write($h=0, $txt, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
+	$pdf->Write($h=0, $txt, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $firstline=false, $firstblock=false, $maxh=0);
 
 	if($areainter1<>''):
-		$areasInteres = '<table width="100%" border="0"><br><tr><td width="22%"><strong>ÁREAS DE INTERÉS:</strong></td><td width="78%">'.$areainter1.'</td></tr></table>';
+		$areasInteres = '<br /><br /><span><strong>ÁREAS DE INTERÉS: </strong>'.$areainter1.'</span>';
 	else:
 		$areasInteres = '';
 	endif;
 	
-
-	$html = '<table border="0"><tr><td width="10%"></td><td width="78%"><div style="font-family:helvetica;font-size:9.5pt; position:relative; margin: 0 auto; left: 0; right: 0; text-align: center;">'.$header.'</div></td><td width="12%"></td></tr></table>
-<div style="font-family:helvetica;font-weight:bold;font-size:14pt; position:relative; margin: 0 auto; left: 0; right: 0; text-align: center;">
-'.$student['StudentProfile']['name'].' '.$student['StudentProfile']['last_name'].' '.$student['StudentProfile']['second_last_name'].'
-</div>
-<div style="font-family:helvetica;font-size:9.5pt; position:relative; margin: 0 auto; left: 0; right: 0; text-align: center;">
-'.$student['StudentProfile']['street']. ' '.$student['StudentProfile']['subdivision']. ' '.$student['StudentProfile']['city'].'<br>
-'.$student['StudentProfile']['date_of_birth'].'<br>
-'.'Tel: ('.$student['StudentProfile']['lada_telephone_contact'].') '.$student['StudentProfile']['telephone_contact'].' '. $celularestudiante1.'<br>
-'.$student['Student']['email'].' 
-</div>
-<div style="font-family:helvetica; font-size:10.5pt;position:relative; margin: 0 auto; left: 0; right: 0; text-align: justify;">';
+	$html = '<div style="text-align: center;">
+			 <span style="font-size:9.5pt;">'.$header.'</span><br />
+			 <span style="font-weight:bold;font-size:14pt;">'.$student['StudentProfile']['name'].' '.$student['StudentProfile']['last_name'].' '.$student['StudentProfile']['second_last_name'].'</span><br />
+			 <span style="font-size:9.5pt;">'.$student['StudentProfile']['street']. ' '.$student['StudentProfile']['subdivision']. ' '.$student['StudentProfile']['city'].'<br />'.
+			 $student['StudentProfile']['date_of_birth'].'<br />'.
+			 'Tel: ('.$student['StudentProfile']['lada_telephone_contact'].') '.$student['StudentProfile']['telephone_contact'].' '. $celularestudiante1.'<br />'.
+			 $student['Student']['email'].'</div>
+			
+			<div style="font-size:10.5pt;text-align: justify;">';
 
 	if($objetivop<>''):
 		$html .= $objetivop;
@@ -636,95 +377,127 @@ $pdf->Write($h=0, $txt, $link='', $fill=0, $align='C', $ln=true, $stretch=0, $fi
 	endif;
 	
 	if($dicapacidad<>''):
-		$html .='<table width="100%" border="0">
-				<br>
-				<tr>
-					<td width="22%"><strong>Tipo de discapacidad:</strong></td>
-					<td width="78%">'.$dicapacidad.'</td>
-				</tr>
-				</table>';
+		$html .= $dicapacidad;
 	endif;
 	
-	if(($doctorados<>'') OR ($maestrias<>'') OR ($especialidades<>'') OR ($licenciaturas<>'')):
-		$html .= '<table width="100%" border="0"><br><tr><td><strong>FORMACIÓN ACADÉMICA</strong></td></tr></table>';
-		
-		if($doctorados<>''):
-			$html .= $doctorados.'<br>';
-		endif;
-		
-		if($maestrias<>''):
-			$html .= $maestrias.'<br>';
-		endif;
-		
-		if($especialidades<>''):
-			$html .= $especialidades.'<br>';
-		endif;
-		
-		if($licenciaturas<>''):
-			$html .= $licenciaturas.'<br>';
-		endif;
-	
+	if(!empty($student['StudentProfessionalProfile'])):
+		$html .= '<br /><br /><span><strong>FORMACIÓN ACADÉMICA</strong></span>';
 	endif;
+		
+	for ($i=1; $i < 4; $i++):
+		foreach($student['StudentProfessionalProfile'] as $k => $formacionAcademica):
+		
+			if($formacionAcademica['academic_level_id']==$i):
+	
+				if($formacionAcademica['egress_year_degree']<>''):
+					$licunamegresado = ': ';
+				else:
+					$licunamegresado = '';
+				endif;
+
+				$aclevel10 = '<br /><table width="100%" ><tr><td width="55%"><strong>'.$formacionAcademica['AcademicLevel']['academic_level'].$licunamegresado.'</strong></td>';
+
+				if($formacionAcademica['AcademicSituation']['academic_situation'] <> 'Estudiante'):
+					$licunamegreso = '<td width="25%"><strong>Año de egreso: </strong>'.date("Y",strtotime($formacionAcademica['egress_year_degree'])).'</td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';
+				else:
+					$licunamegreso = '<td width="25%"><strong>Actual </strong></td><td width="20%">'.$formacionAcademica['AcademicSituation']['academic_situation'].'</td></tr></table>';
+				endif;
+
+				if($formacionAcademica['undergraduate_institution']<>''):
+					if($i==1):
+						$licunam = '<table width="100%"><tr><td width="100%">Universidad Nacional Autónoma de México</td></tr></table><table width="100%" ><tr><td width="100%">'.$Escuelas[$formacionAcademica['undergraduate_institution']].'</td></tr></table>';
+						$licunamid = '<table width="100%"><tr><td width="100%">'.$carreras[$formacionAcademica['career_id']].'</td></tr></table>';                             
+					else:
+						$espeunam = '<table width="100%"><tr><td width="100%">Universidad Nacional Autónoma de México</td></tr></table><table width="100%" ><tr><td width="100%">' .$Facultades[$formacionAcademica['undergraduate_institution']].'</td></tr></table>';
+						$areaposid = '<table width="100%"><tr><td width="100%">'.$programas[$formacionAcademica['posgrado_program_id']].'</td></tr></table>';      
+					endif;
+				else:
+                    $licunam = '<table width="100%" ><tr><td width="100%">'.$formacionAcademica['another_undergraduate_institution'].'</td></tr></table>';
+                    $licunamid = '  <table width="100%"><tr><td width="100%">'.$formacionAcademica['another_career'].'</td></tr></table>';
+                endif;
+
+				if($formacionAcademica['AcademicSituation']['academic_situation'] === 'Estudiante'):
+					$licunamsemester = '<table width="100%" ><tr><td width="100%">Semestre: ' . $formacionAcademica['semester'].'</td></tr></table>';
+                else:
+					$licunamsemester = '';
+                endif;
+                    
+				$html.=$aclevel10.$licunamegreso.$licunam.$licunamid.$licunamsemester;
+				
+			endif;
+		endforeach; 
+	endfor;
 	
 	if($mob2<>''):
-		$html .= $mob2.'<br>';
+		$html .= $mob2.'<br />';
 	endif;
 	
 	if($compet1<>''):
-		$html .= $compet1.'<br>';
+		$html .= $compet1.'<br />';
 	endif;
 	
 	if($experiencias2<>''):
-		$html .= $experiencias2.'<br>';
+		$html .= $experiencias2.'<br />';
 	endif;
 	
 	if($experiencias2p<>''):
-		$html .= $experiencias2p.'<br>';
+		$html .= $experiencias2p.'<br />';
 	endif;
   
 	if($idio2<>''):
-		$html .= $idio2.'<br>';
+		$html .= $idio2.'<br />';
 	endif;
 	
 	if($cono2<>''):
-		$html .= $cono2.'<br>';
+		$html .= $cono2.'<br />';
 	endif;
 	
 	if($compu2<>''):
-		$html .= $compu2.'<br>';
+		$html .= $compu2.'<br />';
 	endif;
 	
 	if($dispviaj<>''):
-		$html .= $dispviaj.'<br>';
+		$html .= $dispviaj.'<br />';
 	endif;
 	
 	if($dispchange<>''):
-		$html .= $dispchange.'<br>';
+		$html .= $dispchange.'<br />';
 	endif;
 	
 	$html .='</div>';
-
 	
 $pdf->writeHTML($html, true, false, true, false, '');
 
 $nombrepdf = $student['Student']['username'].'.pdf';
-//Close and output PDF document
-//$pdf->Output('oferta-plantilla.pdf', 'I');
-//echo $pdf->Output('files/pdf' . DS . 'MYCV.pdf', 'F');
 echo $pdf->Output('files/pdf' . DS . $nombrepdf, 'F');
-	//----------------------------------------- TERMINA ARMADO CV PDF ---------------------------------------------
-endif;
+//----------------------------------------- TERMINA ARMADO CV PDF ---------------------------------------------
 ?>
-	<div class="col-md-12" style="text-align: left">
-		<?php echo $this->Session->flash(); ?>
-	</div>
 	
-	<?php 
-		if($descargas<$company['CompanyOfferOption']['max_cv_download']):
-	?>
-		
-	<iframe src="<?php echo $this->webroot; ?>files/pdf/<?php echo $nombrepdf ?>" style="width:1000px; height:700px;" frameborder="0">Your browser does not support inline frames or is currently configured not to display inline frames.</iframe>
+	<div class="embed-responsive embed-responsive-16by9">
+		<iframe src="<?php echo $this->webroot; ?>files/pdf/<?php echo $nombrepdf ?>" style="width:100%; height:650px;" frameborder="0" allowfullscreen>Your browser does not support inline frames or is currently configured not to display inline frames.</iframe>
+	</div>
 
-	<?php 
-		endif;
-	?>
+	
+	<div class="col-md-12">
+		<div class="col-md-9">
+			<label>Fecha de última actualización:<?php echo ' '.date("d/m/Y",strtotime($student['StudentLastUpdate']['modified'])); ?></label>
+		</div>
+		<div class="col-md-3">
+			<?php 
+				$caracteres = strlen($student['Student']['id']);
+				$faltantes = 5 - $caracteres;	
+				if($faltantes > 0):
+					$ceros = '';
+					for($cont=0; $cont<=$faltantes;$cont++):
+						$ceros .= '0';
+					endfor;
+					$folio = $ceros.$student['Student']['id'];
+				else:
+					$folio = strlen($student['Student']['id']);
+				endif;
+			?>
+			<label style="float: right;">Folio:<span style="color: #FFB71F;"><?php echo ' '.$folio; ?></span></label>
+		</div>
+	</div>
+
+</div>

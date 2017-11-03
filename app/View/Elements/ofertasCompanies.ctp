@@ -1,5 +1,7 @@
 
-
+<?php 
+	foreach($ofertas as $k => $oferta):
+?>
 <script>
 	function saveVigencia(idJobProfile,fecha, fechaCreacion){
 		var fechaArr = fecha.split('-');
@@ -32,6 +34,22 @@
 		});	
 	}
 	
+	function ofertaInactiva(){
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'Oferta Inactiva',
+		});	
+	}
+	
+	function ofertaActiva(){
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'Oferta Activa',
+		});	
+	}
+	
 	function ofertaIncompleta(){
 		$.alert({
 			title:'AVISO',
@@ -57,10 +75,6 @@
 		});
 	}
 </script>
-
-<?php 
-	foreach($ofertas as $k => $oferta):
-?>
 
 <div class="col-md-12 sombra" style="border: 1px solid #1a75bb; margin-bottom: 15px; background: url('/bolsabti/img/satinweave.png');">    
      <!-- columna logo -->
@@ -247,26 +261,30 @@
 										'data-toggle'=>'tooltip',
 										'data-placement'=>'left',
 										'class' => 'icono',
-										'url' => [	'controller'=>'Companies',
-													'action'=>'enableDisableOffer',
-														'?' => ['id' => $oferta['CompanyJobContractType']['id'],
-																'estatus' => $oferta['CompanyJobContractType']['status']]]]);
+										'onclick' => 'ofertaInactiva();'
+									//	'url' => [	'controller'=>'Companies',
+									//				'action'=>'enableDisableOffer',
+									//				'?' => ['id' => $oferta['CompanyJobContractType']['id'],
+									//				'estatus' => $oferta['CompanyJobContractType']['status']]]
+										]);
 							else:
 								echo $this->Html->image('student/activa.png',
 										['title' => 'Oferta activa',
 										'data-toggle'=>'tooltip',
 										'data-placement'=>'left',
 										'class' => 'icono',
-										'url' => ['controller'=>'Companies',
-												'action'=>'enableDisableOffer',
-												'?' => ['id' => $oferta['CompanyJobContractType']['id'],
-														'estatus' => $oferta['CompanyJobContractType']['status']]]]);
+										'onclick' => 'ofertaActiva();'
+									//	'url' => ['controller'=>'Companies',
+									//			'action'=>'enableDisableOffer',
+									//			'?' => ['id' => $oferta['CompanyJobContractType']['id'],
+									//			'estatus' => $oferta['CompanyJobContractType']['status']]]
+										]);
 							endif;
 						endif;
 					endif;
 				?>
 				<!--Eliminar -->
-				<?php echo $this->Html->image('student/eliminarAzul.png',
+				<?php echo $this->Html->image('student/eliminar.png',
 						array(
 							'title' => 'Eliminar oferta',
 							'style' => 'width: 20px; height: 20px; margin-right: 6px; cursor: pointer;',

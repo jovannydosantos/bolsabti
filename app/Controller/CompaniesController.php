@@ -1032,6 +1032,8 @@
 				endif;
 		}
 		
+		
+		
 		public function companyJobKnowledge(){	
 				$this->Company->recursive = 1;
 				$this->set('company', $this->Company->findById($this->Session->read('company_id')));
@@ -1519,6 +1521,38 @@
 											'order' => $orden,
 											);
 				$this->set('candidatos', $candidatos = $this->paginate('Student'));
+		}
+
+		public function usuario(){ 
+			$this->Student->recursive = 3; 
+			$this->academicLevel();
+			$this->Facultades();
+			$this->Escuelas();
+			$this->career();
+			$this->country();
+			$this->posgradoProgrma();
+			$this->NivelesIdioma();
+			$this->TypeCourses();
+			$this->softwareLevel();
+			$this->disabilityType();
+			$this->set('student', $this->Student->findById($this->Session->read('student_id')));
+			$interesesAreacv = $this->StudentInterestJob->find('all', ['conditions' => ['StudentInterestJob.student_id' => $this->Session->read('student_id')]]);
+			$this->set( compact ('interesesAreacv') );
+			$this->academicLevel();
+			$this->Facultades();
+			$this->Escuelas();
+			$this->career();
+			$this->posgradoProgrma();
+			$this->NivelesIdioma();
+			$this->TypeCourses();
+			$software = $this->Program->find('list', ['order' => ['Program.id ASC']]);
+			$this->set( compact ('software') );
+			$carreras = $this->Career->find('list',['fields' => ['Career.id', 'Career.career'],'order' => ['Career.career ASC']]);
+			$this->set( compact ('carreras') );
+			$carrerasRegistro = $this->Career->find('list',['fields' => ['Career.career_id', 'Career.career'],'order' => ['Career.career ASC']]);
+			$this->set( compact ('carrerasRegistro'));
+			$programas = $this->PosgradoProgram->find('list',['fields' => ['PosgradoProgram.id', 'PosgradoProgram.posgrado_program'],'order' => ['PosgradoProgram.posgrado_program ASC']]);
+			$this->set( compact ('programas') );
 		}
 		
 		public function searchCandidateExcel(){
@@ -4031,6 +4065,71 @@
 					endif;
 				endif;
 
+		}
+		
+		public function sendEmailStudent(){
+		if($this->request->is('post')):
+					if($this->Session->read('redirect') <> ''):
+						$redirect = $this->Session->read('redirect').$this->Session->read('page');
+					else:
+						$redirect = 'profile'.$this->Session->read('page') ;
+					endif;
+				$destino = WWW_ROOT.'img'.DS.'uploads'.DS.'studentContact'.DS;
+				
+				if( $this->data['Student']['file']['error'] == 0 &&  $this->data['Student']['file']['size'] > 0):
+					if(!move_uploaded_file($this->data['Student']['file']['tmp_name'], $destino.$this->data['Student']['file']['name'])):              
+						$this->Session->setFlash('Lo sentimos no se pudo cargar el archivo', 'alert-danger');
+						$this->redirect(array('action' =>  $redirect));
+					endif;
+				endif;
+				
+						if ( $this->Student->validates(array('fieldList' => array('title', 'emailTo','CC','message')))):
+							
+							$correosTo = $this->request->data['Student']['emailTo'];
+							$destinatariosTo = explode(";",$correosTo);
+							foreach($destinatariosTo as $destinatarioTo) {
+								if($destinatarioTo<>''):
+									$listaCorreosTo[] = trim($destinatarioTo);
+								endif;
+							}
+					
+							$Email = new CakeEmail('gmail');
+							$Email->from(array($this->Auth->user('email') => 'bolsabti'));
+							
+							$Email->to($listaCorreosTo);
+							
+							if($this->data['Student']['file']['size'] > 0):
+								$Email->attachments($destino.$this->data['Student']['file']['name']);
+							endif;
+								$Email->subject('Mensaje de bolsabti');
+								$Email->replyTo($this->Auth->user('email'));
+								$Email->emailFormat('both'); 
+								$contenMail = 	'<center><div style="background-color: #F2F2F2; width: 850px; text-align: justify;"><img src="https://xxvcyw.bn1304.livefilestore.com/y3mGmsO9S-kd6T6qnUw4SibtxC1jklxC1tUxhhktNgxHChBDtmBTWRwRLR_DPMGAStEoBzUrMqS4na66U11SwTpiRLtvI20Zq1j2q9m0EZiphGg99ErtMOZxp2g1yG9tjssekTj3cFrD8_xLNwjxF5prBCc5Pa1xS2Lj9zHelg1zdw?width=700&height=80&cropmode=none" alt="header" width="100%">'.
+												'<strong><h3 style="padding-left: 15px; padding-right: 15px;">'.$this->request->data['Student']['title'].'</h3></strong><br>'.
+												'<p style="padding-left: 15px; padding-right: 15px;">'.$this->request->data['Student']['message'].'</p><br></div></center>';
+								if($this->request->data['Student']['sign'] <> ''):
+									$contenMail .= '<center><div style="background-color: #F2F2F2; width: 850px; text-align: justify;"><p style=" padding-left: 15px; padding-right: 15px;">Firma: '.$this->request->data['Student']['sign'].'</p><br></div></center>';
+								endif;
+								$Email->template('email')->viewVars( array(
+																'aMsg' => $contenMail 
+								));
+								
+								if($Email->send()):
+									$this->Session->setFlash('Su correo se envió con éxito.', 'alert-success');
+								else:
+									$this->Session->setFlash('Lo sentimos su correo no pudo ser enviado.', 'alert-danger');
+								endif;
+								
+								if($this->data['Student']['file']['size'] > 0):
+									unlink($destino.$this->data['Student']['file']['name']);
+								endif;
+								
+						else:
+							$this->Session->setFlash('Lo sentimos, su correo no pudo ser enviado revise los campos y corrija si es necesario', 'alert-danger');
+						endif;
+
+						$this->redirect(array('action' =>  $redirect));
+			endif;
 		}
 		
 		public function companyEmailNotification(){

@@ -7,7 +7,7 @@
 		if($_GET["level"]=='1'):
 			$sql = "SELECT * FROM relacion_escuela_carreras as relacion, careers as carreras WHERE relacion.facultad_licenciatura_id=".$_GET['escuela']." and relacion.career_id=carreras.career_id ";
 		else:
-			if(($_GET['escuela']=='') and ($_GET["level"]=='2')):
+			if(($_GET['escuela']=='') and ($_GET["level"]>='2')):
 				$sql = "SELECT * FROM  posgrado_programs order by posgrado_program ASC";
 			else:
 				$sql = "SELECT * FROM  relacion_facultad_programas as relacion, posgrado_programs as programas WHERE relacion.facultad_posgrado_id=".$_GET['escuela']." and relacion.posgrado_program_id=programas.posgrado_program_id";

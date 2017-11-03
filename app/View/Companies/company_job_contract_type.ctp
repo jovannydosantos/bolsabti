@@ -33,8 +33,9 @@
 				if($("#estado").val() != 0)
 					{	
 						$('#loading').show();
+						//http://localhost/bolsabti/app/webroot/php/derpAreas.php
 						// $.get('http://bolsa.trabajo.unam.mx/unam/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
-						$.get('http://localhost/unam/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
+						$.get('http://localhost/bolsabti/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
 							{	
 								$('#ciudad').empty();
 								$('#ciudad').append('<option value="">Delegación / Municipio</option>');
@@ -69,7 +70,7 @@
 				{	
 					$('#loading').show();
 					// $.get('http://bolsa.trabajo.unam.mx/unam/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
-					$.get('http://localhost/unam/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
+					$.get('http://localhost/bolsabti/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
 						{	
 							$('#ciudad').empty();
 							$('#ciudad').append('<option value="">Delegación / Municipio</option>');
@@ -177,14 +178,17 @@
 		<?php endif; ?>
 		
 		$("#divMobilityCityOption1").hide();
-			
-		if($("#CompanyJobContractTypeMobilityS").is(':checked')) {  
-            var disabilityValue = 's';  
-        } else if($("#CompanyJobContractTypeMobilityN").is(':checked')) {  
-            var disabilityValue = 'n';   
-        } else{
-			var disabilityValue = '';   
-		}
+		
+	
+			if(document.getElementById("CompanyJobContractTypeMobility").value == 's') {  
+				  var disabilityValue = 's';
+			} else if(document.getElementById("CompanyJobContractTypeMobility").value == 'n'){
+				 var disabilityValue = 'n';   
+			}else{
+				var disabilityValue = '';  
+			}
+		
+		
 
 		if(disabilityValue == "s"){
 			$("#bloque2").show();
@@ -202,14 +206,15 @@
 		<?php endif; ?>
 		
 		$("#divMobilityCityOption2").hide();
+				
 		
-		if($("#CompanyJobContractTypeChangeResidenceS").is(':checked')) {  
-            var disabilityValue = 's';  
-        } else if($("#CompanyJobContractTypeChangeResidenceN").is(':checked')) {  
-            var disabilityValue = 'n';   
-        } else{
-			var disabilityValue = '';   
-		}
+		if(document.getElementById("CompanyJobContractTypeChangeResidence").value == 's') {  
+				  var disabilityValue = 's';  
+			} else if(document.getElementById("CompanyJobContractTypeChangeResidence").value == 'n'){
+				var disabilityValue = 'n';   
+			}else{
+				var disabilityValue = '';  
+			}
 
 		if(disabilityValue == "s"){
 			$("#bloque3").show();
@@ -224,17 +229,19 @@
 			document.getElementById('CompanyJobContractTypeMobilityCity1').options[0].selected = 'selected';
 		<?php endif; ?>
 		
-		if($("#CompanyJobContractTypeMobilityOption1").is(':checked')) {  
-            var valor = '1';  
-        } else if($("#CompanyJobContractTypeMobilityOption2").is(':checked')) {  
-            var valor = '2';   
-        } else{
-			var valor = '';   
-		}
+		if(document.getElementById("CompanyJobContractTypeMobilityOption").value == '1') {  
+				  var valor = '1';
+			} else if(document.getElementById("CompanyJobContractTypeMobilityOption").value == '2'){
+				 var valor = '2';   
+			}else{
+				var valor = '';  
+			}
+		
+		
 
 		if(valor == "1"){
 			$('#loading').show();
-			$.get('http://bolsa.trabajo.unam.mx/unam/app/webroot/php/derp.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derp.php',function(JSON)
 		   	{
 				$('#CompanyJobContractTypeMobilityCity1').empty();
 				$('#CompanyJobContractTypeMobilityCity1').append('<option value="">Estado / Entidad Federativa</option>');
@@ -266,7 +273,7 @@
 		} else 
 		if(valor == "2"){
 			$('#loading').show();
-			$.get('http://bolsa.trabajo.unam.mx/unam/app/webroot/php/derpPaises.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derpPaises.php',function(JSON)
 		   	{
 				$('#CompanyJobContractTypeMobilityCity1').empty();
 				$('#CompanyJobContractTypeMobilityCity1').append('<option value="">País</option>');
@@ -298,23 +305,25 @@
 
 	}
 	
+	
 	function mobilityCityOption2(){
 		<?php if(($this->Session->check('companyJobContractType.id') == false) and (empty($this->request->data))): ?>
 			document.getElementById('CompanyJobContractTypeChangeResidenceState').options[0].selected = 'selected';
 		<?php endif; ?>
 		
+		if(document.getElementById("CompanyJobContractTypeChangeResidenceOption").value == '1') {  
+				  var valor = '1';
+			} else if(document.getElementById("CompanyJobContractTypeChangeResidenceOption").value == '2'){
+				 var valor = '2';   
+			}else{
+				var valor = '';  
+			}
 		
-		if($("#CompanyJobContractTypeChangeResidenceOption1").is(':checked')) {  
-            var valor = '1';  
-        } else if($("#CompanyJobContractTypeChangeResidenceOption2").is(':checked')) {  
-            var valor = '2';   
-        } else{
-			var valor = '';   
-		}
+		
 
 		if(valor == "1"){
 			$('#loading').show();
-			$.get('http://bolsa.trabajo.unam.mx/unam/app/webroot/php/derp.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derp.php',function(JSON)
 		   	{
 				$('#CompanyJobContractTypeChangeResidenceState').empty();
 				$('#CompanyJobContractTypeChangeResidenceState').append('<option value="">Estado / Entidad Federativa</option>');
@@ -344,7 +353,7 @@
 		} else 
 		if(valor == "2"){
 			$('#loading').show();
-			$.get('http://bolsa.trabajo.unam.mx/unam/app/webroot/php/derpPaises.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derpPaises.php',function(JSON)
 		   	{
 				$('#CompanyJobContractTypeChangeResidenceState').empty();
 				$('#CompanyJobContractTypeChangeResidenceState').append('<option value="">País</option>');
@@ -380,88 +389,94 @@
 		var selectViajar = $('#CompanyJobContractTypeMobilityCity1').val();
 		var selecttResidencia = $('#CompanyJobContractTypeChangeResidenceState').val();
 		
-		if($("#CompanyJobContractTypeConfidentialSalaryS").is(':checked')) {  
-            var sueldoConfidencial = 's';  
-        } else if($("#CompanyJobContractTypeConfidentialSalaryN").is(':checked')) {  
-            var sueldoConfidencial = 'n';   
-        } else{
-			var sueldoConfidencial = '';   
-		}
+		if(document.getElementById("CompanyJobContractTypeConfidentialSalary").value == 's') {  
+				 var sueldoConfidencial = 's';  
+			} else if(document.getElementById("CompanyJobContractTypeConfidentialSalary").value == 'n'){
+				var sueldoConfidencial = 'n';   
+			}else{
+				var sueldoConfidencial = '';  
+			}
+
+		if(document.getElementById("CompanyJobContractTypeMobility").value == 's') {  
+				 var viajar = 's';  
+			} else if(document.getElementById("CompanyJobContractTypeMobility").value == 'n'){
+				var viajar = 'n';   
+			}else{
+				var viajar = '';  
+			}
+			
+		if(document.getElementById("CompanyJobContractTypeMobilityOption").value == '1') {  
+				  var opcionViajar = '1';
+			} else if(document.getElementById("CompanyJobContractTypeMobilityOption").value == '2'){
+				 var opcionViajar = '2';   
+			}else{
+				var opcionViajar = '';  
+			}
+			
+			if(document.getElementById("CompanyJobContractTypeChangeResidence").value == 's') {  
+				 var residencia = 's';  
+			} else if(document.getElementById("CompanyJobContractTypeChangeResidence").value == 'n'){
+				var residencia = 'n';   
+			}else{
+				var residencia = '';  
+			}
 		
-		if($("#CompanyJobContractTypeMobilityS").is(':checked')) {  
-            var viajar = 's';  
-        } else if($("#CompanyJobContractTypeMobilityN").is(':checked')) {  
-            var viajar = 'n';   
-        } else{
-			var viajar = '';   
-		}	
+			if(document.getElementById("CompanyJobContractTypeChangeResidenceOption").value == '1') {  
+				  var opcionResidencia = '1';
+			} else if(document.getElementById("CompanyJobContractTypeChangeResidenceOption").value == '2'){
+				 var opcionResidencia = '2';   
+			}else{
+				var opcionResidencia = '';  
+			}
 		
-		if($("#CompanyJobContractTypeMobilityOption1").is(':checked')) {  
-            var opcionViajar = 's';  
-        } else if($("#CompanyJobContractTypeMobilityOption2").is(':checked')) {  
-            var opcionViajar = 'n';   
-        } else{
-			var opcionViajar = '';   
-		}	
-		
-		if($("#CompanyJobContractTypeChangeResidenceS").is(':checked')) {  
-            var residencia = 's';  
-        } else if($("#CompanyJobContractTypeChangeResidenceN").is(':checked')) {  
-            var residencia = 'n';   
-        } else{
-			var residencia = '';   
-		}	
-		
-		if($("#CompanyJobContractTypeChangeResidenceOption1").is(':checked')) {  
-            var opcionResidencia = 's';  
-        } else if($("#CompanyJobContractTypeChangeResidenceOption2").is(':checked')) {  
-            var opcionResidencia = 'n';   
-        } else{
-			var opcionResidencia = '';   
-		}	
+			
 		
 		var beneficios = $('#CompanyJobContractTypeBenefitBenefits > option:selected');
 	
 		if(sueldoConfidencial == ''){
-			jAlert('Seleccione una opción para sueldo conficencial', 'Mensaje');
-			document.getElementById('CompanyJobContractTypeConfidentialSalaryS').focus();
+		
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione una opción para sueldo conficencial'});
+			document.getElementById('CompanyJobContractTypeConfidentialSalary').focus();
+			return false;
+		} else 
+			if(beneficios.length == 0){
+			 $.alert({ title: '!Aviso!',type: 'blue',content: 'Selecciona las prestaciones y apoyos'});
+				
+			document.getElementById('CompanyJobContractTypeBenefitBenefits').focus();
 			return false;
 		} else 
 		if(viajar == ''){
-			jAlert('Seleccione la disponibilidad para viajar', 'Mensaje');
-			document.getElementById('CompanyJobContractTypeMobilityS').focus();
+
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la disponibilidad para viajar'});
+			document.getElementById('CompanyJobContractTypeMobility').focus();
 			return false;
 		} else 
 		if((viajar == 's') && (opcionViajar == '')){
-			jAlert('Seleccione una opción de disponibilidad para viajar', 'Mensaje');
-			document.getElementById('CompanyJobContractTypeMobilityOption1').focus();
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione una opción de disponibilidad para viajar'});
+			document.getElementById('CompanyJobContractTypeMobilityOption').focus();
 			return false;
 		} else 
 		if((opcionViajar != '') && (selectViajar=='')){
-			jAlert('Indique el lugar de disponibilidad para viajar', 'Mensaje');
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'Indique el lugar de disponibilidad para viajar'});
 			document.getElementById('CompanyJobContractTypeMobilityCity1').focus();
 			return false;
 		} else 
 		if(residencia == ''){
-			jAlert('Seleccione la disponibilidad para cambiar de residencia', 'Mensaje');
-			document.getElementById('CompanyJobContractTypeChangeResidenceS').focus();
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la disponibilidad para cambiar de residencia'});
+			document.getElementById('CompanyJobContractTypeChangeResidence').focus();
 			return false;
 		} else
-		if((residencia == 's') && (opcionResidencia == '')){
-			jAlert('Seleccione una opción de disponibilidad para cambiar de residencia', 'Mensaje');
-			document.getElementById('CompanyJobContractTypeMobilityOption1').focus();
+		if((residencia == 's') && (opcionResidencia =='')){
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione una opción de disponibilidad para cambiar de residencia'});
+			document.getElementById('CompanyJobContractTypeMobilityOption').focus();
 			return false;
 		} else 
-		if((opcionResidencia != '') && (selecttResidencia=='')){
-			jAlert('Indique el lugar de disponibilidad para cambiar de residencia', 'Mensaje');
-			document.getElementById('CompanyJobContractTypeChangeResidenceState').focus();
+		if((opcionResidencia !='') && (selecttResidencia=='')){
+			 $.alert({ title: '!Aviso!',type: 'blue',content: 'Indique el lugar de disponibilidad para cambiar de residencia'});
+				 document.getElementById('CompanyJobContractTypeChangeResidenceState').focus();
 			return false;
 		} else 
-		if(beneficios.length == 0){
-			 jAlert('Selecciona las prestaciones y apoyos', 'Mensaje');
-			document.getElementById('CompanyJobContractTypeBenefitBenefits').focus();
-			return false;
-		} else 
+		
 		{
 			return true;
 		}
@@ -469,303 +484,125 @@
 	}
 </script>
 
-	<div  class="col-md-12 " style="margin-top: 15px;margin-left: 20px;">
+
+<div class="col-md-12">
 	
-		<?php echo $this->Session->flash(); ?>	
+	<?= $this->Form->create('Company', [
+										'class' => 'form-horizontal', 
+										'role' => 'form',
+										'inputDefaults' => [
+											'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+											'div' => ['class' => 'form-group'],
+											'class' => 'form-control',
+											'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+											'between' => '<div class="col-md-12">',
+											'after' => '</div>',
+											'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+										],
+									'action' => 'CompanyJobContractType',
+								'onsubmit' =>'return validateInputs();']); ?>
+	<fieldset>
+		<div class="col-md-6">
+			<div class="col-md-12">
+				<?php echo $this->Form->input('CompanyJobContractType.id', array('label' => '','placeholder' => 'Id',)); ?>
+				<?= $this->Form->input('CompanyJobContractType.contract_type', ['type'=>'select','options' => $TiposContratos,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Tipo de contrato']); ?>
+				<?= $this->Form->input('CompanyJobContractType.contract_length', ['placeholder' => 'Duración de contrato']); ?>
+				<?= $this->Form->input('CompanyJobContractType.workday', ['type'=>'select','options' => $JornadasLaborales,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Jornada laboral']); ?>
+				<?= $this->Form->input('CompanyJobContractType.schedule', ['placeholder' => 'Horario']); ?>
+				<?= $this->Form->input('CompanyJobContractType.salary', ['type'=>'select','options' => $Salarios,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Sueldo (Neto)']); ?>
+				<?php $options = array('s' => 'Si', 'n' => 'No');
+					echo $this->Form->input('CompanyJobContractType.confidential_salary', ['type' => 'select','default'=> 0,'empty' => '¿Sueldo confidencial?','options' => $options,'class' => 'selectpicker show-tick form-control show-menu-arrow']);
+				?>
+				<?= $this->Form->input('CompanyJobContractTypeBenefit.benefits', ['multiple' => 'multiple','data-selected-text-format' => 'count > 3','data-live-search' => "true",'data-actions-box' => 'true','placeholder' => 'Prestaciones y apoyos','title' => 'Prestaciones / Apoyos ','options' => $Prestaciones,'class' => 'selectpicker show-tick form-control show-menu-arrow']); ?>
+				<?= $this->Form->input('CompanyJobContractType.other_benefits', ['placeholder' => 'Otras...','style' => 'max-width: 660px; max-height: 280px; margin-top: 30px;','maxlength' => '309',]); ?>
+				<div class="col-md-10" style="text-align: right;">
+				<span id="contadorTaComentario">0/1000</span><span> caracteres máx.</span>
+				</div>
+			</div>		
+		</div>
+		<div class="col-md-6">
+			<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
+				<p style="color: #588BAD">Lugar de trabajo:</p>
+			</blockquote>
+			<?= $this->Form->input('CompanyJobContractType.state', ['type'=>'select','id' =>'estado','options' => $Estados,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Estado / Entidad Federativa']); ?>	
+			<?= $this->Form->input('CompanyJobContractType.subdivision', ['type'=>'select','id' => 'ciudad','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Delegación / Municipio']); ?>
+			<?= $this->Form->input('CompanyJobContractType.location_reference', ['placeholder' => 'Referencia de ubicación...','style' => 'max-width: 660px; max-height: 280px; margin-top: 30px;','maxlength' => '309',]); ?>
+			<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
+				<p style="color: #588BAD">Disponibilidad para viajar:</p>
+			</blockquote>
+			<?php $options = array('s' => 'Si', 'n' => 'No');
+					echo $this->Form->input('CompanyJobContractType.mobility', ['type' => 'select','default'=> 0,'empty' => '¿Disponibilidad para viajar?','options' => $options,'onchange' => 'desabilityMobility()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
+			?>
+			<div id="bloque2" style="display:none">
+				
+				<?php $options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
+					echo $this->Form->input('CompanyJobContractType.mobility_option', ['type' => 'select','default'=> 0,'empty' => '¿Donde?','options' => $options,'onchange' => 'mobilityCityOption()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
+				?>
+				
+				<div id="divMobilityCityOption1" >
+				<?php 
+					echo $this->Form->input('CompanyJobContractType.mobility_city', ['type' => 'select','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => "true",'id' => 'CompanyJobContractTypeMobilityCity1','label' => '','default'=>'0','empty' => 'Sin opciones']);
+				?>
+				</div>	
+			</div>
+			<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
+				<p style="color: #588BAD">Disponibilidad para cambio de residencia:</p>
+			</blockquote>
+			<?php $options = array('s' => 'Si', 'n' => 'No');
+					echo $this->Form->input('CompanyJobContractType.change_residence', ['type' => 'select','default'=> 0,'empty' => '¿Disponibilidad para cambiar de residencia?','options' => $options,'onchange' => 'desabilityMobility2()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
+			?>
+			<div id="bloque3" style="display:none">
+				<?php $options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
+					echo $this->Form->input('CompanyJobContractType.change_residence_option', ['type' => 'select','default'=> 0,'empty' => '¿Donde?','options' => $options,'onchange' => 'mobilityCityOption2()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
+				?>
+				<div id="divMobilityCityOption2" >
+				<?php 
+					echo $this->Form->input('CompanyJobContractType.change_residence_state', ['type' => 'select','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => "true",'placeholder' => 'País','label' => '','default'=>'0','empty' => 'Sin opciones']);
+				?>
+				
+				</div>	
+			
+			</div>
+			
 		
-		<?php 
-				echo $this->Html->link(	'<i class="glyphicon glyphicon-arrow-left"></i> &nbsp; Regresar',
-													array(
-															'controller'=>'Companies',
-															'action'=>'companyJobProfile',
-															),
-													array(
-															'class' => 'btn btn-default btnBlue ',
-															'style' => 'margin-top: 5px; width: 120px;',
-															'escape' => false,
-															)	
-										); 
-		?>	
-		
-					<?php
-							echo $this->Form->create('Company', array(
-												'class' => 'form-horizontal', 
-												'role' => 'form',
-												'inputDefaults' => array(
-														'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-														'div' => array('class' => 'form-group'),
-														'class' => 'form-control',
-														'before' => '<div class="col-md-12"><img data-toggle="tooltip" id="" data-placement="top" title="No hay sugerencias para este apartado" class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',
-														'between' => ' <div class="col-md-11">',
-														'after' => '</div></div>',
-														'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce'))
-												),
-										'onsubmit' =>'return validateInputs();',
-										'action' => 'CompanyJobContractType',
-							)); ?>
-					    
-						<fieldset style="margin-top: 30px; margin-bottom: 100px;">
-							<div class="col-md-6">	
-							<?php echo $this->Form->input('CompanyJobContractType.id', array(				
-											'label' => '',
-											'placeholder' => 'Id',					
-							)); ?>
-							<?php 	echo $this->Form->input('CompanyJobContractType.contract_type', array(	
-											'type' => 'select',
-											'before' => '<div class="col-md-11 col-md-offset-1">',
-											'class' => 'selectpicker show-tick form-control show-menu-arrow',
-											'label' => '',
-											'placeholder' => 'Tipo de contrato',
-											'options' => $TiposContratos, 'default'=>'0', 'empty' => 'Tipo de contrato'
-							)); ?>	
-							<?php 	echo $this->Form->input('CompanyJobContractType.contract_length', array(										
-											'before' => '<div class="col-md-11 col-md-offset-1">',
-											'label' => '',
-											'placeholder' => 'Duración de contrato',
-							)); ?>	
-							<?php 	echo $this->Form->input('CompanyJobContractType.workday', array(										
-											'type' => 'select',
-											'before' => '<div class="col-md-11 col-md-offset-1">',
-											'class' => 'selectpicker show-tick form-control show-menu-arrow',
-											'label' => '',
-											'placeholder' => 'Jornada laboral',
-											'options' => $JornadasLaborales, 'default'=>'0', 'empty' => 'Jornada laboral'
-							)); ?>	
-							<?php 	echo $this->Form->input('CompanyJobContractType.schedule', array(										
-											'before' => '<div class="col-md-11 col-md-offset-1">',
-											'label' => '',
-											'placeholder' => 'Horario',
-							)); ?>	
-							<?php 	echo $this->Form->input('CompanyJobContractType.salary', array(	
-											'type' => 'select',
-											'label' => '',
-											'before' => '<div class="col-md-11 col-md-offset-1">',
-											'class' => 'selectpicker show-tick form-control show-menu-arrow',
-											'options' => $Salarios, 'default'=>'0', 'empty' => 'Sueldo (Neto)'
-							)); ?>	
-                            
-                             <div class="col-md-12" style="margin-left: 35px;" >
-								<?php 	
-										$options = array('s' => 'Si', 'n' => 'No');
-										echo $this->Form->input('CompanyJobContractType.confidential_salary', array(
-															'type' => 'radio',
-															// 'style' => 'margin-left: -18px; margin-top: 0; top: 1px; width: 15px;',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-9" style="color: #fff;margin-left: -30px;">
-															<img data-toggle="tooltip" id="" data-placement="top" title="Al seleccionar Sí el sueldo no será visible al candidato." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: 5px; margin-left: 5px;">
-															<div class="radio-inline col-xs-2 col-sm-2 col-md-2" style=" margin-left: 245px;">',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'options' => $options,
-										));
-								?>
-
-								<p style="position: absolute; margin-top: -46px;"><span style="color:red;">*</span>Sueldo confidencial</p>
-							</div>
-
-							<!--div class="col-md-11" style="margin-left: 41px; margin-top: -8px;">
-							<p style="font-size: 16px; margin-bottom: 35px;"> Prestaciones / Apoyos
-							</div-->
-							<div class="col-md-6"  style="left: 22px; height: 10px;"> <span style="color:red;">*</span> </div>
-							<?php 	echo $this->Form->input('CompanyJobContractTypeBenefit.benefits', array(	
-															'before' => '<div class="col-md-11 col-md-offset-1" style="margin-top: -20px;"><img data-toggle="tooltip" id="" data-placement="top" title="Opciones de servicios y apoyos que son adicionales al sueldo que son otorgadas al trabajador para hacer más atractiva la oferta." class="img-circle cambia" alt="help.png" src="/unam/img/help.png">',			
-															
-															'multiple' => 'multiple',
-															'class' => 'selectpicker show-tick form-control show-menu-arrow',
-															'data-live-search' => "true",
-															'data-selected-text-format' => 'count > 3',
-															'title' => 'Prestaciones / Apoyos ',
-															'data-actions-box' => 'true',
-																	
-															'label' => '',
-															'placeholder' => 'Prestaciones y apoyos',
-															'options' => $Prestaciones
-							)); ?>	
-
-							
-							<?php 	echo $this->Form->input('CompanyJobContractType.other_benefits', array(					
-															'before' => '<div class="col-md-11 col-md-offset-1"><img data-toggle="tooltip" id="" data-placement="top" title="En este apartado podrá describir las prestaciones o apoyos adicionales a las descritas en el campo anterior." class="img-circle cambia" alt="help.png" src="/unam/img/help.png" style="margin-top: 100px;">',					
-															'maxlength' => '316',
-															'style' => 'resize: vertical; min-height: 120px;  max-height: 120px; height: 120px;',
-															'label' => array(
-																			'text' => '',),
-															'placeholder' => 'Otras',
-							)); ?>	
-							<div class="col-md-11" style="text-align: right; right; top: -10px;">
-								<span id="contadorTaComentario">0/316</span><span> caracteres máx.</span>
-							</div>
-							</div>
-							<div class="col-md-6" style="top: -38px;">	
-							<p style="margin-left: 15px;">Lugar de trabajo</p>
-							
-							<?php 	echo $this->Form->input('CompanyJobContractType.state', array(	
-															'type' => 'select',
-															'id' =>'estado',
-															'before' => '<div class="col-md-11">',
-															'class' => 'selectpicker show-tick form-control show-menu-arrow',
-															'data-live-search' => "true",
-															'label' => '',
-															'options' => $Estados,'default'=>'0', 'empty' => 'Estado / Entidad Federativa',
-							)); ?>	
-							
+			<div class="col-md-12" style="margin-top: 30px;">
+				<?php if(($this->Session->check('CompanyJobProfile.id') == true) and (!empty($this->request->data))): ?>
+				<div class="col-md-6">
+					<?php else:;?>
+					<div class="col-md-6 col-md-offset-2">
+						<?php endif; ?>
+						
+						<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-disk"></i>&nbsp; Guardar',array(
+												'type' => 'submit', 
+												'div' => 'form-group',
+												'escape' => false,
+												'class' => 'btn btn-default btn-primary ',
+												'style' => 'margin-top: 5px; width: 120px;',
+												'escape' => false,
+									));
+						echo $this->Form->end(); 
+						?>
+					</div>
+					<?php if(($this->Session->check('CompanyJobProfile.id') == true) and (!empty($this->request->data))): ?>
+					<div class="col-md-6">
+						<div class="btn-group">
 							<?php 
-								echo $this->Form->input('CompanyJobContractType.subdivision', array(	
-															'type' => 'select',
-															'id' => 'ciudad',
-															'before' => '<div class="col-md-11">',
-															'class' => 'selectpicker show-tick form-control show-menu-arrow',
-															'data-live-search' => "true",
-															'label' => '',
-															'default'=>'0', 'empty' => 'Delegación / Municipio',
-							)); ?>	
-							<?php 	echo $this->Form->input('CompanyJobContractType.location_reference', array(								
-															'before' => '<div class="col-md-11">',
-															'style' => 'resize: vertical; min-height: 120px;  max-height: 120px; height: 120px;',
-															'label' => array(
-																			'text' => '',),
-															'placeholder' => 'Referencia de ubicación...',
-							)); ?>	
-
-                        <div class="col-md-12" >
-								<?php 	
-										$options = array('s' => 'Si', 'n' => 'No');
-										echo $this->Form->input('CompanyJobContractType.mobility', array(
-															'type' => 'radio',
-															// 'style' => 'margin-left: -18px; margin-top: 0; top: 1px; width: 15px;',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-9" style="color: #fff;"><div class="radio-inline col-xs-2 col-sm-2 col-md-2" style=" margin-left: 245px;"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'options' => $options,
-															'onclick' => 'desabilityMobility()'
-										));
-								?>
-
-								<p style="position: absolute; margin-top: -46px;"><span style="color:red;">*</span>Disponibilidad para viajar</p>
-							</div>
-							<div id="bloque2">
-								<div class="col-md-12" >
-									<?php 	
-										$options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
-										echo $this->Form->input('CompanyJobContractType.mobility_option', array(
-															'type' => 'radio',
-															// 'style' => 'margin-left: -18px; margin-top: 0; top: 1px; width: 15px;',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-12" style="color: #fff;margin-left:40px"><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'options' => $options,
-															'onclick' => 'mobilityCityOption();'
-										));
-										
-									?>
-								<div id="divMobilityCityOption1" >
-									<?php 	echo $this->Form->input('CompanyJobContractType.mobility_city', array(									
-																'type'=> 'select',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-live-search' => "true",
-																'id' => 'CompanyJobContractTypeMobilityCity1',
-																'before' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 30px;"> ',
-																'style' => 'margin-left: -15px;',
-																'label' => '',
-																'default'=>'0', 'empty' => 'Sin opciones',
-									)); ?>	
-								</div>
-								</div>
-							</div>
-							
-							<div class="col-md-12" >
-								<?php 	
-										$options = array('s' => 'Si', 'n' => 'No');
-										echo $this->Form->input('CompanyJobContractType.change_residence', array(
-															'type' => 'radio',
-															// 'style' => 'margin-left: -18px; margin-top: 0; top: 1px; width: 15px;',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-9" style="color: #fff;"style="margin-left:60px";><div class="radio-inline col-xs-2 col-sm-2 col-md-2" style=" margin-left: 245px;"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-2 col-sm-2 col-md-2"><label>',
-															'options' => $options,
-															'onclick' => 'desabilityMobility2()'
-										));
-								?>
-
-								<p style="position: absolute; margin-top: -46px;  width: 210px;"><span style="color:red;">*</span>Disponibilidad para cambiar de residencia</p>
-							</div>
-							<div id="bloque3" >
-								<div class="col-md-12" style="padding-left: 0px; padding-right: 30px;" >
-								<?php 	
-										$options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
-										echo $this->Form->input('CompanyJobContractType.change_residence_option', array(
-															'type' => 'radio',
-															// 'style' => 'margin-left: -18px; margin-top: 0; top: 1px; width: 15px;',
-															'default'=> 0,
-															'legend' => false,
-															'before' => '<div class="col-xs-12 col-sm-12 col-md-12" style="color: #fff;  margin-top: 15px;margin-left:60px"><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'after' => '</label></div></div>',
-															'separator' => '</label></div><div class="radio-inline col-xs-5 col-sm-5 col-md-5"><label>',
-															'options' => $options,
-															'onclick' => 'mobilityCityOption2();'
-										));
-								?>
-								<div id="divMobilityCityOption2" >
-									<?php 	echo $this->Form->input('CompanyJobContractType.change_residence_state', array(			
-																'type' => 'select',
-																'style' => 'margin-left: -15px;',
-																'before' => '<div class="col-md-12">',
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',
-																'data-live-search' => "true",																
-																'class' => 'selectpicker show-tick form-control show-menu-arrow',														
-																'label' => '',
-																'placeholder' => 'País',
-																'default'=>'0', 'empty' => 'Sin opciones',
-									)); ?>	
-								</div>
-								</div>
-							
-
-							</div>
-							<div class="col-md-12" style="margin-top: 30px;">
-								
-								<?php if(($this->Session->check('companyJobContractType.id') == true) and (!empty($this->request->data))): ?>
-									<div class="col-md-6">
-								<?php else:;?>
-									<div class="col-md-6 col-md-offset-2">
-								<?php endif; ?>
-								
-								<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-save"></i>&nbsp; Guardar',array(
-														'type' => 'submit', 
-														'div' => 'form-group',
-														'escape' => false,
-														'class' => 'btn btnBlue btn-default col-md-9 col-md-offset-3',
-														'escape' => false,
-											));
-								echo $this->Form->end(); 
-								?>
-								</div>
-								<?php if(($this->Session->check('companyJobContractType.id') == true) and (!empty($this->request->data))): ?>
-								<div class="col-md-6">
-									<div class="btn-group">
-											<?php 
-													echo $this->Html->link('Continuar &nbsp; <i class="glyphicon glyphicon-arrow-right"></i>',
-																				array(
-																					'controller'=>'Companies',
-																					'action'=>'companyCandidateProfile',
-																				),
-																				array(
-																					'class' => 'btn btn-default btnBlue ',
-																					'style' => 'width: 130px;',
-																					'escape' => false,
-																					)	
-												); 	?> 
-									</div>
-								</div>
-								<?php endif; ?>
-							</div>
+								echo $this->Html->link('Continuar &nbsp; <i class="glyphicon glyphicon-arrow-right"></i>',
+									array(
+										'controller'=>'Companies',
+										'action'=>'companyCandidateProfile',
+										),
+									array(
+										'class' => 'btn btn-default btn-primary ',
+										'style' => 'margin-top: 5px; width: 120px;',
+										'escape' => false,
+										)); 	
+							?> 
 						</div>
-						</fieldset>
-							
-	</div>
+					</div>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>	
+	</fieldset>	
+</div>

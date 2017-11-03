@@ -4,9 +4,10 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-		<?= $this->Html->charset(); ?>
+	<?= $this->Html->charset(); ?>
 
-	<title> <?= 'Bolsa bti' ?> </title>
+	<title> 
+	<?= 'Bolsa bti' ?> </title>
 
 	<?= $this->Html->meta(array(
 		'name' => 'viewport', 
@@ -118,7 +119,6 @@
 				    }
 				});
 		}
-		
 		function editFolder(id, folderName){
 			document.getElementById("Vista"+id).value = vista();
 			
@@ -239,21 +239,21 @@
 			}
 			lastScrollTop = st;
 		}  
-			// Hide Header on on scroll down
-			var didScroll;
-			var lastScrollTop = 0;
-			var delta = 5;
-			var navbarHeight = $('header').outerHeight();
-			$(window).scroll(function(event){
+		// Hide Header on on scroll down
+		var didScroll;
+		var lastScrollTop = 0;
+		var delta = 5;
+		var navbarHeight = $('header').outerHeight();
+		$(window).scroll(function(event){
+			didScroll = false;
+		});
+		setInterval(function() {
+			if (didScroll) {
+				hasScrolled();
 				didScroll = false;
-			});
-			setInterval(function() {
-				if (didScroll) {
-					hasScrolled();
-					didScroll = false;
-				}
-			}, 250);
-			function hasScrolled() {
+			}
+		}, 250);
+		function hasScrolled() {
 				var st = $(this).scrollTop();
 				
 				// Make sure they scroll more than delta
@@ -272,33 +272,36 @@
 					}
 				}
 				lastScrollTop = st;
-			}
-			
-		function cvIncompleto(){
-			jAlert('El universitario no cuenta con un currículum completo para ser descargado.', 'Mensaje');
-			return false;
-		}
-		
-		function mensajeSinConfigurar(){
-			jAlert('No puede visualizar y/o descargar el cv en formato pdf hasta que el administrador indique el número de descargas permitidas para su usuario.', 'Mensaje');
-			return false;
-		}
-		
+			}			
 		function mensajeLimiteDescargas(){
-			jAlert('Usted ha llegado al límite de visualizaciones y/o descargas en pdf permitidas por el administrador', 'Mensaje');
-			return false;
-		}
-		
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'El número de visualizaciones y/o descargas en pdf ha llegado a su límite',
+		});	
+	}
+		function mensajeSinConfigurar(){
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'No puede visualizar y/o descargar el cv en formato pdf hasta que el administrador indique el número de descargas permitidas para su usuario.',
+		});	
+	}
+		function cvIncompleto(){
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'El universitario no cuenta con un currículum completo para ser descargado.',
+		});	
+	}		
 		function mensajeActivaDesactiva(){
 			jAlert('Sin permisos para modificar el estatus de la oferta, sólo el administrador puede realizar esta acción', 'Mensaje');
 			return false;
-		}
-		
+		}		
 		function ofertaIncompleta(){
 			jAlert('La oferta no está completa por consecuente no podrá activarse hasta que se complete su edición.', 'Mensaje');
 			return false;
-		}
-			
+		}			
 		function ofertaExpirada(){
 			jAlert('La oferta ha expirado para poder activarla debe de actualizar la fecha de vigencia.', 'Mensaje');
 			return false;
@@ -306,9 +309,7 @@
 	</script>
 </head>
 	
-
 <body style="background-color: #e8e8e8;">
-
 	<div class="body-wrap">
 	    <nav class="navbar navbar-inverse" role="navigation" >
 			<div class="container-fluid">
@@ -405,11 +406,11 @@
 	<header class="nav-down" >
 		<div class="col-md-12" style="margin-top: 4px; ">
 			<?= $this->Html->link('<i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Volver como administrador', 
-													['controller'=>'Administrators',
-													'action'=>$this->Session->read('redirectAdmin')],
-													['class' => 'btn btn-default btnRed ',
-													'style' => 'width: 250px; float: right;',
-													'escape' => false]	
+							['controller'=>'Administrators',
+							'action'=>$this->Session->read('redirectAdmin')],
+							['class' => 'btn btn-default btnRed ',
+							'style' => 'width: 250px; float: right;',
+							'escape' => false]	
 			);?> 
 		</div>
 	</header>
@@ -503,7 +504,10 @@
 						<li <?= (!empty($this->params['action']) && ($this->params['action']=='studentReport') || ($this->params['action']=='companyExternalOffer') )? 'class="active" ' : ''; ?> >  
 										<?= $this->Html->link('<i class="glyphicon glyphicon-hand-right"></i> Reportar Contrataciones', 
 															['controller'=>'Companies',
-															'action' => 'studentReport'],
+															'action' => 'studentReport',
+															'?' => array(
+															'nuevaBusqueda' => 'nuevaBusqueda',
+															),],
 															['escape'=> false ]
 										);?>
 						</li>
@@ -624,302 +628,16 @@
 			</div>
 		</div>
 	</div>
+	
 	<div class="col-md-10">
 		<div class="profile-content col-md-12" style="margin-bottom: 50px;">
-			<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
-				
-											
+			<div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">						
 				<?php if(!empty($this->params['action']) && (($this->params['action']=='companyTelephoneNotification') )): 	?>
 					<a class="navbar-brand" href="#" style=" background: #829ce0 none repeat scroll 0 0; margin-left: 0;  width: 1020px; height: 30px; padding-top: 5px;  margin-bottom: 30px;" >Notificación telefónica</a>
 				<?php endif; 	?>
-								
-	
 				
-	<?php if(!empty($this->params['action']) && (($this->params['action']=='companyJobOffer') || ($this->params['action']=='companyJobProfile') || ($this->params['action']=='CompanyJobProfile') || ($this->params['action']=='companyJobContractType') || ($this->params['action']=='CompanyJobContractType') || ($this->params['action']=='companyCandidateProfile') || ($this->params['action']=='CompanyCandidateProfile') || ($this->params['action']=='companyJobKnowledge'))):	?>
-	<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" aria-expanded="false">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">Registrar Ofertas:</a>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
-				<ul class="nav navbar-nav">
-					<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='companyJobOffer')  )? 'menu-profile active' : 'menu-profile' ?> "	>
-					<?php if(($this->Session->check('CompanyJobOffer.id') == true)): ?>
-						<?php echo $this->Html->link(
-							'Datos del responsable <br> de la oferta',	
-								array(
-									'controller'=>'Companies',
-									'action' => 'companyJobOffer'
-									), 
-							array(
-								'class' => 'corriculumMenu',
-								'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
-								'escape' => false,
-							)); 
-						?>
-						<?php else: ?>
-						<?php echo $this->Html->link(
-							'Datos del responsable <br> de la oferta',	
-								array(
-									'action'=>''
-									), 
-							array(
-								'class' => 'corriculumMenu',
-								'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px; cursor:not-allowed',
-								'escape' => false,
-								'onclick' => 'return false',
-							)); 
-						?>
-						<?php endif; ?>
-					</li>
-					<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyJobContractType') || ($this->params['action']=='CompanyJobContractType') || ($this->params['action']=='editStudentJobSkill') || ($this->params['action']=='viewStudentJobSkill') || ($this->params['action']=='editStudentLenguage') || ($this->params['action']=='viewStudentLenguage') || ($this->params['action']=='editStudentTechnologicalKnowledge') || ($this->params['action']=='viewStudentTechnologicalKnowledge'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
-					<?php if($this->Session->check('companyJobContractType.id') == true): ?>
-						<?php echo $this->Html->link(
-							'Modalidad de Contratación', 
-							array(
-								'controller'=>'Companies',
-								'action' => 'companyJobContractType'
-								),
-							array(
-								'class' => 'corriculumMenu',
-								'escape' => false,
-							)
-						); ?>
-					<?php else: ?>
-						<?php echo $this->Html->link(
-							'Modalidad de Contratación', 
-							array(
-								'action'=>''
-								),
-							array(
-								'class' => 'corriculumMenu',
-								'style' => 'cursor:not-allowed',
-								'escape' => false,
-								'onclick' => 'return false',
-							)
-						); ?>
-					<?php endif; ?>
-						
-				</li>
-				
-				<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='companyJobKnowledge')  )? 'menu-profile active' : 'menu-profile' ?> "	>
-					<?php if($this->Session->check('CompanyCandidateProfile.id') == true): ?>
-						<?php echo $this->Html->link(
-							'Conocimientos y Habilidades <br> Profesionales',		
-							array(
-								'controller'=>'Companies',
-								'action' => 'companyJobKnowledge'
-								),
-							array(
-								'class' => 'corriculumMenu',
-								'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
-								'escape' => false,
-							)
-						); ?>
-					<?php else: ?>
-						<?php echo $this->Html->link(
-							'Conocimientos y Habilidades <br> Profesionales',		
-							array(
-								'action'=>''
-								),
-							array(
-								'class' => 'corriculumMenu',
-								'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px; cursor:not-allowed',
-								'escape' => false,
-								'onclick' => 'return false',
-							)
-						); ?>
-					<?php endif; ?>
-				</li>
-				<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyCandidateProfile') || ($this->params['action']=='CompanyCandidateProfile') || ($this->params['action']=='editStudentProfessionalExperience') || ($this->params['action']=='editStudentWorkArea') || ($this->params['action']=='viewStudentProfessionalExperience'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
-				<?php if($this->Session->check('CompanyCandidateProfile.id') == true): ?>
-					<?php echo $this->Html->link(
-						'Perfil del Candidato', 
-						array(
-							'controller'=>'Companies',
-							'action' => 'companyCandidateProfile'
-							),
-						array(
-							'class' => 'corriculumMenu',
-							'escape' => false,
-							'title' => 'Para avanzar pulse en continuar.'
-						)
-					);  ?>
-				<?php else: ?>
-					<?php echo $this->Html->link(
-						'Perfil del Candidato', 
-						array(
-							'action'=>''
-							),
-						array(
-							'class' => 'corriculumMenu',
-							'style' => 'cursor:not-allowed',
-							'escape' => false,
-							'onclick' => 'return false',
-							'title' => 'Para avanzar pulse en continuar.'
-						)
-					);  ?>
-				<?php endif; ?>
-				</li>
-					<?php if($this->Session->read('Editando') == 1): ?>
-				<li class="whiteTextMenu"	>
-					<?php 
-						echo $this->Html->link('Finalizar Edición &nbsp;&nbsp; <i class="glyphicon glyphicon-remove-sign"></i>', 
-												array(
-													'controller'=>'Companies',
-													'action' => 'Profile'
-													),
-												array(
-													'class' => 'corriculumMenu myclass',
-													'escape' => false,
-													'style' => 'background-color: #9C0000; border-radius: 10px;',
-													
-												)
-						);  
-					?>
-				</li>
-				<?php endif; ?>
-				
-				</ul>	
-			</div>
-		</div>
-	</nav>
-	<?php endif; ?>			
-								
-	
-								
-	<?php 
-		if(!empty($this->params['action']) && (($this->params['action']=='viewOfferOnline') || ($this->params['action']=='viewOfferPdf'))):
-	?>
-		<div class="header" id="top">
-			<nav class="navbar navbar-inverse arriba" role="navigation" style="background-color: #93B2FF !important; ">
-				<div class="container cien"  >
-					<div class="navbar-header" style="width: 100%;">
-						<button type="button" id="nav-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav">
-							<span class="sr-only">Toggle navigation</span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</button>
-						<a class="navbar-brand" href="#" style=" background: #829ce0 none repeat scroll 0 0; margin-left: 0; padding-left: 15px; width: 100%; height: 30px; padding-top: 5px;" >Registar ofertas</a>
-						<div id="main-nav" class="collapse navbar-collapse" style="margin-top: 35px;" >
-							<ul class="nav navbar-nav navbar-right" style="margin-left: 25px;">
-							<li style="margin:5px 129px 10px" class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='viewOfferOnline')  )? 'active border-li' : 'border-li' ?> "	>
-							<?php 
-								if($this->Session->read('companyJobProfileId') <> ''):
-									$vista = 'viewOfferOnline/'.$this->Session->read('companyJobProfileId');
-								else:
-									$vista = 'profile';
-								endif;
-								echo $this->Html->link(
-													'Vista en linea', 
-															array(
-																'controller'=>'Companies',
-																'action'=>$vista ),
-															array(
-															'class' => 'corriculumMenu',
-															)
-												); 
-							?></li>
-							<li style="margin:5px 129px 10px" class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='viewOfferPdf')   )? 'active border-li' : 'border-li' ?> ">
-							<?php 
-								if($this->Session->read('companyJobProfileId') <> ''):
-									$vista = 'viewOfferPdf/'.$this->Session->read('companyJobProfileId');
-								else:
-									$vista = 'profile';
-								endif;
-							echo $this->Html->link(
-												'Vista previa impresión', 
-														array(
-															'controller'=>'Companies',
-															'action'=>$vista ),
-														array(
-														'class' => 'corriculumMenu',
-														)	
-												); 
-							?></li>
-								  
-							</ul>
-						</div>
-					</div>
-				</div>
-			</nav>
-		</div>
-			
-	<?php 
-		endif; 
-	?>
-							
-	<?php 
-		if(!empty($this->params['action']) && (($this->params['action']=='studentReport') || (($this->params['action']=='companyExternalOffer')))):
-	?>
-	<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
-	<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" aria-expanded="false">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">REPORTAR CONTRATACIONES:</a>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
-				<ul class="nav navbar-nav">
-				<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='studentReport')  )? 'active border-li' : 'border-li' ?> "	>
-					<?= $this->Html->link('Ofertas Postuladas',['controller'=>'Companies','action'=>'studentReport',  'nuevaBusqueda']); ?>
-				</li>
-				<li class="whiteTextMenu <?php  echo (!empty($this->params['action']) && (($this->params['action']=='companyExternalOffer'))  )? 'active border-li' : 'border-li' ?> ">
-				<?= $this->Html->link('Ofertas Externas', ['controller'=>'Companies','action'=>'companyExternalOffer', 'nuevaBusqueda']); ?>
-				</li>
-				</ul>	
-			</div>
-		</div>
-	</nav>					
-	<?php 
-		endif; 
-	?>
-	<!-- Notificaciones -->
-	<?php 
-	if(!empty($this->params['action']) && (($this->params['action']=='companyPostullation') || ($this->params['action']=='companyNotification'))):
-	?>					
-	<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
-	<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" aria-expanded="false">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">Notificaciones:</a>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
-				<ul class="nav navbar-nav">
-				<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='companyPostullation') )? 'active border-li' : 'border-li' ?> "	>
-					<?= $this->Html->link('Postulaciones',['controller'=>'Companies','action'=>'companyPostullation',  'nuevaBusqueda']); ?>
-				</li>			
-				<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyNotification') )  )? 'active border-li' : 'border-li' ?> ">
-				<?= $this->Html->link('Entrevistas', ['controller'=>'Companies','action'=>'companyNotification', 'nuevaBusqueda']); ?>
-				</li>
-				</ul>	
-			</div>
-		</div>
-	</nav>					
-	<?php 
-		endif; 
-	?>
-				
-	<?php 
-	if(!empty($this->params['action']) && (($this->params['action']=='searchCandidate') || (($this->params['action']=='viewCvOnline')) || (($this->params['action']=='specificSearchCandidate')) || (($this->params['action']=='specificSearchCandidateResults')))):
-	?>
-		<div class="header" id="top">		
+				<!--registro de ofertas-->
+				<?php if(!empty($this->params['action']) && (($this->params['action']=='companyJobOffer') || ($this->params['action']=='companyJobProfile') || ($this->params['action']=='CompanyJobProfile') || ($this->params['action']=='companyJobContractType') || ($this->params['action']=='CompanyJobContractType') || ($this->params['action']=='companyCandidateProfile') || ($this->params['action']=='CompanyCandidateProfile') || ($this->params['action']=='companyJobKnowledge'))):	?>
 				<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
 					<div class="container-fluid">
 						<div class="navbar-header">
@@ -929,44 +647,345 @@
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 							</button>
-							<a class="navbar-brand" href="#">BUSCAR CANDIDATOS:</a>
+							<a class="navbar-brand" href="#">Registrar Ofertas:</a>
 						</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
 							<ul class="nav navbar-nav">
-							<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='searchCandidate') || ($this->params['action']=='viewCvOnline') )? 'active border-li' : 'border-li' ?> "	>
-								<?= $this->Html->link('Búsqueda Rápida',['controller'=>'Companies','action'=>'searchCandidate',  'nuevaBusqueda']); ?>
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='companyJobOffer')  )? 'menu-profile active' : 'menu-profile' ?> "	>
+								<?php if(($this->Session->check('CompanyJobOffer.id') == true)): ?>
+									<?php echo $this->Html->link(
+										'Datos del responsable <br> de la oferta',	
+											array(
+												'controller'=>'Companies',
+												'action' => 'companyJobOffer'
+												), 
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
+											'escape' => false,
+										)); 
+									?>
+									<?php else: ?>
+									<?php echo $this->Html->link(
+										'Datos del responsable <br> de la oferta',	
+											array(
+												'action'=>''
+												), 
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px; cursor:not-allowed',
+											'escape' => false,
+											'onclick' => 'return false',
+										)); 
+									?>
+									<?php endif; ?>
+								</li>
+									<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyJobProfile') || ($this->params['action']=='CompanyJobProfile') || ($this->params['action']=='editStudentProfessionalProfile') || ($this->params['action']=='viewStudentProfessionalProfile'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
+								<?php if($this->Session->check('CompanyJobProfile.id') == true): ?>
+									<?php echo $this->Html->link(
+										'Perfil de la Oferta',		
+										array(
+											'controller'=>'Companies',
+											'action' => 'companyJobProfile'
+											),
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
+											'escape' => false,
+										)
+									); ?>
+								<?php else: ?>
+									<?php echo $this->Html->link(
+										'Perfil de la Oferta',		
+										array(
+											'action'=>''
+											),
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px; cursor:not-allowed',
+											'escape' => false,
+											'onclick' => 'return false',
+										)
+									); ?>
+								<?php endif; ?>
 							</li>
-							<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='specificSearchCandidate')) || (($this->params['action']=='specificSearchCandidateResults')))? 'active border-li' : 'border-li' ?> "	>
-								<?= $this->Html->link('Búsqueda Específica', ['controller'=>'Companies','action'=>'specificSearchCandidate', 'nuevaBusqueda']); ?>
+						
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyJobContractType') || ($this->params['action']=='CompanyJobContractType') || ($this->params['action']=='editStudentJobSkill') || ($this->params['action']=='viewStudentJobSkill') || ($this->params['action']=='editStudentLenguage') || ($this->params['action']=='viewStudentLenguage') || ($this->params['action']=='editStudentTechnologicalKnowledge') || ($this->params['action']=='viewStudentTechnologicalKnowledge'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
+								<?php if($this->Session->check('companyJobContractType.id') == true): ?>
+									<?php echo $this->Html->link(
+										'Modalidad de Contratación', 
+										array(
+											'controller'=>'Companies',
+											'action' => 'companyJobContractType'
+											),
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
+											'escape' => false,
+										)
+									); ?>
+								<?php else: ?>
+									<?php echo $this->Html->link(
+										'Modalidad de Contratación', 
+										array(
+											'action'=>''
+											),
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'cursor:not-allowed',
+											'escape' => false,
+											'onclick' => 'return false',
+										)
+									); ?>
+								<?php endif; ?>
+									
+							</li>
+							<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyCandidateProfile') || ($this->params['action']=='CompanyCandidateProfile') || ($this->params['action']=='editStudentProfessionalExperience') || ($this->params['action']=='editStudentWorkArea') || ($this->params['action']=='viewStudentProfessionalExperience'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
+							<?php if($this->Session->check('CompanyCandidateProfile.id') == true): ?>
+								<?php echo $this->Html->link(
+									'Perfil del Candidato', 
+									array(
+										'controller'=>'Companies',
+										'action' => 'companyCandidateProfile'
+										),
+									array(
+										'class' => 'corriculumMenu',
+										'escape' => false,
+										'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
+										'title' => 'Para avanzar pulse en continuar.'
+									)
+								);  ?>
+							<?php else: ?>
+								<?php echo $this->Html->link(
+									'Perfil del Candidato', 
+									array(
+										'action'=>''
+										),
+									array(
+										'class' => 'corriculumMenu',
+										'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
+										'escape' => false,
+										'onclick' => 'return false',
+										'title' => 'Para avanzar pulse en continuar.'
+									)
+								);  ?>
+							<?php endif; ?>
+							</li>
+							<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='companyJobKnowledge')  )? 'menu-profile active' : 'menu-profile' ?> "	>
+								<?php if($this->Session->check('CompanyCandidateProfile.id') == true): ?>
+									<?php echo $this->Html->link(
+										'Conocimientos y Habilidades <br> Profesionales',		
+										array(
+											'controller'=>'Companies',
+											'action' => 'companyJobKnowledge'
+											),
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
+											'escape' => false,
+										)
+									); ?>
+								<?php else: ?>
+									<?php echo $this->Html->link(
+										'Conocimientos y Habilidades <br> Profesionales',		
+										array(
+											'action'=>''
+											),
+										array(
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px; cursor:not-allowed',
+											'escape' => false,
+											'onclick' => 'return false',
+										)
+									); ?>
+								<?php endif; ?>
+							</li>
+							
+								<?php if($this->Session->read('Editando') == 1): ?>
+							<li class="whiteTextMenu"	>
+								<?php 
+									echo $this->Html->link('Finalizar Edición &nbsp;&nbsp; <i class="glyphicon glyphicon-remove-sign"></i>', 
+															array(
+																'controller'=>'Companies',
+																'action' => 'Profile'
+																),
+															array(
+																'class' => 'corriculumMenu myclass',
+																'escape' => false,
+																
+																'style' => 'background-color: #bfbfbf; border-radius: 10px; text-align: center; padding-bottom: 5px; padding-top: 5px;',
+																
+															)
+									);  
+								?>
+							</li>
+							<?php endif; ?>
+							
+							</ul>	
+						</div>
+					</div>
+				</nav>
+				<?php endif; ?>			
+
+				<!--ver ofertas-->
+				<?php 
+					if(!empty($this->params['action']) && (($this->params['action']=='viewOfferOnline') || ($this->params['action']=='viewOfferPdf'))):
+				?>
+				<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
+					<div class="container-fluid">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" aria-expanded="false">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#">Ver oferta:</a>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
+							<ul class="nav navbar-nav">
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='viewOfferOnline')  )? 'active border-li' : 'border-li' ?> "	>
+									<?php 
+										if($this->Session->read('companyJobProfileId') <> ''):
+											$vista = 'viewOfferOnline/'.$this->Session->read('companyJobProfileId');
+										else:
+											$vista = 'profile';
+										endif; ?>
+									<?= $this->Html->link('Vista en linea',['controller'=>'Companies','action'=>$vista]); ?>
+								</li>
+								<li class="whiteTextMenu <?php  echo (!empty($this->params['action']) && (($this->params['action']=='viewOfferPdf'))  )? 'active border-li' : 'border-li' ?> ">
+									<?php 
+										if($this->Session->read('companyJobProfileId') <> ''):
+											$vista = 'viewOfferPdf/'.$this->Session->read('companyJobProfileId');
+										else:
+											$vista = 'profile';
+										endif;?>
+									<?= $this->Html->link('Vista previa impresión', ['controller'=>'Companies','action'=>$vista]); ?>
+								</li>
+							</ul>	
+						</div>
+					</div>
+				</nav>					
+				<?php 
+					endif; 
+				?>
+	
+				<!-- reportar contrataciones-->
+				<?php 
+					if(!empty($this->params['action']) && (($this->params['action']=='studentReport') || (($this->params['action']=='companyExternalOffer')))):
+				?>
+				<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
+					<div class="container-fluid">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" aria-expanded="false">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#">REPORTAR CONTRATACIONES:</a>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
+							<ul class="nav navbar-nav">
+							<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='studentReport')  )? 'active border-li' : 'border-li' ?> "	>
+								<?= $this->Html->link('Ofertas Postuladas',['controller'=>'Companies','action' => 'studentReport',
+																			'?' => array(
+																			'nuevaBusqueda' => 'nuevaBusqueda',
+																			),],
+																			['class' => 'corriculumMenu']
+																			);?>
+							</li>
+							<li class="whiteTextMenu <?php  echo (!empty($this->params['action']) && (($this->params['action']=='companyExternalOffer'))  )? 'active border-li' : 'border-li' ?> ">
+							<?= $this->Html->link('Ofertas Externas', ['controller'=>'Companies','action'=>'companyExternalOffer', 'nuevaBusqueda']); ?>
 							</li>
 							</ul>	
 						</div>
 					</div>
-				</nav>				
-		</div>
-									
-	<?php 
-		endif; 
-	?>
+				</nav>					
+				<?php 
+					endif; 
+				?>
+				
+				<!-- Notificaciones -->
+				<?php 
+					if(!empty($this->params['action']) && (($this->params['action']=='companyPostullation') || ($this->params['action']=='companyNotification'))):
+				?>					
+				<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
+					<div class="container-fluid">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" aria-expanded="false">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#">Notificaciones:</a>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
+							<ul class="nav navbar-nav">
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='companyPostullation') )? 'active border-li' : 'border-li' ?> "	>
+									<?= $this->Html->link('Postulaciones',['controller'=>'Companies','action'=>'companyPostullation',  'nuevaBusqueda']); ?>
+								</li>			
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyNotification') )  )? 'active border-li' : 'border-li' ?> ">
+									<?= $this->Html->link('Entrevistas', ['controller'=>'Companies','action'=>'companyNotification', 'nuevaBusqueda']); ?>
+								</li>
+							</ul>	
+						</div>
+					</div>
+				</nav>					
+				<?php 
+					endif; 
+				?>
+				
+				<?php 
+					if(!empty($this->params['action']) && (($this->params['action']=='searchCandidate') || (($this->params['action']=='viewCvOnline')) || (($this->params['action']=='specificSearchCandidate')) || (($this->params['action']=='specificSearchCandidateResults')))):
+				?>
+				<div class="header" id="top">		
+					<nav class="navbar navbar-default navbar-static-top" style="margin-top: 5px;margin-bottom: 10px;z-index: 1;">
+						<div class="container-fluid">
+							<div class="navbar-header">
+								<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" aria-expanded="false">
+									<span class="sr-only">Toggle navigation</span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+									<span class="icon-bar"></span>
+								</button>
+								<a class="navbar-brand" href="#">BUSCAR CANDIDATOS:</a>
+							</div>
+							<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-3">
+								<ul class="nav navbar-nav">
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='searchCandidate') || ($this->params['action']=='viewCvOnline') )? 'active border-li' : 'border-li' ?> "	>
+									<?= $this->Html->link('Búsqueda Rápida',['controller'=>'Companies','action'=>'searchCandidate',  'nuevaBusqueda']); ?>
+								</li>
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='specificSearchCandidate')) || (($this->params['action']=='specificSearchCandidateResults')))? 'active border-li' : 'border-li' ?> "	>
+									<?= $this->Html->link('Búsqueda Específica', ['controller'=>'Companies','action'=>'specificSearchCandidate', 'nuevaBusqueda']); ?>
+								</li>
+								</ul>	
+							</div>
+						</div>
+					</nav>				
+				</div>							
+				<?php 
+					endif; 
+				?>
 																	
-	<?php if(!empty($this->params['action']) && ($this->params['action']=='viewCandidateOffer')): ?>
-	<!--	<a class="navbar-brand" href="#" style=" background: #829ce0 none repeat scroll 0 0; --><!--margin-left: 0;  width: 1020px; height: 30px; padding-top: 5px; margin-bottom: 50px;" >Ver   
-	<!--candidatos dentro de oferta</a> -->
-	<?php endif; ?>
-			<div style="margin-left: 20px;">
-					<?php echo $this->Session->flash(); ?> 
+				<?php if(!empty($this->params['action']) && ($this->params['action']=='viewCandidateOffer')): ?>
+				<!--	<a class="navbar-brand" href="#" style=" background: #829ce0 none repeat scroll 0 0; --><!--margin-left: 0;  width: 1020px; height: 30px; padding-top: 5px; margin-bottom: 50px;" >Ver   
+				<!--candidatos dentro de oferta</a> -->
+				<?php endif; ?>
+				<div style="margin-left: 20px;">
+					<?php echo $this->Session->flash(); ?>
 					<?php echo $this->fetch('content'); ?> 
-			</div>
+				</div>
 		</div>
 	</div>
 	
-
 	<!--Pie de página-->
 	<div class="col-md-12 whiteText" style="text-align: center; background-color: #1a75bb; margin-top: 15px;  position:fixed;left:0px;bottom:0px;height:30px;width:100%;z-index: 1000;">
 		<p style="margin: 7px;">Hecho en México, todos los derechos reservados.</p>
 	</div>
 						
-	<!--Formulario de selección de carpeas-->
+	<!--Formulario de selección de carpetas-->
 	<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content fondoBti">
@@ -1054,7 +1073,7 @@
 											'interval' => 15,
 											'data-width'=> '160px']);?>	
 
-						</fieldset>
+					</fieldset>
 				</div>
 				<div class="modal-footer">
 					<?= $this->Form->button('<i class="glyphicon glyphicon-calendar"></i>&nbsp; Reagendar',['type' => 'button', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default','onClick' => 'validateNotificationForm();']); ?>
@@ -1084,125 +1103,142 @@
 	
 	<!--Form para Agendar entrevista telefónica-->
 	<div class="modal fade" id="myModalnotificationTelefonica" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content fondoBti">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title whiteText" id="myModalLabel">Seleccione el día y la hora para la entrevista telefónica</h4>
-			</div>
-			<div class="modal-body">
-				<?php 
-					echo $this->Form->create('Company', array(
-												'class' => 'form-horizontal', 
-												'id' => 'FormTelephoneNotification',
-												'role' => 'form',
-												'inputDefaults' => array(
-														'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																						'div' => array('class' => 'form-group'),
-																						'class' => 'form-control',
-																						'before' => '<div class="col-md-12 ">',
-																						'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
-																						'after' => '</div></div>',
-																						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-												),
-														'action' => 'companyTelephoneNotification',
-																	'onsubmit' =>'return validateTelephoneNotificationForm();'
-					)); 
-				?>
-				<fieldset>
-					<?php 	echo $this->Form->input('StudentNotification.student_id', array(
+		<div class="modal-dialog">
+			<div class="modal-content fondoBti">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title whiteText" id="myModalLabel">Seleccione el día y la hora para la entrevista telefónica</h4>
+				</div>
+				<div class="modal-body">
+					<?php 
+						echo $this->Form->create('Company', array(
+													'class' => 'form-horizontal', 
+													'id' => 'FormTelephoneNotification',
+													'role' => 'form',
+													'inputDefaults' => array(
+															'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
+																							'div' => array('class' => 'form-group'),
+																							'class' => 'form-control',
+																							'before' => '<div class="col-md-12 ">',
+																							'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
+																							'after' => '</div></div>',
+																							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
+													),
+															'action' => 'companyTelephoneNotification',
+																		'onsubmit' =>'return validateTelephoneNotificationForm();'
+						)); 
+					?>
+					<fieldset>
+						<?php 	echo $this->Form->input('StudentNotification.student_id', array(
+																						'type'=>'hidden',
+																						'id'=>'StudentTelephoneNotificationId'
+						)); ?>
+						<?php 	echo $this->Form->input('CompanyInterviewMessage.id', array(
 																					'type'=>'hidden',
-																					'id'=>'StudentTelephoneNotificationId'
-					)); ?>
-					<?php 	echo $this->Form->input('CompanyInterviewMessage.id', array(
-																				'type'=>'hidden',
-																				'value'=>$company['CompanyInterviewMessage']['id'],
-					)); ?>
-					<?php 	echo $this->Form->input('StudentNotification.company_interview_message', array(
-																		'id' => 'StudentTelephoneNotificationMessage',
-																		'before' => '<div class="col-md-12 ">',
-																		'style' => 'resize: vertical; min-height: 75px;  max-height: 120px; height: 75px;',
-																		'maxlength' => '316',
-																		'type' => 'textarea',
-																		'value'=>$company['CompanyInterviewMessage']['telehone_interview_message'],
-																		// 'id' => 'taComentario',
-																		'label' => array(
-																		'class' => 'col-md-0 control-label',
-																		'text' => ''),
-																		'placeholder' => 'Mensaje ',
-					));	?>	
-					<center>	
-						<h4 class="modal-title whiteText" id="myModalLabel">Fecha:</h4>						
-						<?php echo $this->Form->input('StudentNotification.company_interview_date', array(				
-						'id' => 'StudentTelephoneNotificationDate',
-						'type' => 'date',
-						'class' => 'selectpicker show-tick form-control show-menu-arrow',
-						'data-width'=> '150px',
-						'label' => array(
-						'class' => 'col-sm-0 col-md-0 control-label',
-						'text' => '',),
-						'dateFormat' => 'YMD',
-						'separator' => '',
-						'minYear' => date('Y') - -2,
-						'maxYear' => date('Y') - 0,	
-
-						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
+																					'value'=>$company['CompanyInterviewMessage']['id'],
 						)); ?>
-						
-						<h4 class="modal-title whiteText" id="myModalLabel">Hora:</h4>
-						<?php echo $this->Form->input('StudentNotification.company_interview_hour', array(				
-						'id' => 'StudentTelephoneNotificationHour',
-						'type' => 'time',
-						'timeFormat' => '24',
-						'interval' => 15,
-						'class' => 'selectpicker show-tick form-control show-menu-arrow',
-						'data-width'=> '150px',
-						'label' => array(
-						'class' => 'col-sm-0 col-md-0 control-label',
-						'text' => '',),
+						<?php 	echo $this->Form->input('StudentNotification.company_interview_message', array(
+																			'id' => 'StudentTelephoneNotificationMessage',
+																			'before' => '<div class="col-md-12 ">',
+																			'style' => 'resize: vertical; min-height: 75px;  max-height: 120px; height: 75px;',
+																			'maxlength' => '316',
+																			'type' => 'textarea',
+																			'value'=>$company['CompanyInterviewMessage']['telehone_interview_message'],
+																			// 'id' => 'taComentario',
+																			'label' => array(
+																			'class' => 'col-md-0 control-label',
+																			'text' => ''),
+																			'placeholder' => 'Mensaje ',
+						));	?>	
+						<center>	
+							<h4 class="modal-title whiteText" id="myModalLabel">Fecha:</h4>						
+							<?php echo $this->Form->input('StudentNotification.company_interview_date', array(				
+							'id' => 'StudentTelephoneNotificationDate',
+							'type' => 'date',
+							'class' => 'selectpicker show-tick form-control show-menu-arrow',
+							'data-width'=> '150px',
+							'label' => array(
+							'class' => 'col-sm-0 col-md-0 control-label',
+							'text' => '',),
+							'dateFormat' => 'YMD',
+							'separator' => '',
+							'minYear' => date('Y') - -2,
+							'maxYear' => date('Y') - 0,	
 
-						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-						)); ?>
+							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
+							)); ?>
+							
+							<h4 class="modal-title whiteText" id="myModalLabel">Hora:</h4>
+							<?php echo $this->Form->input('StudentNotification.company_interview_hour', array(				
+							'id' => 'StudentTelephoneNotificationHour',
+							'type' => 'time',
+							'timeFormat' => '24',
+							'interval' => 15,
+							'class' => 'selectpicker show-tick form-control show-menu-arrow',
+							'data-width'=> '150px',
+							'label' => array(
+							'class' => 'col-sm-0 col-md-0 control-label',
+							'text' => '',),
 
-						<select  id="StudentAcademicSituationId" class="selectpicker show-tick form-control show-menu-arrow" required="required" name="data[StudentNotification][company_job_profile_id]" >
-							<option value="">Seleccione el puesto interesado en el perfil</option>
-							<?php 
-								foreach($company['CompanyJobProfile'] as $k => $companyJobProfileId):
+							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
+							)); ?>
 
-									$caracteres = strlen($companyJobProfileId['id']);
-									$faltantes = 5 - $caracteres;	
-									if($faltantes > 0):
-										$ceros = '';
-										for($cont=0; $cont<=$faltantes;$cont++):
-											$ceros .= '0';
-										endfor;
-										$folio = $ceros.$companyJobProfileId['id'];
-									else:
-										$folio = strlen($companyJobProfileId['id']);
-									endif;
-									
-									if(!empty($companyJobProfileId['CompanyJobContractType']) and ($companyJobProfileId['CompanyJobContractType']['salary']<>'')):
-										$salario = $Salarios[$companyJobProfileId['CompanyJobContractType']['salary']];
-									else:
-										$salario = '';
-									endif
-							?>
-							<option value=<?php echo $companyJobProfileId['id']; ?> > <?php echo $folio.' '.$companyJobProfileId['job_name'].' '.$salario; ?></option>
-							<?php 
-								endforeach;
-							?>
-						</select>
-					</center>
-				</fieldset>
+							<select  id="StudentAcademicSituationId" class="selectpicker show-tick form-control show-menu-arrow" required="required" name="data[StudentNotification][company_job_profile_id]" >
+								<option value="">Seleccione el puesto interesado en el perfil</option>
+								<?php 
+									foreach($company['CompanyJobProfile'] as $k => $companyJobProfileId):
+
+										$caracteres = strlen($companyJobProfileId['id']);
+										$faltantes = 5 - $caracteres;	
+										if($faltantes > 0):
+											$ceros = '';
+											for($cont=0; $cont<=$faltantes;$cont++):
+												$ceros .= '0';
+											endfor;
+											$folio = $ceros.$companyJobProfileId['id'];
+										else:
+											$folio = strlen($companyJobProfileId['id']);
+										endif;
+										
+										if(!empty($companyJobProfileId['CompanyJobContractType']) and ($companyJobProfileId['CompanyJobContractType']['salary']<>'')):
+											$salario = $Salarios[$companyJobProfileId['CompanyJobContractType']['salary']];
+										else:
+											$salario = '';
+										endif
+								?>
+								<option value=<?php echo $companyJobProfileId['id']; ?> > <?php echo $folio.' '.$companyJobProfileId['job_name'].' '.$salario; ?></option>
+								<?php 
+									endforeach;
+								?>
+							</select>
+						</center>
+					</fieldset>
 				<div class="modal-footer">
 					<?= $this->Form->button('<i class="glyphicon glyphicon-earphone"></i>&nbsp; Enviar',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
 					<?= $this->Form->end(); ?>
 				</div>
-			
-			</div>
+				
+				</div>
+				</div>
 			</div>
 		</div>
 	</div>
+	
+	<div id="aviso" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" >
+		<div class="modal-content" >
+			<div class="modal-header fondoBti">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel" style="color: #fff;">Aviso de privacidad</h4>
+			</div>
+			<div class="modal-body fondoBti" style=" height: 70vh;">
+					<iframe src="http://localhost/bolsabti/files/pdf/avisoPrivacidad.pdf" width="100%" height="100%" frameborder="0" allowtransparency="true">Your browser does not support inline frames or is currently configured not to display inline frames.</iframe>
+			</div>
+			<div class="modal-footer fondoBti">
+				<button type="button" class="btn btn-default btnBlue" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	  </div>
 	</div>
 
 	<!--Form para agendar entrevista personal-->
@@ -1357,39 +1393,37 @@
 	</div>
 </div>
 
-	<!--Reportar contratación-->
-	<div class="modal fade" id="myModalReportarContratacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content fondoBti">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title whiteText" id="myModalLabel">Reportar contratación.</h4>
-			</div>
-			<div class="modal-body">
-				<?php 
-				echo $this->Form->create('Company', array(
-													'class' => 'form-horizontal', 
-													'role' => 'form',
-													'inputDefaults' => array(
-															'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																							'div' => array('class' => 'form-group'),
-																							'class' => 'form-control',
-																							'before' => '<div class="col-md-12 ">',
-																							'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
-																							'after' => '</div></div>',
-																							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-													),
-													'onsubmit' =>'return validarReportarContratacionForm();',
-													'action' => 'reportarContratacion',
-				)); 
-				?>
-				<fieldset>
-				   <center>
-					<?php 	echo $this->Form->input('StudentReportarContratacion.student_id', array('type'=>'hidden')); ?>
-
-					<h4 class="modal-title whiteText" id="myModalLabel">Fecha.</h4>
-					<?php echo $this->Form->input('StudentReportarContratacion.fecha_contratacion', array(				
-						'type' => 'date',
+	<!-- modal vigencia -->
+	<div class="modal fade" id="myModalVigencia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content fondoBti">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title whiteText" id="myModalLabel">Seleccione la fecha de vigencia para la oferta.</h4>
+				</div>
+				<div class="modal-body">
+					<?php 
+						echo $this->Form->create('Company', array(
+							'class' => 'form-horizontal', 
+							'role' => 'form',
+							'inputDefaults' => array(
+							'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
+							'div' => array('class' => 'form-group'),
+							'class' => 'form-control',
+							'before' => '<div class="col-md-12 ">',
+							'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
+							'after' => '</div></div>',
+							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
+							),
+							'onsubmit' =>'return validateVigenciaForm();',
+							'action' => 'updateCompanyJobProfileExpiration',
+						)); 
+					?>
+					<fieldset>
+						<?php 	echo $this->Form->input('CompanyJobProfile.id', array('type'=>'hidden')); ?>
+						<h4 class="modal-title whiteText" id="myModalLabel">Vigencia de la oferta.</h4>
+						
+						<?php echo $this->Form->input('CompanyJobProfile.expiration', array(				
 						'class' => 'selectpicker show-tick form-control show-menu-arrow',
 						'data-width'=> '150px',
 						'label' => array(
@@ -1397,236 +1431,182 @@
 						'text' => '',),
 						'dateFormat' => 'YMD',
 						'separator' => '',
-						'minYear' => date('Y') - -2,
-						'maxYear' => date('Y') - 0,	
-
+						'minYear' => date('Y') - -1,
+						'maxYear' => date('Y') - 0,
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-					)); ?>
-						<select  id="StudentAcademicSituationId" class="selectpicker show-tick form-control show-menu-arrow" required="required" name="data[StudentReportarContratacion][company_job_profile_id]" >
-							<option value="">Seleccione el puesto que cubrió el candidato</option>
-								<?php 
-									foreach($company['CompanyJobProfile'] as $k => $companyJobProfileId):
-
-										$caracteres = strlen($companyJobProfileId['id']);
-										$faltantes = 5 - $caracteres;	
-										if($faltantes > 0):
-											$ceros = '';
-											for($cont=0; $cont<=$faltantes;$cont++):
-												$ceros .= '0';
-											endfor;
-											$folio = $ceros.$companyJobProfileId['id'];
-										else:
-											$folio = strlen($companyJobProfileId['id']);
-										endif;
-										
-										if(!empty($companyJobProfileId['CompanyJobContractType']) and ($companyJobProfileId['CompanyJobContractType']['salary']<>'')):
-											$salario = $Salarios[$companyJobProfileId['CompanyJobContractType']['salary']];
-										else:
-											$salario = '';
-										endif
-								?>
-							<option value=<?php echo $companyJobProfileId['id']; ?> > <?php echo $folio.' '.$companyJobProfileId['job_name'].' '.$salario; ?></option>
-								<?php 
-									endforeach;
-								?>
-						</select>		
-				   </center>
-				</fieldset>
-				<div class="modal-footer">
-					<?= $this->Form->button('<i class="	glyphicon glyphicon-hand-right"></i>&nbsp; Enviar',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
-					<?= $this->Form->end(); ?>
+						)); ?>
+					</fieldset>
+					<div class="modal-footer">
+						<?= $this->Form->button('<i class="glyphicon glyphicon-calendar"></i>&nbsp; Enviar',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
+						<?= $this->Form->end(); ?>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 
-	<!--Form para envio de correo -->
-	<div class="modal fade" id="myModalMail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content fondoBti">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title whiteText" id="myModalLabel">Envio de correo electrónico a perfil de candidato</h4>
-			</div>
-			<div class="modal-body">		
-			<fieldset>
-				<center>
-					<?php
-						echo $this->Form->create('Company', array(
-										'type' => 'file',
-										'class' => 'form-horizontal', 
-										'role' => 'form',
-										'inputDefaults' => array(
-											'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-											'div' => array('class' => 'form-group'),
-											'class' => 'form-control',
-											'label' => array('class' => 'col-xs-4 col-sm-4 col-md-2 col-md-4 control-label '),
-											'before' => '<div class="col-md-12 ">',
-											'between' => '<div class="col-xs-11 col-sm-10 col-md-10 " >',
-											'after' => '</div></div>',
-											'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-										),
-										'action' => 'companyEmailNotification'
-					)); ?>
-					<style type="text/css">
-					.upload {
-						width: 154px;
-						height: 35px;
-						background: url("<?php echo $this->webroot; ?>/img/adjuntarboton.png");
-						overflow: hidden;
-						background-repeat-x: no-repeat;
-						background-repeat:no-repeat;
-						margin-left: 35px;
-						margin-top: -28px;
-					}
-				</style>					
-											
-					<?php echo $this->Form->input('Student.emailTo', array(
-							'readonly' => 'readonly',
-							'before' => '<div class="col-md-12 ">',
-							'between' => ' <div class="col-md-11" style="padding-right: 0px;">',
-							'label' => array(
-							'class' => 'col-md-0 control-label',
-							'text' => ''),
-							'placeholder' => 'Correo',
-					)); ?>
-					<?php echo $this->Form->input('Student.CC', array(	
-															'type' => 'hidden',
-															'before' => '<div class="col-md-12 ">',	
-															'style'	=> 'margin-left: -15px;',		
-															'label' => array(
-															'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',
-															'text' => 'CC:',
-															'style' => 'margin-left: 15px;',
-															),
-															'placeholder' => 'CC',
-					)); ?>
-					<?php echo $this->Form->input('Student.CCO', array(	
-															'type' => 'hidden',
-															'before' => '<div class="col-md-12 ">',	
-															'style' => 'margin-left: -15px;',			
-															'label' => array(
-															'class' => 'col-xs-11 col-sm-1 col-md-1 control-label ',																'text' => 'CCO:',
-															'style' => 'margin-left: 15px;',
-															),
-															'placeholder' => 'CCO',
-					)); ?>
-					<?php 	echo $this->Form->input('Student.title', array(
-						'before' => '<div class="col-md-12 ">',
-						'between' => ' <div class="col-md-11" style="padding-right: 0px;">',
-						'label' => array(
-						'class' => 'col-md-0 control-label',
-						'text' => ''),
-						'placeholder' => 'Título',
-					));	?>									
-					<?php echo $this->Form->input('Student.message', array(	
-							'before' => '<div class="col-md-12 ">',
-							'style' => 'resize: vertical; min-height: 75px;  max-height: 120px; height: 75px;',
-							'maxlength' => '316',
-							'type' => 'textarea',
-							'label' => array(
-							'class' => 'col-md-0 control-label',
-							'text' => ''),
-							'placeholder' => 'Cuerpo del correo'
-					)); ?>
-					<?php echo $this->Form->input('Student.sign', array(	
-							'before' => '<div class="col-md-12 ">',
-							'between' => ' <div class="col-md-11" style="padding-right: 0px;">',
-							'label' => array(
-							'class' => 'col-md-0 control-label',
-							'text' => ''),
-							'placeholder' => 'Firma',
-					)); ?>
-					<?php echo $this->Form->input('Student.file', array(
-														'type' => 'file',
-														'before' => '<div class="col-md-12 ">',
-														'between' => '<div class="col-xs-12 col-sm-12 col-md-8 upload">',
-														'style' => 'display: block !important;
-														width: 157px !important;
-														height: 57px !important;
-														opacity: 0 !important;
-														overflow: hidden !important;
-														background-repeat-y: no-repeat;
-														cursor: pointer;',
-														'label' => array(
-														'class' => 'col-xs-11 col-sm-6 col-md-3 control-label',
-														'text' => 'máx. 200kb'
-																		),
-														'onchange' => 'cambiarContenido()'
-														
-					)); ?>
-				</center>
-			</fieldset>
-			</div>
-				<div class="modal-footer">
-					<?php 	echo $this->Form->button('Enviar',array(
-															'type' => 'submit', 
-															'div' => 'form-group',
-															'escape' => false,
-															'class' => 'btn btnRed btn-default col-md-3 col-md-offset-8'
-												));
-							echo $this->Form->end(); 
-					?>
-				</div>
-		</div>
-	</div>
-</div>
-
-	<!--Modal Reportar Contratación-->
-	<div class="modal fade" id="openModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<!--Reportar contratación-->
+	<div class="modal fade" id="myModalReportarContratacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content fondoBti">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title whiteText" id="myModalLabel">Indique la fecha de contratación.</h4>
+					<h4 class="modal-title whiteText" id="myModalLabel">Reportar contratación.</h4>
 				</div>
 				<div class="modal-body">
-					<?= $this->Form->create('Student', [
-									'class' => 'form-horizontal', 
-									'role' => 'form',
-									'inputDefaults' => [
-										'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
-										'div' => ['class' => 'form-group'],
-										'class' => 'form-control',
-										'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
-										'between' => '<div class="col-md-12">',
-										'after' => '</div>',
-										'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
-									],
-									'action' => 'report']); ?>
+					<?php 
+					echo $this->Form->create('Company', array(
+														'class' => 'form-horizontal', 
+														'role' => 'form',
+														'inputDefaults' => array(
+																'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
+																								'div' => array('class' => 'form-group'),
+																								'class' => 'form-control',
+																								'before' => '<div class="col-md-12 ">',
+																								'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
+																								'after' => '</div></div>',
+																								'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
+														),
+														'onsubmit' =>'return validarReportarContratacionForm();',
+														'action' => 'reportarContratacion',
+					)); 
+					?>
 					<fieldset>
-						
-						<?= $this->Form->input('Report.company_job_profile_id',['type'=>'hidden']); ?>
-						
-						<label>Fecha de contratación</label>
-						<?= $this->Form->input('Report.fecha_contratacion', [
-												'class' => 'selectpicker show-tick form-control show-menu-arrow',
-												'data-width'=> '180px',
-												'dateFormat' => 'YMD',
-												'separator' => '',
-												'minYear' => date('Y') - 10,
-												'maxYear' => date('Y') - 0,
-												'after' => '<div class="col-md-3 text-center" style="margin-top: 5px;" id="idAge"></div></div>',
-												'onchange'=> 'ageCalculator()']); ?>
+					   <center>
+						<?php 	echo $this->Form->input('StudentReportarContratacion.student_id', array('type'=>'hidden')); ?>
+
+						<h4 class="modal-title whiteText" id="myModalLabel">Fecha.</h4>
+						<?php echo $this->Form->input('StudentReportarContratacion.fecha_contratacion', array(				
+							'type' => 'date',
+							'class' => 'selectpicker show-tick form-control show-menu-arrow',
+							'data-width'=> '150px',
+							'label' => array(
+							'class' => 'col-sm-0 col-md-0 control-label',
+							'text' => '',),
+							'dateFormat' => 'YMD',
+							'separator' => '',
+							'minYear' => date('Y') - -2,
+							'maxYear' => date('Y') - 0,	
+
+							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
+						)); ?>
+							<select  id="StudentAcademicSituationId" class="selectpicker show-tick form-control show-menu-arrow" required="required" name="data[StudentReportarContratacion][company_job_profile_id]" >
+								<option value="">Seleccione el puesto que cubrió el candidato</option>
+									<?php 
+										foreach($company['CompanyJobProfile'] as $k => $companyJobProfileId):
+
+											$caracteres = strlen($companyJobProfileId['id']);
+											$faltantes = 5 - $caracteres;	
+											if($faltantes > 0):
+												$ceros = '';
+												for($cont=0; $cont<=$faltantes;$cont++):
+													$ceros .= '0';
+												endfor;
+												$folio = $ceros.$companyJobProfileId['id'];
+											else:
+												$folio = strlen($companyJobProfileId['id']);
+											endif;
+											
+											if(!empty($companyJobProfileId['CompanyJobContractType']) and ($companyJobProfileId['CompanyJobContractType']['salary']<>'')):
+												$salario = $Salarios[$companyJobProfileId['CompanyJobContractType']['salary']];
+											else:
+												$salario = '';
+											endif
+									?>
+								<option value=<?php echo $companyJobProfileId['id']; ?> > <?php echo $folio.' '.$companyJobProfileId['job_name'].' '.$salario; ?></option>
+									<?php 
+										endforeach;
+									?>
+							</select>		
+					   </center>
 					</fieldset>
 					<div class="modal-footer">
-						<?= $this->Form->button('Reportar &nbsp; &nbsp; <i class="glyphicon glyphicon-ok-sign"></i>',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
+						<?= $this->Form->button('<i class="glyphicon glyphicon-ok-sign"></i>&nbsp; Enviar',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
 						<?= $this->Form->end(); ?>
 					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	</div>
 
+	<!--Correo-->
+	<div class="modal fade" id="myModalMail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
+		<div class="modal-dialog"  style="width: 650px" id="draggable">
+			<div class="modal-content fondoBti">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel" style="color: #fff">Envio de correo electrónico </h4>
+				</div>
+				<div class="modal-body col-md-12">
+					<?= $this->Form->create('Company', [
+								'type' => 'file',
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'action' => 'companyEmailNotification',]); ?>
+						<fieldset>
+							
+							<div class="col-md-12">
+							<label style="color: #fff">Para:</label>
+							<?= $this->Form->input('Student.emailTo', ['placeholder' => 'Correo','readonly' => 'readonly']); ?>
+							</div>
+
+							<div class="col-md-12">
+							<label style="color: #fff">Título:</label>
+							<?= $this->Form->input('Student.title', ['placeholder' => 'Título']); ?>
+							</div>
+
+							<div class="col-md-12">
+							<label style="color: #fff">Adjuntar archivo .jpg ó .pdf</label>
+							<?= $this->Form->input('Student.file', ['type' => 'file','placeholder' => 'Título','onchange' => 'cambiarContenido()','class' =>'file']); ?>
+							</div>
+
+							<?= $this->Form->input('Student.CC', ['type' => 'hidden']); ?>
+							<?= $this->Form->input('Student.CCO', ['type' => 'hidden']); ?>
+							
+							<div class="col-md-12">
+							<label style="color: #fff">Mensaje:</label>
+							<?= $this->Form->input('Student.message', ['placeholder' => 'Mensaje','type'=>'textarea','class' => 'form-control responsabilidadesClass','style' => 'max-height: 280px;','maxlength' => '632', 'onkeypress'=> 'caracteresCont("StudentMessage", "contadorMensaje",632)']); ?>
+							</div>
+
+							<div class="col-md-12" style="float: right;">
+								<div style="float: right;"><span id="contadorMensaje" style="color: white">0/632</span><span style="color: white"> caracteres máx.</span></div>
+							</div>
+
+							<div class="col-md-6">
+							<label style="color: #fff">Firma:</label>
+							<?= $this->Form->input('Student.sign', ['placeholder' => 'Firma']); ?>
+							</div>
+
+						</fieldset>
+
+				</div>
+				<div class="modal-footer">
+					<div class="col-md-12 text-center" style="margin-bottom: 15px">
+						<?= $this->Form->button('Enviar &nbsp; <i class="glyphicon glyphicon-send"></i>',['type'=>'submit','class' => 'btn btn-default','escape' => false,'style'=>'float: right']);?>
+						<?= $this->Form->end(); ?>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<?php
 		echo $this->Form->postLink('<i class="glyphicon glyphicon-trash"></i>&nbsp; Eliminar Foto',							
-													['controller'=>'Companies',
-													'action'=>'deleteRegister',$this->Session->read('Auth.User.id')],
-													['class' => 'btn btn-danger',
-														'escape' => false,
-														'style' => 'display: none',
-														'id' => 'deletePhotoId']); 	
+		['controller'=>'Companies',
+		'action'=>'deleteRegister',$this->Session->read('Auth.User.id')],
+		['class' => 'btn btn-danger',
+		'escape' => false,
+		'style' => 'display: none',
+		'id' => 'deletePhotoId']); 	
 	?>
 	<script type="text/javascript">
        // $('.alert').animate({opacity: 1.0}, 4000).fadeOut(3000,"swing");  
