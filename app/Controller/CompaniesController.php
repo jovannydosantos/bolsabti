@@ -1799,6 +1799,8 @@
 			$this->sexo();
 			$this->average();
 			$this->decimalAverage();
+			$this->academicLevel();
+			$this->academicSituation();
 			
 			$this->Session->write('serialized_form', $this->request->data);
 			$this->Session->delete('limit');
@@ -1874,6 +1876,8 @@
 			$this->sexo();
 			$this->average();
 			$this->decimalAverage();
+			$this->academicLevel();
+			$this->academicSituation();
 			
 			// Verifica las ofertas guardadas y las manda para que puedan ser marcadas o no
 			$this->set('busquedasGuardadas', $this->CompanySavedSearch->find('list', array(
@@ -2335,11 +2339,11 @@
 				// Situación Académica
 				if(isset($this->request->data['StudentProfessionalProfile']) AND 
 				(
-				($this->request->data['StudentProfessionalProfile'][0]['academic_situation'] > 0) OR 
-				($this->request->data['StudentProfessionalProfile'][1]['academic_situation'] > 0) OR 
-				($this->request->data['StudentProfessionalProfile'][2]['academic_situation'] > 0) OR 
-				($this->request->data['StudentProfessionalProfile'][3]['academic_situation'] > 0) OR 
-				($this->request->data['StudentProfessionalProfile'][4]['academic_situation'] > 0) 
+				($this->request->data('StudentProfessionalProfile.0.academic_situation') > 0) OR 
+				($this->request->data('StudentProfessionalProfile.1.academic_situation') > 0) OR 
+				($this->request->data('StudentProfessionalProfile.2.academic_situation') > 0) OR 
+				($this->request->data('StudentProfessionalProfile.3.academic_situation') > 0) OR 
+				($this->request->data('StudentProfessionalProfile.4.academic_situation') > 0) 
 				)
 				):
 
@@ -3314,6 +3318,53 @@
 			endif;
 			
 			// Obtenemos los id de JobOffer que cumplan con las condiciones de búsqueda y que esten dentro de del arreglo de id´s de arriba, estos pasan en automático a la vista ya que no son confidenciales las ofertas
+			$telefonicas = $this->StudentNotification->find('all', array(
+																			'conditions' => array (
+																									'StudentNotification.company_id' => $this->Session->read('company_id'),
+																									'StudentNotification.interview_type'=> 1,
+																									'StudentNotification.company_interview_date >= '=> date("Y-m-d"),
+																									
+																									)
+																			)
+																);
+			$this->set('telefonicas',$telefonicas);
+						$presenciales = $this->StudentNotification->find('all', array(
+																			'conditions' => array (
+																									'StudentNotification.company_id' => $this->Session->read('company_id'),
+																									'StudentNotification.interview_type'=> 2,
+																									'StudentNotification.company_interview_date >= '=> date("Y-m-d"),
+																									)
+																			)
+																);
+			$this->set('presenciales',$presenciales);
+			$step_process = array(1=>2, 2=>3); // Indica que el proceso de seguimiento pasa a ser tipo presencial o de contratación que corresponden a la empresa
+			$typeResponsCompany = array(2=>5, 3=>0);  //0 = La empresa aun no ha respondido, 5 = Sigue en el proceso
+			$typeRespons = array(1=>4, 2=>5, 3=>0); //El alumnos ha indicado que 4 = Me contrataron, 5 = Agende presencial, 0 = directamente se agendo presencial y no telefónica
+			$seguimientos = $this->StudentNotification->find('all', array(
+																				'conditions' => array (
+																										'AND' => array(
+																														'StudentNotification.company_id' => $this->Session->read('company_id'),
+																														'StudentNotification.interview_type'=> 4,
+																														'StudentNotification.step_process' => $step_process,
+																														// 'StudentNotification.type_respons_company' => $typeResponsCompany,
+																														'StudentNotification.type_respons' => $typeRespons,
+																														'StudentNotification.type_respons_company' => 0,
+																													)
+																										)
+																		)
+															);
+			$this->set('seguimientos',$seguimientos);
+
+			$contrataciones = $this->StudentNotification->find('all', array(
+																			'conditions' => array (
+																									'StudentNotification.company_id' => $this->Session->read('company_id'),
+																									'StudentNotification.interview_type'=> 3,
+																									'StudentNotification.company_interview_status' => 0,
+																									)
+																			)
+																);
+			$this->set('contrataciones',$contrataciones);
+			
 			$companyJobOffersLikeName = $this->CompanyJobOffer->find('list', array(
 																					'fields' => array('CompanyJobOffer.id'),
 																					'conditions' => array(

@@ -78,16 +78,16 @@
 		<div class="col-md-12">
 			<hr size="0.5" style="border-color: white; color: white; border-width: 4px 0 0; margin-top: 15px;  margin-bottom: 0px;">
 		</div>
-		<div class="col-md-2 col-md-offset-1"  style="margin-top: 10px;">
+		<div class="col-md-2 col-md-offset-1"  style="margin-top: 0px;">
 			<p style="font-size: 18px;"><b>Total</b></p>
 		</div>
-		<div class="col-md-3"  style="margin-top: 10px; padding-left: 10px;">
+		<div class="col-md-3"  style="margin-top: 10px; padding-left: 0px;">
 			<p style="font-size: 18px;">Ofertas publicadas: <?php echo $totalPublicaciones; ?></p>
 		</div>
-		<div class="col-md-2"  style="margin-top: 10px; padding-left: 10px;">
+		<div class="col-md-2"  style="margin-top: 10px; padding-left: 0px;">
 			<p style="font-size: 18px;">Vacantes: <?php echo $totalVacantes; ?></p>
 		</div>
-		<div class="col-md-3"  style="margin-top: 10px; padding-left: 10px;">
+		<div class="col-md-3"  style="margin-top: 10px; padding-left: 0px;">
 			<p style="font-size: 18px;">Contrataciones: <?php echo $totalReportes; ?></p>
 		</div>
 	</div>

@@ -3,77 +3,6 @@
 	foreach($ofertas as $k => $oferta):
 ?>
 <script>
-	function saveVigencia(idJobProfile,fecha, fechaCreacion){
-		var fechaArr = fecha.split('-');
-		var aho = fechaArr[0];
-		var mes = fechaArr[1];
-		var dia = fechaArr[2];
-		
-		$("#CompanyJobProfileExpirationYear option[value='"+aho+"']").prop('selected', true);
-		$("#CompanyJobProfileExpirationMonth option[value='"+mes+"']").prop('selected', true);
-		$("#CompanyJobProfileExpirationDay option[value='"+dia+"']").prop('selected', true);
-		
-		var fechaArr = fechaCreacion.split('-');
-		var aho = fechaArr[0];
-		var mes = fechaArr[1];
-		var dia = fechaArr[2];
-		
-		$("#CompanyJobProfileCreatedYear option[value='"+aho+"']").prop('selected', true);
-		$("#CompanyJobProfileCreatedMonth option[value='"+mes+"']").prop('selected', true);
-		$("#CompanyJobProfileCreatedDay option[value='"+dia+"']").prop('selected', true);
-	
-		document.getElementById('CompanyJobProfileId').value = idJobProfile;
-		$('#myModalVigencia').modal('show');
-	}
-		
-	function ofertaExpirada(){
-		$.alert({
-			title:'AVISO',
-			type: 'blue',
-			content : 'Oferta Expirada',
-		});	
-	}
-	
-	function ofertaInactiva(){
-		$.alert({
-			title:'AVISO',
-			type: 'blue',
-			content : 'Oferta Inactiva',
-		});	
-	}
-	
-	function ofertaActiva(){
-		$.alert({
-			title:'AVISO',
-			type: 'blue',
-			content : 'Oferta Activa',
-		});	
-	}
-	
-	function ofertaIncompleta(){
-		$.alert({
-			title:'AVISO',
-			type: 'blue',
-			content : 'Oferta Incompleta',
-		});	
-	}
-	
-	function deleteOffer(param){
-		$.confirm({
-			title: 'Confirmación!',
-			icon: 'glyphicon glyphicon-warning-sign',
-			type: 'red',
-			content: '¿Realmente desea eliminar la oferta',
-			buttons: {
-				aceptar: function () {
-				   $("#deleteOfferId"+param).click();
-				},
-				cancelar: function () {
-					// $.alert('Opción cancelada!');
-				},
-			}
-		});
-	}
 </script>
 
 <div class="col-md-12 sombra" style="border: 1px solid #1a75bb; margin-bottom: 15px; background: url('/bolsabti/img/satinweave.png');">    
@@ -217,7 +146,7 @@
 													'id' => $oferta['CompanyJobProfile']['id'],
 													'editar' => 1]]]);?>
 				<!--Vigencia oferta -->
-				<?= $this->Html->image('student/visible.png',
+			<?= $this->Html->image('student/visible.png',
 									['title' => 'Cambiar vigencia de oferta',
 									'data-toggle'=>'tooltip',
 									'data-placement'=>'left',
@@ -316,55 +245,3 @@
 
 <?php endforeach; ?>
 
-<!-- modal vigencia -->
-<div class="modal fade" id="myModalVigencia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content fondoBti">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title whiteText" id="myModalLabel">Seleccione la fecha de vigencia para la oferta.</h4>
-			</div>
-			<div class="modal-body">
-					<?php 
-				echo $this->Form->create('Company', array(
-													'class' => 'form-horizontal', 
-													'role' => 'form',
-													'inputDefaults' => array(
-															'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-																							'div' => array('class' => 'form-group'),
-																							'class' => 'form-control',
-																							'before' => '<div class="col-md-12 ">',
-																							'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
-																							'after' => '</div></div>',
-																							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-													),
-													'onsubmit' =>'return validateVigenciaForm();',
-													'action' => 'updateCompanyJobProfileExpiration',
-				)); 
-				?>
-				<fieldset>
-					<?php 	echo $this->Form->input('CompanyJobProfile.id', array('type'=>'hidden')); ?>
-					<h4 class="modal-title whiteText" id="myModalLabel">Vigencia de la oferta.</h4>
-					
-					<?php echo $this->Form->input('CompanyJobProfile.expiration', array(				
-					'class' => 'selectpicker show-tick form-control show-menu-arrow',
-					'data-width'=> '150px',
-					'label' => array(
-					'class' => 'col-sm-0 col-md-0 control-label',
-					'text' => '',),
-					'dateFormat' => 'YMD',
-					'separator' => '',
-					'minYear' => date('Y') - -1,
-					'maxYear' => date('Y') - 0,
-					'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-					)); ?>
-				</fieldset>
-
-				<div class="modal-footer">
-					<?= $this->Form->button('<i class="glyphicon glyphicon-calendar"></i>&nbsp; Enviar',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
-					<?= $this->Form->end(); ?>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>

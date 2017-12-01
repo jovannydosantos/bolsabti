@@ -8,7 +8,7 @@
 				if($("#estado").val() != 0)
 					{	
 						$('#loading').show();
-						$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
+						$.get('http://localhost/bolsabti/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
 							{	
 								$('#ciudad').empty();
 								$('#ciudad').append('<option value="">Delegación / Municipio</option>');
@@ -38,7 +38,7 @@
 			// Carga automática de las ciudades si es que existe un estado seleccionado (AUTOMÁTICO)
 			if($("#estado").val() != ''){	
 					$('#loading').show();
-					$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
+					$.get('http://localhost/bolsabti/app/webroot/php/derpMun.php',{edo: $("#estado option:selected").text() },function(JSON)
 						{	
 							$('#ciudad').empty();
 							$('#ciudad').append('<option value="">Delegación / Municipio</option>');
@@ -144,7 +144,7 @@
 									'</select></div></div><div class="form-group row"><label for="StudentLenguage'+x+'ConversationLevel"></label><div class="col-md-12">'+
 									'<select name="data[StudentLenguage]['+x+'][conversation_level]" class="form-control selectpicker show-tick show-menu-arrow conversationLevel'+x+'" placeholder="Nivel de conversación" id="StudentLenguage'+x+'ConversationLevel">'+
 									'</select></div></div>'+
-									 '<button class="btn btn-danger btn-sm eliminar" type="button"><i class="glyphicon glyphicon-trash"></i></button>'+
+									'<button class="btn btn-danger btn-sm eliminar1" style="margin-bottom: 10px;" type="button"><i class="glyphicon glyphicon-trash"></i></button>'+
 								'</div>	';
 						
 					$("#contenedorIdiomas").append(string); 
@@ -165,7 +165,7 @@
 			});
 			    
 			var mensaje = "¿Seguro que desea eliminar este bloque de Idioma?";
-			$("body").on("click", ".eliminar", function(e) {
+			$("body").on("click", ".eliminar1", function(e) {
 				var respuesta = confirm(mensaje);
 				if (respuesta === true){
 					$(this).parent('div').remove();
@@ -196,7 +196,7 @@
 									'<input name="data[StudentTechnologicalKnowledge]['+xComputo+'][other]" class="form-control other'+xComputo+'" onblur="restart('+xComputo+')"  placeholder="Otro" type="text" id="StudentTechnologicalKnowledge'+xComputo+'Other"/></div></div></div><div class="form-group row"><div class="col-md-12 ">'+
 									'<select name="data[StudentTechnologicalKnowledge]['+xComputo+'][level]" class="form-control selectpicker show-tick show-menu-arrow level'+xComputo+'" placeholder="Nivel" id="StudentTechnologicalKnowledge'+xComputo+'Level">'+
                                     '</select></div></div>'+
-									'<button class="btn btn-danger btn-sm eliminar" onclick="eliminarClonComputo('+xComputo+'); " type="button"><i class="glyphicon glyphicon-trash"></i></button>'+
+									'<button class="btn btn-danger btn-sm eliminar" onclick="eliminarClonComputo('+xComputo+'); " type="button" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-trash"></i></button>'+
 								'</div>';		
 					$("#contenedorComputo").append(string); 
 					$('#StudentTechnologicalKnowledge0TecnologyId').find('option').clone().appendTo('.categoriId'+xComputo);
@@ -211,7 +211,7 @@
 					return false;
 				}
 			});
-			var mensaje = "¿Seguro que desea eliminar este bloque de Computo?";
+			var mensaje = "¿Seguro que desea eliminar este bloque?";
 			$("body").on("click", ".eliminar", function(e) {
 				var respuesta = confirm(mensaje);
 				if (respuesta === true){
@@ -255,7 +255,7 @@
 							'<div class="col-md-12"><select id="CompanyCandidateProfileCarreras'+x+'Carreras" class="selectpicker show-tick form-control show-menu-arrow carrerasClase" name="data[CompanyCandidateProfileCarreras]['+x+'][carreras][]" multiple="multiple" data-live-search="true" data-selected-text-format="count > 0" title="Seleccione las Carreras / Áreas" data-actions-box="true" placeholder="Prestaciones y apoyos" >'+
 							
 							'</select></div></div>'+
-							'<button class="btn btn-danger btn-sm eliminar"type="button"><i class="glyphicon glyphicon-trash"></i></button>'+
+							'<button class="btn btn-danger btn-sm eliminar "type="button" style="margin-bottom: 10px;"><i class="glyphicon glyphicon-trash"></i></button>'+
 						'</div>	';	
 
 				$("#contenedorNiveles").append(string); 
@@ -269,9 +269,9 @@
 				x++;
 				$('[data-toggle="tooltip"]').tooltip();
 				// $(".img-circle").hover(function() {
-					// $(this).attr("src","http://bolsa.trabajo.unam.mx/unam/app/webroot/img/help_yellow.png");
+					// $(this).attr("src","http://localhost/bolsabti/app/webroot/img/help_yellow.png");
 						// }, function() {
-					// $(this).attr("src","http://bolsa.trabajo.unam.mx/unam/app/webroot/img/help.png");
+					// $(this).attr("src","http://localhost/bolsabti/app/webroot/img/help.png");
 				// });
 				return false;
 			}
@@ -284,7 +284,7 @@
 			if($("#StudentJobProfileDynamicGiro0Giro").val() != 0)
 				{
 				$('#loading').show();
-				$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpAreas.php',{giro: $('#StudentJobProfileDynamicGiro0Giro').val()},function(JSON)
+				$.get('http://localhost/bolsabti/app/webroot/php/derpAreas.php',{giro: $('#StudentJobProfileDynamicGiro0Giro').val()},function(JSON)
 					{
 					
 					$('#StudentJobProfileDynamicArea0AreaInteres').empty();
@@ -319,7 +319,7 @@
 			if($('#StudentJobProfileDynamicGiro'+id+'Giro').val() != 0)
 				{
 				$('#loading').show();
-				$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpAreas.php',{giro: $('#StudentJobProfileDynamicGiro'+id+'Giro').val()},function(JSON)
+				$.get('http://localhost/bolsabti/app/webroot/php/derpAreas.php',{giro: $('#StudentJobProfileDynamicGiro'+id+'Giro').val()},function(JSON)
 					{
 							
 					$('#StudentJobProfileDynamicArea'+id+'AreaInteres').empty();
@@ -604,8 +604,6 @@
 				$( "#StudentProspectCanTravelOption1" ).prop( "checked", false );
 				$( "#StudentProspectCanTravelOption2" ).prop( "checked", false );
 			<?php endif; ?>
-				
-			if($("#StudentProspectCanTravelS").is(':checked')) 
 			
 			if(document.getElementById("StudentProspectCanTravel").value == 's') {  
 				  var disabilityValue = 's';
@@ -615,7 +613,6 @@
 				var disabilityValue = '';  
 			}
 			
-	   	
 			if(disabilityValue == "s"){
 				$("#bloque1").show();
 			} else {		
@@ -626,25 +623,26 @@
 		
 		function desabilityMobility2(){
 			<?php if(($this->Session->check('StudentProspect.change_residence') == false) and (empty($this->request->data))): ?>
-				$( "#StudentProspectChangeResidenceOption1" ).prop( "checked", false );
-				$( "#StudentProspectChangeResidenceOption2" ).prop( "checked", false );
-			<?php endif; ?>
-
-			if($("#StudentProspectChangeResidenceS").is(':checked')) {  
-	            var disabilityValue = 's';  
-	        } else if($("#StudentProspectChangeResidenceN").is(':checked')) {  
-	            var disabilityValue = 'n';   
-	        } else{
-				var disabilityValue = '';   
+			$( "#CompanyJobContractTypeChangeResidenceOption1" ).prop( "checked", false );
+			$( "#CompanyJobContractTypeChangeResidenceOption2" ).prop( "checked", false );
+			
+		<?php endif; ?>
+		
+		if(document.getElementById("StudentProspectChangeResidence").value == 's') {  
+				  var disabilityValue = 's';  
+			} else if(document.getElementById("StudentProspectChangeResidence").value == 'n'){
+				var disabilityValue = 'n';   
+			}else{
+				var disabilityValue = '';  
 			}
 
-			if(disabilityValue == "s"){
-				$("#bloque3").show();
-			} else {		
-				$("#bloque3").hide();
-			}
+		if(disabilityValue == "s"){
+			$("#bloque3").show();
+		} else {		
+			$("#bloque3").hide();
 		}
-
+		$('.selectpicker').selectpicker('refresh');
+	}
 	function init_contadorTa(idtextarea, idcontador,max){
 			$("#"+idtextarea).keyup(function()
 					{
@@ -695,6 +693,7 @@
 		}
 	}
 
+	
 	function mobilityCityOption(){
 		if($("#CompanyJobContractTypeMobilityOption1").is(':checked')) {  
             var valor = '1';  
@@ -706,7 +705,7 @@
 
 		if(valor == "1"){
 			$('#loading').show();
-			$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derp.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derp.php',function(JSON)
 		   	{
 				$('#CompanyJobContractTypeMobilityCity1').empty();
 				$('#CompanyJobContractTypeMobilityCity1').append('<option value="">Estado / Entidad Federativa</option>');
@@ -735,7 +734,7 @@
 		} else 
 		if(valor == "2"){
 			$('#loading').show();
-			$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpPaises.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derpPaises.php',function(JSON)
 		   	{
 				$('#CompanyJobContractTypeMobilityCity1').empty();
 				$('#CompanyJobContractTypeMobilityCity1').append('<option value="">País</option>');
@@ -778,7 +777,7 @@
 
 		if(valor == "1"){
 			$('#loading').show();
-			$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derp.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derp.php',function(JSON)
 		   {
 				$('#CompanyJobContractTypeChangeResidenceState').empty();
 				$('#CompanyJobContractTypeChangeResidenceState').append('<option value="">Estado / Entidad Federativa</option>');
@@ -805,7 +804,7 @@
 		} else 
 		if(valor == "2"){
 			$('#loading').show();
-			$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpPaises.php',function(JSON)
+			$.get('http://localhost/bolsabti/app/webroot/php/derpPaises.php',function(JSON)
 		   	{
 				$('#CompanyJobContractTypeChangeResidenceState').empty();
 				$('#CompanyJobContractTypeChangeResidenceState').append('<option value="">País</option>');
@@ -946,7 +945,7 @@
 
 			// if((especialidad) || (maestria) || (doctorado)){	
 					// $('#loading').show();
-					// $.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpCarreras.php',{escuela: '', level: 2 },function(JSON){
+					// $.get('http://localhost/bolsabti/app/webroot/php/derpCarreras.php',{escuela: '', level: 2 },function(JSON){
 						
 						// var waitCount = 0;
 						// $.each(JSON, function(key, val){
@@ -970,7 +969,7 @@
 			
 			// if(liceciatura){	
 					// $('#loading').show();
-					// $.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpCarreras.php',{escuela: '', level: 1 },function(JSON){
+					// $.get('http://localhost/bolsabti/app/webroot/php/derpCarreras.php',{escuela: '', level: 1 },function(JSON){
 						
 						// var waitCount = 0;
 						// $.each(JSON, function(key, val){
@@ -1077,7 +1076,7 @@
 				{
 				$('#loading').show();
 				
-				$.get('http://localhost/23octubre/bolsabti/app/webroot/php/derpCarreras.php',{escuela: '', level: $("#CompanyCandidateProfile"+index+"AcademicLevelId").find(":selected").index() },function(JSON){
+				$.get('http://localhost/bolsabti/app/webroot/php/derpCarreras.php',{escuela: '', level: $("#CompanyCandidateProfile"+index+"AcademicLevelId").find(":selected").index() },function(JSON){
 					
 					$('#CompanyCandidateProfileCarreras'+index+'Carreras').empty();
 					
@@ -1094,7 +1093,7 @@
 								if(request==1){
 									// Selecciona las Carreras/Áreas correspondientes
 									<?php if(isset($this->request->data['CompanyCandidateProfile']) and (!empty($this->request->data['CompanyCandidateProfile']))){ ?>
-										var totalNiveles = <?php echo count($this->request->data['CompanyCandidateProfile']); ?>;
+										var totalNiveles = <?php echo count($this->request->data['CompanyCandidateProfile']); ?>; 
 									<?php } else { ?> 
 										var totalNiveles = 0;
 									<?php } ?> 
@@ -1155,7 +1154,7 @@
 				}
 				else
 				{
-					//remove(index); vas cambiala ok ing pero si es eso? si
+					//remove(index);
 					academicSituation(index);
 					$('#CompanyCandidateProfileCarreras'+index+'Carreras').empty();
 					$('#CompanyCandidateProfileCarreras'+index+'Carreras').append('<option value="">Seleccione las Carreras / Áreas</option>');
@@ -1165,13 +1164,8 @@
 		
    </script>
 	
-    <div class="col-md-12">
-	<?php echo $this->Session->flash(); ?>	
-	</div>
-
 	<div class="col-md-4">
 		<div class="col-md-12">		
-		<?php echo $this->Session->flash(); ?>	
 			<?= $this->Form->create('Company', [
 								'class' => 'form-horizontal', 
 								'role' => 'form',
@@ -1265,7 +1259,7 @@
 		<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
 			<p style="color: #588BAD">Lugar de trabajo</p>
 		</blockquote>
-		<?= $this->Form->input('StudentProfile.state', ['type'=>'select','options' => $estadosMexico,'id'=>'estado','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Estado / Entidad federativa']); ?>	
+		<?= $this->Form->input('StudentProfile.state', ['type'=>'select','id'=>'estado','options' => $estadosMexico,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Estado / Entidad federativa']); ?>	
 	    <?= $this->Form->input('StudentProfile.city', ['type'=>'select','id' => 'ciudad','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Delegación / Municipio']); ?>	
 	    
 		<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
@@ -1365,17 +1359,23 @@
 			  <span class="glyphicon glyphicon-plus-sign"></span>
 			</button>
 		</div>
-		
+		   	
 			<?php $options = array('s' => 'Si', 'n' => 'No');
 			    echo $this->Form->input('StudentProspect.can_travel',['type' => 'select','default'=> 0,'empty' => 'Disponibilidad para viajar','options' => $options,'onchange' => 'desabilityMobility1()','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true']);
 		    ?>	
 		
 		<div id="bloque1" style="display:none">
 			<?php $options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
-			   echo $this->Form->input('StudentProspect.can_travel_option', ['type' => 'select','default'=> 0,'empty' => 'Donde','options' => $options,'onchange' => 'mobilityCityOption()','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true',]); 
+			   echo $this->Form->input('StudentProspect.can_travel_option ', ['type' => 'select','default'=> 0,'empty' => 'Donde','options' => $options,'onchange' => 'mobilityCityOption()','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true',]); 
 		    ?>
+			<div id="divMobilityCityOption1" >
+				<?php 
+					echo $this->Form->input('StudentProspect.mobility_city', ['type' => 'select','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => "true",'id' => 'CompanyJobContractTypeMobilityCity1','label' => '','default'=>'0','empty' => 'Sin opciones']);
+				?>
+			
+			</div>
+			
 		</div>
-      
 			<?php $options = array('s' => 'Si', 'n' => 'No');
 		        echo $this->Form->input('StudentProspect.change_residence', ['type' => 'select','default'=> 0,'empty' => 'Disponibilidad para cambiar de residencia','options' => $options,'onchange' => 'desabilityMobility2()','data-live-search' => 'true',]);
 		    ?>
@@ -1383,7 +1383,14 @@
 			<?php $options = array('1' => 'Dentro del país', '2' => 'Fuera del país'); 
 			    echo $this->Form->input('StudentProspect.change_residence_option', ['type' => 'select','default'=> 0,'empty' => 'Donde','options' => $options,'onchange' => 'mobilityCityOption2()','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true',]);	
 		    ?>
-		</div>																
+			<div id="divMobilityCityOption2" >
+				<?php 
+					echo $this->Form->input('StudentProspect.change_residence_state', ['type' => 'select','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => "true",'placeholder' => 'País','label' => '','default'=>'0','empty' => 'Sin opciones']);
+				?>
+				
+			</div>
+		</div>													
+																		
 			
 		<div id="contenedorIdiomas">	
 			<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
@@ -1397,9 +1404,9 @@
 			
 			<div id="original" class="clon">
 			   <?= $this->Form->input('StudentLenguage.0.language_id', ['type'=>'select','options' => $Lenguages,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Idioma']); ?>
-               <?= $this->Form->input('StudentLenguage.0.reading_level', ['type'=>'select','options' => $NivelesIdioma,'class' => 'form-control selectpicker show-tick show-menu-arrow','required' => false,'label' => ['class' => 'col-md-2 control-label','text' => ''],'placeholder' => 'Nivel de lectura','default'=>'0', 'empty' => 'Nivel de lectura']);	?>
-			   <?= $this->Form->input('StudentLenguage.0.writing_level',['type'=>'select','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['class' => 'col-md-2 control-label','text' => ''],'placeholder' => 'Nivel de Escritura','options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel de Escritura']); ?>
-			   <?= $this->Form->input('StudentLenguage.0.conversation_level',['type'=>'select','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['class' => 'col-md-2 control-label','text' => ''],'placeholder' => 'Nivel de Conversación','options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel de Conversación']); ?>
+               <?= $this->Form->input('StudentLenguage.0.reading_level', ['type'=>'select','options' => $NivelesIdioma,'class' => 'form-control selectpicker show-tick show-menu-arrow','required' => false,'label' => ['class' => 'col-md-2 control-label','text' => ''],'default'=>'0', 'empty' => 'Lectura']);	?>
+			   <?= $this->Form->input('StudentLenguage.0.writing_level',['type'=>'select','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['class' => 'col-md-2 control-label','text' => ''],'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Escritura']); ?>
+			   <?= $this->Form->input('StudentLenguage.0.conversation_level',['type'=>'select','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['class' => 'col-md-2 control-label','text' => ''],'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Conversación']); ?>
 			</div>		
 			
 			<script languaje="javascript">
@@ -1413,10 +1420,10 @@
 			?>
 			<div id="divIdiomas"> 	
 				<button type="button" class="btn btn-danger eliminar"  style="float: right; margin-bottom: -30px; margin-top: -5px; margin-right: -18px;"><i class="glyphicon glyphicon-trash"></i></button>
-			    <?= $this->Form->input('StudentLenguage.'.$cont.'.language_id', ['type'=>'select','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','data-live-search' => 'true','label' => '','options' => $Lenguages,'default'=>'0', 'empty' => 'Idiomccscsa']);?>
-				<?= $this->Form->input('StudentLenguage.'.$cont.'.reading_level', ['type'=>'select','required' => false,'style' => 'margin-left: -3px;','class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['text' => ''],'placeholder' => 'Nivel de Lectura','options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel de Lectura']);?>
-				<?= $this->Form->input('StudentLenguage.'.$cont.'.writing_level', [ 'type'=>'select','style' => 'margin-right: 3px; margin-left: 36px;','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['text' => ''],'placeholder' => 'Nivel de Ecritura','options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel de Ecritura']);?>
-				<?= $this->Form->input('StudentLenguage.'.$cont.'.conversation_level', ['type'=>'select','style' => 'margin-right: 3px; margin-left: 36px;','required' => false,'class' => 'form-control','label' => ['style' => 'margin-left: 0px; padding-left: 52px;','text' => ''],'placeholder' => 'Nivel de Conversación','options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Nivel de Conversación']);?>
+			    <?= $this->Form->input('StudentLenguage.'.$cont.'.language_id', ['type'=>'select','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','data-live-search' => 'true','label' => '','options' => $Lenguages,'default'=>'0', 'empty' => 'Idioma']);?>
+				<?= $this->Form->input('StudentLenguage.'.$cont.'.reading_level', ['type'=>'select','required' => false,'style' => 'margin-left: -3px;','class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['text' => ''],'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Lectura']);?>
+				<?= $this->Form->input('StudentLenguage.'.$cont.'.writing_level', [ 'type'=>'select','style' => 'margin-right: 3px; margin-left: 36px;','required' => false,'class' => 'form-control selectpicker show-tick show-menu-arrow','label' => ['text' => ''],'options' => $NivelesIdioma,'default'=>'0', 'empty' => 'Ecritura']);?>
+				<?= $this->Form->input('StudentLenguage.'.$cont.'.conversation_level', ['type'=>'select','style' => 'margin-right: 3px; margin-left: 36px;','required' => false,'class' => 'form-control','label' => ['style' => 'margin-left: 0px; padding-left: 52px;','text' => ''],'options' => $NivelesIdioma,'default'=>'0', 'empty' => ' Conversación']);?>
 			</div>
 
 			<script languaje="javascript">
@@ -1430,7 +1437,7 @@
 			?>
 		</div>	
 		
-		<div style="text-align: right;">
+		<div style="text-align: right; ">
 			<span>Agregar otro idioma (máx. 3)</span>
 			<button type="button" class="btn btn-primary btn-default btn-sm" id="agregarIdioma">
 	          <span class="glyphicon glyphicon-plus-sign"></span>
@@ -1516,10 +1523,11 @@
 		</div>
 
 		<?=$this->Form->input('StudentJobSkill.name', ['maxlength' => '316','type' => 'textarea','required' => false,'label' => '','style' => 'resize: vertical; min-height: 120px;  max-height: 120px; height: 120px;margin-left: 4px;','placeholder' => 'Certificaciones',]);?>
-						
-		<div class="col-md-8" style="text-align: right; right; top: -10px;margin-left: 232px;">
-			 <span id="contadorTaComentario">0/316</span><span> caracteres máx.</span>
-		</div>
+		
+		<div class="col-md-12" style="text-align: right;padding-right: 0px;">
+	        <span id="contadorTaComentario">0/316</span><span> caracteres máx.</span>
+        
+        </div>
 
 	</div>
 	

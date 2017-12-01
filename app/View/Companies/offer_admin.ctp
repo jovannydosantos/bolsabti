@@ -2,38 +2,75 @@
 	$this->layout = 'company'; 
 ?>
 <script>
-
-function validateEmpty(){
-		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
-		
-		if(document.getElementById('CompanyBuscar').value == ''){
-			jAlert('Ingrese el puesto, sueldo ó folio', 'Mensaje');
-			document.getElementById('CompanyBuscar').focus();
-			return false;
-		} else 
-		if(selectedIndex == 0){
-			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
-			return false;
-		}else {
-			return true;
-		}
-	}
-	
+	$(document).ready(function() {
+			var helpText = [
+							"Guarda y nombra las consultas de ofertas en carpetas para una mejor organización. Las carpetas creadas se ordenarán alfabéticamente.",					
+							];
+			 
+			$('.form-group').each(function(index, element) {
+				$(this).find(".cambia").attr("id", index);
+				$(this).find('#'+index).attr("data-original-title", helpText[index]);
+			});
+			
+			 $('#CompanyJobProfileExpirationYear').prepend('<option value="" selected>AAAA</option>');
+			 $('#CompanyJobProfileExpirationMonth').prepend('<option value="" selected>MM</option>');
+			 $('#CompanyJobProfileExpirationDay').prepend('<option value="" selected>DD</option>');
+			 
+			typeSearch();
+		});	
 	function validateEmpty(){
-		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
-		
-		if(document.getElementById('CompanyBuscar').value == ''){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el puesto, sueldo ó folio a buscar'});
+			selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
+			var palabraBuscar = document.getElementById('CompanyBuscar').value ;
+			var sueldo = document.getElementById("CompanyBuscarSalary").selectedIndex;
+
+			if(selectedIndex == 0){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
+				document.getElementById('CompanyCriterio').focus();
 				return false;
+			}else 
+			if((palabraBuscar == '') && (sueldo == '')){
+				
+				if(selectedIndex == 1){
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el puesto'});
+					document.getElementById('CompanyBuscar').focus();
+				} else
+				if(selectedIndex == 2){
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el rango de sueldo'});
+					document.getElementById('CompanyBuscarSalary').focus();
+				}else{
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el folio'});
+						document.getElementById('CompanyBuscar').focus();
+				}
+				
+				return false;
+			}else {
+				return true;
 			}
-		 else 
-		if(selectedIndex == 0){
-			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
-			return false;
-		}else {
-			return true;
+		}	
+	function typeSearch(){
+			selectedIndexTypeSearch = document.getElementById("CompanyCriterio").selectedIndex;
+
+			if(selectedIndexTypeSearch==2){
+				$("#idDivBuscar").hide();
+				$("#idDivBuscarSelect").show();
+				$('#CompanyBuscar').val('');
+				
+			} else {
+				$("#idDivBuscar").show();
+				$("#idDivBuscarSelect").hide();
+				
+				document.getElementById('CompanyBuscarSalary').options[0].selected = 'selected';
+			}
+			
+			if(selectedIndexTypeSearch==1){
+				$("#CompanyBuscar").attr("placeholder", "Ingrese el puesto");
+			}
+			else
+				if(selectedIndexTypeSearch==3){
+						$("#CompanyBuscar").attr("placeholder", "Ingrese el folio");
+				}
+			
 		}
-	}
 </script>
 	
 <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
@@ -69,11 +106,15 @@ function validateEmpty(){
 	<fieldset>
 		<div class="col-md-3">
 			<?php $options = array('1' => 'Puesto', '2' => 'Sueldo', '3' => 'Folio'); ?>
-			<?= $this->Form->input('criterio', ['type'=>'select','options' => $options,'selected' => $this->Session->read('tipoBusqueda'),'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Criterio de búsqueda']); ?>
+			<?= $this->Form->input('criterio', ['type'=>'select','options' => $options,'selected' => $this->Session->read('tipoBusqueda'),'onchange' => 'typeSearch()','class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Criterio de búsqueda']); ?>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-6" id="idDivBuscar">
 			<?= $this->Form->input('Buscar', ['placeholder' => 'Puesto / Sueldo / Folio ','value'	=> $this->Session->read('palabraBuscada')]); ?>
 		</div>
+		<div class="col-md-6" id="idDivBuscarSelect">
+			<?= $this->Form->input('buscarSalary', ['placeholder' => 'Puesto / Sueldo / Folio ','value'	=> $this->Session->read('palabraBuscada'),'options' => $Salarios,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Sueldo (Neto)']); ?>
+		</div>
+		<?php echo $this->Form->input('limite', array('type'=>'hidden')); ?>
 		<div class="col-md-2">
 			<?= $this->Form->button('Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>',['type'=>'submit','class' => 'btn btn-primary','escape' => false,'style'=>'margin-top: 7px;']);?>
 			<?= $this->Form->end(); ?>
@@ -128,11 +169,11 @@ function validateEmpty(){
 											['class' => 'btn btn-info ','style' => 'margin-top: 5px; width: 130px;' . $seleccionado10]); ?> 
 		</div>
 		<div class="btn-group">				
-			<?= $this->Html->link('No vistas', [ 'controller'=>'Companies','action'=>'offerAdmin','?' => ['tipoBusqueda' => 5]],
+			<?= $this->Html->link('Por expirar', [ 'controller'=>'Companies','action'=>'offerAdmin','?' => ['tipoBusqueda' => 5]],
 											['class' => 'btn btn-info ','style' => 'margin-top: 5px; width: 130px;' . $seleccionado20]); ?> 
 		</div>
 		<div class="btn-group">				
-			<?= $this->Html->link('Aplicó', [ 'controller'=>'Companies','action'=>'offerAdmin','?' => ['tipoBusqueda' => 6]],
+			<?= $this->Html->link('Expiradas', [ 'controller'=>'Companies','action'=>'offerAdmin','?' => ['tipoBusqueda' => 6]],
 											['class' => 'btn btn-info ','style' => 'margin-top: 5px; width: 130px;' . $seleccionado30]); ?> 
 		</div>
 		<div class="btn-group">				

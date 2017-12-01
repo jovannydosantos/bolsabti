@@ -39,11 +39,9 @@
 	}
 	</script>
 	
-		<?php echo $this->Session->flash(); ?>
 <blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
         <p style="color: #588BAD">Reporte de contratacion</p>
 </blockquote>
-
 
 <div class="col-md-12">
 	<?= $this->Form->create('Company', [
@@ -68,19 +66,19 @@
 			<br />
 			<label class="col-md-12" style="margin-top: 14px"><div class="asterisk">*</div>Fecha de termino</label>
 				<?php echo $this->Form->input('CompanyExternalOffer.fecha_contratacion', array(
-														'type' => 'date',
-														'befoe' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">',
-														'class' => 'selectpicker show-tick form-control show-menu-arrow',
-														'data-width'=> '75px',
-														'between' => '<div class="col-md-12" style="padding-right: 0px;left: -2px;">',
-														'style' => 'font-size: 11px; width: 75px; margin-left: -10px; margin-right: 18px; padding-left: 0px; padding-right: 0px;',
-														'div' => array('class' => 'form-inline'),
-														'label' => '',
-														'dateFormat' => 'DMY',
-														'separator' => '',
-														'minYear' => date('Y') - 5,
-														'maxYear' => date('Y') - 0,
-								)); ?>
+							'type' => 'date',
+							'befoe' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">',
+							'class' => 'selectpicker show-tick form-control show-menu-arrow',
+							'data-width'=> '75px',
+							'between' => '<div class="col-md-12" style="padding-right: 0px;left: -2px;">',
+							'style' => 'font-size: 11px; width: 75px; margin-left: -10px; margin-right: 18px; padding-left: 0px; padding-right: 0px;',
+							'div' => array('class' => 'form-inline'),
+							'label' => '',
+							'dateFormat' => 'DMY',
+							'separator' => '',
+							'minYear' => date('Y') - 5,
+							'maxYear' => date('Y') - 0,
+				)); ?>
 			<center>
 			<?php echo $this->Form->input('CompanyExternalOffer.employees_number', array(
 						'type' => 'hidden',

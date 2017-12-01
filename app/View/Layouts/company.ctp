@@ -51,7 +51,7 @@
 			top: -40px;
 		}
 	</style>
-	<script>
+<script>
 	     $(function() {
 	    	$('#fotoPerfil').on('click', function() {
 				$('.enlargeImageModalSource').attr('src', $(this).attr('src'));
@@ -62,6 +62,22 @@
 				init_contadorTa(id,cont, max);
 				updateContadorTa(id,cont, max);
 			}
+		function deleteOffer(param){
+		$.confirm({
+			title: 'Confirmación!',
+			icon: 'glyphicon glyphicon-warning-sign',
+			type: 'red',
+			content: '¿Realmente desea eliminar la oferta',
+			buttons: {
+				aceptar: function () {
+				   $("#deleteOfferId"+param).click();
+				},
+				cancelar: function () {
+					// $.alert('Opción cancelada!');
+				},
+			}
+		});
+	}
 		function deletePhoto(){
 			$.confirm({
 			    title: 'Confirmación!',
@@ -219,26 +235,133 @@
 				return true;
 			}
 		}
-		function hasScrolled() {
-			var st = $(this).scrollTop();
-			
-			// Make sure they scroll more than delta
-			if(Math.abs(lastScrollTop - st) <= delta)
-				return;
-			
-			// If they scrolled down and are past the navbar, add class .nav-up.
-			// This is necessary so you never see what is "behind" the navbar.
-			if (st > lastScrollTop && st > navbarHeight){
-				// Scroll Down
-				$('header').removeClass('nav-down').addClass('nav-up');
-			} else {
-				// Scroll Up
-				if(st + $(window).height() < $(document).height()) {
-					$('header').removeClass('nav-up').addClass('nav-down');
+		function validate_fechaMayorQue(fechaInicial,fechaFinal){
+			valuesStart=fechaInicial.split("/");
+            valuesEnd=fechaFinal.split("/");
+
+            // Verificamos que la fecha no sea posterior a la actual
+
+            var dateStart=new Date(valuesStart[2],(valuesStart[1]-1),valuesStart[0]);
+            var dateEnd=new Date(valuesEnd[2],(valuesEnd[1]-1),valuesEnd[0]);
+
+            if(dateStart>dateEnd)
+            {
+                return 1;
+            }
+            return 0;
+        }
+		function fechaMax(fecha, fechaCreacion){
+		<?php if(($this->Session->read('Auth.User.role')=='administrator') OR ($this->Session->read('Auth.User.role')=='subadministrator')): ?>
+			var hoy = new Date();
+			var dd = hoy.getDate();
+			var mm = hoy.getMonth()+1; //hoy es 0!
+			var yyyy = hoy.getFullYear();
+			hoy = yyyy+'-'+mm+'-'+dd;
+			var fechaCreacion = hoy;
+		<?php else: ?>
+			var fechaCreacion = fechaCreacion;
+		<?php endif; ?>
+				
+				var fechaArrCreacion = fechaCreacion.split('-');
+				var aho2 = fechaArrCreacion[0];
+				var mes2 = fechaArrCreacion[1];
+				var dia2 = fechaArrCreacion[2];
+				var fechaCreacionOferta = new Date(aho2,mes2,dia2);
+
+				var fechaArr = fecha.split('/');
+				var aho = fechaArr[2];
+				var mes = fechaArr[1];
+				var dia = fechaArr[0];
+				var fechaPropuesta = new Date(aho, mes-1, dia); 
+
+				if(fechaPropuesta > fechaCreacionOferta){
+					return false;
+				} else{
+					return true;
 				}
+		
+	}
+		function validarFecha(fecha){
+				 //Funcion validarFecha 
+				 //valida fecha en formato aaaa-mm-dd
+				 var fechaArr = fecha.split('/');
+				 var aho = fechaArr[2];
+				 var mes = fechaArr[1];
+				 var dia = fechaArr[0];
+				 
+				 var plantilla = new Date(aho, mes - 1, dia);//mes empieza de cero Enero = 0
+
+				 if(!plantilla || plantilla.getFullYear() == aho && plantilla.getMonth() == mes -1 && plantilla.getDate() == dia){
+				 return true;
+				 }else{
+				 return false;
+				 }
+		}
+		function validateVigenciaForm(){
+				
+			var f = new Date();
+			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
+			
+			var fechaFinal = document.getElementById('CompanyJobProfileExpirationDay').value	+ "/" +
+									document.getElementById('CompanyJobProfileExpirationMonth').value	+ "/" +
+									document.getElementById('CompanyJobProfileExpirationYear').value	;
+			
+			var fechaCreacion = document.getElementById('CompanyJobProfileCreatedYear').value	+ "-" +
+									document.getElementById('CompanyJobProfileCreatedMonth').value	+ "-" +
+									document.getElementById('CompanyJobProfileCreatedDay').value;
+									
+			selectedIndexDay = document.getElementById("CompanyJobProfileExpirationDay").selectedIndex;
+			selectedIndexMonth = document.getElementById("CompanyJobProfileExpirationMonth").selectedIndex;
+			selectedIndexYear = document.getElementById("CompanyJobProfileExpirationYear").selectedIndex;
+			
+			responseValidateDate = validarFecha(fechaFinal);
+			fechaMaxima = fechaMax(fechaFinal,fechaCreacion);
+			
+			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){;
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para la vigencia.'});
+				return false;
+			}else 
+			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de vigencia no debe ser menor a la actual.'});
+				return false;
+			}else 
+			if(responseValidateDate == false){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de vigencia es incorrecta.'});
+				return false;
+			}else
+			if(fechaMaxima == false){
+				<?php if(($this->Session->read('Auth.User.role')=='administrator') OR ($this->Session->read('Auth.User.role')=='subadministrator')): ?>
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de vigencia es de máximo 1 mes respecto a la fecha actual.'});
+				<?php else: ?>
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de vigencia es de máximo 1 mes respecto a la fecha de creación de la oferta.'});
+				<?php endif; ?>		
+				return false;
+			}else {
+				return true;
 			}
-			lastScrollTop = st;
-		}  
+		}	
+		function saveVigencia(idJobProfile,fecha, fechaCreacion){
+		var fechaArr = fecha.split('-');
+		var aho = fechaArr[0];
+		var mes = fechaArr[1];
+		var dia = fechaArr[2];
+		
+		$("#CompanyJobProfileExpirationYear option[value='"+aho+"']").prop('selected', true);
+		$("#CompanyJobProfileExpirationMonth option[value='"+mes+"']").prop('selected', true);
+		$("#CompanyJobProfileExpirationDay option[value='"+dia+"']").prop('selected', true);
+		
+		var fechaArr = fechaCreacion.split('-');
+		var aho = fechaArr[0];
+		var mes = fechaArr[1];
+		var dia = fechaArr[2];
+		
+		$("#CompanyJobProfileCreatedYear option[value='"+aho+"']").prop('selected', true);
+		$("#CompanyJobProfileCreatedMonth option[value='"+mes+"']").prop('selected', true);
+		$("#CompanyJobProfileCreatedDay option[value='"+dia+"']").prop('selected', true);
+	
+		document.getElementById('CompanyJobProfileId').value = idJobProfile;
+		$('#myModalVigencia').modal('show');
+	}  
 		// Hide Header on on scroll down
 		var didScroll;
 		var lastScrollTop = 0;
@@ -280,6 +403,20 @@
 			content : 'El número de visualizaciones y/o descargas en pdf ha llegado a su límite',
 		});	
 	}
+		function ofertaInactiva(){
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'Oferta Inactiva',
+		});	
+	}
+		function ofertaActiva(){
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'Oferta Activa',
+		});	
+	}
 		function mensajeSinConfigurar(){
 		$.alert({
 			title:'AVISO',
@@ -299,15 +436,22 @@
 			return false;
 		}		
 		function ofertaIncompleta(){
-			jAlert('La oferta no está completa por consecuente no podrá activarse hasta que se complete su edición.', 'Mensaje');
-			return false;
+			$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'La oferta no está completa por consecuente no podrá activarse hasta que se complete su edición.',
+		});	
 		}			
 		function ofertaExpirada(){
-			jAlert('La oferta ha expirado para poder activarla debe de actualizar la fecha de vigencia.', 'Mensaje');
-			return false;
-		}
+		$.alert({
+			title:'AVISO',
+			type: 'blue',
+			content : 'La oferta ha expirado para poder activarla debe de actualizar la fecha de vigencia.',
+		});	
+	}
 	</script>
-</head>
+	
+	</head>
 	
 <body style="background-color: #e8e8e8;">
 	<div class="body-wrap">
@@ -681,7 +825,7 @@
 									<?php endif; ?>
 								</li>
 									<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyJobProfile') || ($this->params['action']=='CompanyJobProfile') || ($this->params['action']=='editStudentProfessionalProfile') || ($this->params['action']=='viewStudentProfessionalProfile'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
-								<?php if($this->Session->check('CompanyJobProfile.id') == true): ?>
+								<?php if($this->Session->check('CompanyJobOffer.id') == true): ?>
 									<?php echo $this->Html->link(
 										'Perfil de la Oferta',		
 										array(
@@ -711,9 +855,9 @@
 							</li>
 						
 								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyJobContractType') || ($this->params['action']=='CompanyJobContractType') || ($this->params['action']=='editStudentJobSkill') || ($this->params['action']=='viewStudentJobSkill') || ($this->params['action']=='editStudentLenguage') || ($this->params['action']=='viewStudentLenguage') || ($this->params['action']=='editStudentTechnologicalKnowledge') || ($this->params['action']=='viewStudentTechnologicalKnowledge'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
-								<?php if($this->Session->check('companyJobContractType.id') == true): ?>
+								<?php if($this->Session->check('CompanyJobOffer.id') == true): ?>
 									<?php echo $this->Html->link(
-										'Modalidad de Contratación', 
+										'Modalidad de contratación',		
 										array(
 											'controller'=>'Companies',
 											'action' => 'companyJobContractType'
@@ -726,22 +870,23 @@
 									); ?>
 								<?php else: ?>
 									<?php echo $this->Html->link(
-										'Modalidad de Contratación', 
+										'Modalidad de contratación',		
 										array(
 											'action'=>''
 											),
 										array(
 											'class' => 'corriculumMenu',
-											'style' => 'cursor:not-allowed',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px; cursor:not-allowed',
 											'escape' => false,
 											'onclick' => 'return false',
 										)
 									); ?>
 								<?php endif; ?>
+							
 									
 							</li>
 							<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyCandidateProfile') || ($this->params['action']=='CompanyCandidateProfile') || ($this->params['action']=='editStudentProfessionalExperience') || ($this->params['action']=='editStudentWorkArea') || ($this->params['action']=='viewStudentProfessionalExperience'))  )? 'menu-profile active' : 'menu-profile' ?> "	>
-							<?php if($this->Session->check('CompanyCandidateProfile.id') == true): ?>
+							<?php if($this->Session->check('companyJobContractType.id') == true): ?>
 								<?php echo $this->Html->link(
 									'Perfil del Candidato', 
 									array(
@@ -752,7 +897,7 @@
 										'class' => 'corriculumMenu',
 										'escape' => false,
 										'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
-										'title' => 'Para avanzar pulse en continuar.'
+										'title' => ''
 									)
 								);  ?>
 							<?php else: ?>
@@ -762,12 +907,11 @@
 										'action'=>''
 										),
 									array(
-										'class' => 'corriculumMenu',
-										'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px;',
-										'escape' => false,
-										'onclick' => 'return false',
-										'title' => 'Para avanzar pulse en continuar.'
-									)
+											'class' => 'corriculumMenu',
+											'style' => 'text-align: center; padding-bottom: 5px; padding-top: 5px; cursor:not-allowed',
+											'escape' => false,
+											'onclick' => 'return false',
+										)
 								);  ?>
 							<?php endif; ?>
 							</li>
@@ -926,8 +1070,19 @@
 								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && ($this->params['action']=='companyPostullation') )? 'active border-li' : 'border-li' ?> "	>
 									<?= $this->Html->link('Postulaciones',['controller'=>'Companies','action'=>'companyPostullation',  'nuevaBusqueda']); ?>
 								</li>			
-								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyNotification') )  )? 'active border-li' : 'border-li' ?> ">
-									<?= $this->Html->link('Entrevistas', ['controller'=>'Companies','action'=>'companyNotification', 'nuevaBusqueda']); ?>
+								
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyNotification') && ($this->Session->read('tipoNotificacion')==1))) ? 'menu-profile active' : 'menu-profile' ?> "	>
+									<?= $this->Html->link('<i class="glyphicon glyphicon-earphone"></i>&nbsp; Entrevistas telefónicas <span style="margin-left: 5px;">'.count($telefonicas).'</span>',['controller'=>'Companies','action'=>'companyNotification', '?' => ['tipoNotificacion' => 1]],['escape' => false]); ?>
+								</li>
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyNotification') && ($this->Session->read('tipoNotificacion')==2))) ? 'menu-profile active' : 'menu-profile' ?> "	>
+									<?= $this->Html->link('<i class="glyphicon glyphicon-user"></i>&nbsp; Entrevistas presenciales <span style="margin-left: 5px;">'.count($presenciales).'</span>', ['controller'=>'Companies','action'=>'companyNotification', '?' => ['tipoNotificacion' => 2]],['escape' => false]); ?>
+								</li>
+									<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyNotification')&& ($this->Session->read('tipoNotificacion')==3))) ? 'menu-profile active' : 'menu-profile' ?> "	>
+									<?= $this->Html->link('<i class="glyphicon glyphicon-hand-left"></i>&nbsp; Contrataciones <span style="margin-left: 5px;">'.count($contrataciones).'</span>', ['controller'=>'Companies','action'=>'companyNotification', '?' => ['tipoNotificacion' => 3]],['escape' => false]); ?>
+								</li>
+
+								<li class="whiteTextMenu <?php echo (!empty($this->params['action']) && (($this->params['action']=='companyNotification')&& ($this->Session->read('tipoNotificacion')==4))) ? 'menu-profile active' : 'menu-profile' ?> "	>
+									<?= $this->Html->link('<i class="glyphicon glyphicon-list"></i>&nbsp; Seguimiento de entrevistas <span style="margin-left: 5px;">'.count($seguimientos).'</span>', ['controller'=>'Companies','action'=>'companyNotification', '?' => ['tipoNotificacion' => 4]],['escape' => false]); ?>
 								</li>
 							</ul>	
 						</div>
@@ -1029,7 +1184,7 @@
 			<div class="modal-content fondoBti">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel" style="color: white;">Seleccione la fecha de propuesta para la entrevista</h4>
+					<h4 class="modal-title" id="myModalLabel" style="color: white;">Seleccione la fecha de prpijoijopuesta para la entrevista</h4>
 				</div>
 				<div class="modal-body">
 					<?= $this->Form->create('Student', [
@@ -1392,55 +1547,59 @@
 		</div>
 	</div>
 </div>
-
-	<!-- modal vigencia -->
-	<div class="modal fade" id="myModalVigencia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<!-- modal vigencia -->
+	<div class="modal fade" id="myModalVigencia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
 		<div class="modal-dialog">
 			<div class="modal-content fondoBti">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title whiteText" id="myModalLabel">Seleccione la fecha de vigencia para la oferta.</h4>
+					<h4 class="modal-title whiteText" id="myModalLabel">Seleccione la fecha de vigencia para la oferta</h4>
 				</div>
-				<div class="modal-body">
-					<?php 
-						echo $this->Form->create('Company', array(
-							'class' => 'form-horizontal', 
-							'role' => 'form',
-							'inputDefaults' => array(
-							'format' => array('before', 'label', 'between', 'input', 'error', 'after'),
-							'div' => array('class' => 'form-group'),
-							'class' => 'form-control',
-							'before' => '<div class="col-md-12 ">',
-							'between' => ' <div class="col-md-11" style="padding-right: 5px;">',
-							'after' => '</div></div>',
-							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-warning margin-reduce'))
-							),
-							'onsubmit' =>'return validateVigenciaForm();',
-							'action' => 'updateCompanyJobProfileExpiration',
-						)); 
-					?>
+				<div class="modal-body" >
+					<?= $this->Form->create('Company', [
+								'type' => 'file',
+								'class' => 'form-horizontal', 
+								'role' => 'form',
+								'inputDefaults' => [
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+									'between' => '<div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+								],
+								'onsubmit' =>'return validateVigenciaForm();',
+								'action' => 'updateCompanyJobProfileExpiration',]); ?>
+
 					<fieldset>
-						<?php 	echo $this->Form->input('CompanyJobProfile.id', array('type'=>'hidden')); ?>
-						<h4 class="modal-title whiteText" id="myModalLabel">Vigencia de la oferta.</h4>
-						
-						<?php echo $this->Form->input('CompanyJobProfile.expiration', array(				
-						'class' => 'selectpicker show-tick form-control show-menu-arrow',
-						'data-width'=> '150px',
-						'label' => array(
-						'class' => 'col-sm-0 col-md-0 control-label',
-						'text' => '',),
-						'dateFormat' => 'YMD',
-						'separator' => '',
-						'minYear' => date('Y') - -1,
-						'maxYear' => date('Y') - 0,
-						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce', 'style' => 'margin-left: -11px; margin-right: 23px;'))
-						)); ?>
+						<?= $this->Form->input('CompanyJobProfile.id', ['type'=>'hidden']); ?>
+							
+						<h4 class="modal-title whiteText" id="myModalLabel">Fecha.</h4>
+						<?= $this->Form->input('CompanyJobProfile.expiration', [
+													'class' => 'selectpicker show-tick form-control show-menu-arrow',
+													'data-width'=> '180px',
+													'dateFormat' => 'YMD',
+													'separator' => '',
+													'minYear' => date('Y') - 3,
+													'maxYear' => date('Y') - 0]); ?>
+
+						<div style="display: none;">
+							<?= $this->Form->input('CompanyJobProfile.created', [
+													'class' => 'selectpicker show-tick form-control show-menu-arrow',
+													'data-width'=> '160px',
+													'dateFormat' => 'YMD',
+													'separator' => '',
+													'minYear' => date('Y') - 10,
+													'maxYear' => date('Y') - 0]); ?>
+						</div>
+
 					</fieldset>
-					<div class="modal-footer">
+				</div>
+				<div class="modal-footer">
 						<?= $this->Form->button('<i class="glyphicon glyphicon-calendar"></i>&nbsp; Enviar',['type' => 'submit', 'div' => 'form-group','escape' => false,'class' => 'btn btn-default']); ?>
 						<?= $this->Form->end(); ?>
 					</div>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -1530,8 +1689,8 @@
 	</div>
 
 	<!--Correo-->
-	<div class="modal fade" id="myModalMail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
-		<div class="modal-dialog"  style="width: 650px" id="draggable">
+	<div class="modal fade" id="myModalMail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
 			<div class="modal-content fondoBti">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>

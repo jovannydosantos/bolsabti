@@ -514,10 +514,11 @@
 					echo $this->Form->input('CompanyJobContractType.confidential_salary', ['type' => 'select','default'=> 0,'empty' => '¿Sueldo confidencial?','options' => $options,'class' => 'selectpicker show-tick form-control show-menu-arrow']);
 				?>
 				<?= $this->Form->input('CompanyJobContractTypeBenefit.benefits', ['multiple' => 'multiple','data-selected-text-format' => 'count > 3','data-live-search' => "true",'data-actions-box' => 'true','placeholder' => 'Prestaciones y apoyos','title' => 'Prestaciones / Apoyos ','options' => $Prestaciones,'class' => 'selectpicker show-tick form-control show-menu-arrow']); ?>
-				<?= $this->Form->input('CompanyJobContractType.other_benefits', ['placeholder' => 'Otras...','style' => 'max-width: 660px; max-height: 280px; margin-top: 30px;','maxlength' => '309',]); ?>
-				<div class="col-md-10" style="text-align: right;">
-				<span id="contadorTaComentario">0/1000</span><span> caracteres máx.</span>
+				<?= $this->Form->input('CompanyJobContractType.other_benefits', ['placeholder' => 'Otras...','style' => ' max-height: 280px; margin-top: 10px;','maxlength' => '316',]); ?>
+				<div class="col-md-12" style="text-align: right;">
+				<span id="contadorTaComentario">0/316</span><span> caracteres máx.</span>
 				</div>
+				
 			</div>		
 		</div>
 		<div class="col-md-6">
@@ -526,7 +527,8 @@
 			</blockquote>
 			<?= $this->Form->input('CompanyJobContractType.state', ['type'=>'select','id' =>'estado','options' => $Estados,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Estado / Entidad Federativa']); ?>	
 			<?= $this->Form->input('CompanyJobContractType.subdivision', ['type'=>'select','id' => 'ciudad','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Delegación / Municipio']); ?>
-			<?= $this->Form->input('CompanyJobContractType.location_reference', ['placeholder' => 'Referencia de ubicación...','style' => 'max-width: 660px; max-height: 280px; margin-top: 30px;','maxlength' => '309',]); ?>
+			<?= $this->Form->input('CompanyJobContractType.location_reference', ['placeholder' => 'Referencia de ubicación...','style' => 'max-height: 280px; margin-top: 0px;','maxlength' => '316',]); ?>
+			
 			<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
 				<p style="color: #588BAD">Disponibilidad para viajar:</p>
 			</blockquote>
@@ -565,44 +567,18 @@
 			</div>
 			
 		
-			<div class="col-md-12" style="margin-top: 30px;">
-				<?php if(($this->Session->check('CompanyJobProfile.id') == true) and (!empty($this->request->data))): ?>
-				<div class="col-md-6">
-					<?php else:;?>
-					<div class="col-md-6 col-md-offset-2">
-						<?php endif; ?>
-						
-						<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-disk"></i>&nbsp; Guardar',array(
-												'type' => 'submit', 
-												'div' => 'form-group',
-												'escape' => false,
-												'class' => 'btn btn-default btn-primary ',
-												'style' => 'margin-top: 5px; width: 120px;',
-												'escape' => false,
-									));
-						echo $this->Form->end(); 
-						?>
-					</div>
-					<?php if(($this->Session->check('CompanyJobProfile.id') == true) and (!empty($this->request->data))): ?>
-					<div class="col-md-6">
-						<div class="btn-group">
-							<?php 
-								echo $this->Html->link('Continuar &nbsp; <i class="glyphicon glyphicon-arrow-right"></i>',
-									array(
-										'controller'=>'Companies',
-										'action'=>'companyCandidateProfile',
-										),
-									array(
-										'class' => 'btn btn-default btn-primary ',
-										'style' => 'margin-top: 5px; width: 120px;',
-										'escape' => false,
-										)); 	
-							?> 
-						</div>
-					</div>
-					<?php endif; ?>
-				</div>
-			</div>
 		</div>	
 	</fieldset>	
 </div>
+	<div class="col-md-12  text-center" style="margin-top: 30px;">
+
+		<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-disk"></i>&nbsp; Guardar',array(
+								'type' => 'submit', 
+								'div' => 'form-group',
+								'class' => 'btn btn-primary',
+								'escape' => false,
+					));
+		echo $this->Form->end(); 				
+		?>
+
+	</div>

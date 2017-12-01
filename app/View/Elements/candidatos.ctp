@@ -3,8 +3,174 @@
 
 ?>
 <script>
+	function saveEmailNotification(email){
+			document.getElementById('StudentEmailTo').value = email;
+			$('#myModalMail').modal('show');
+		}	
+	function saveReportarContratacion(StudentId){
+			document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
+			$('#myModalReportarContratacion').modal('show');
+		}
+	function saveTelephoneNotification(StudentId){
+			document.getElementById('StudentTelephoneNotificationId').value = StudentId;
+			$('#myModalnotificationTelefonica').modal('show');
+		}
+	function savePersonalNotification(StudentId){
+			document.getElementById('StudentPersonalNotificationId').value = StudentId;
+			$('#myModalnotificationPersonal').modal('show');
+		}
+	function validateEmpty(){
+		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
+		
+		if(document.getElementById('CompanyBuscar').value == ''){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el nombre del candidato, correo ó folio a buscar'});
+				return false;
+			}
+		 else 
+		if(selectedIndex == 0){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
+			return false;
+		}else {
+			return true;
+		}
+	}
+	function validateTelephoneNotificationForm(){
+			var f = new Date();
+			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
+			var fechaFinal = document.getElementById('StudentTelephoneNotificationDateDay').value	+ "/" +
+									document.getElementById('StudentTelephoneNotificationDateMonth').value	+ "/" +
+									document.getElementById('StudentTelephoneNotificationDateYear').value;
+			
+			
+			selectedIndexDay = document.getElementById("StudentTelephoneNotificationDateDay").selectedIndex;
+			selectedIndexMonth = document.getElementById("StudentTelephoneNotificationDateMonth").selectedIndex;
+			selectedIndexYear = document.getElementById("StudentTelephoneNotificationDateYear").selectedIndex;
+			
+			responseValidateDate = validarFecha(fechaFinal);
+			
+			if(document.getElementById('StudentTelephoneNotificationMessage').value == ''){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el mensaje'});
+				document.getElementById('StudentTelephoneNotificationMessage').focus();
+				return false;
+			} else
+			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista telefónica'});
+				document.getElementById('StudentTelephoneNotificationDateDay').focus();
+				return false;
+			}else 
+			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista telefónica no debe ser menor a la actual'});
+				document.getElementById('StudentTelephoneNotificationDateDay').focus();
+				return false;
+			}else 
+			if(responseValidateDate == false){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista telefónica no es válida'});
+				document.getElementById('StudentTelephoneNotificationDateDay').focus();
+				return false;
+			}else{
+				document.getElementById("FormTelephoneNotification").submit();
+			 }
+		}
+	function validatePersonalNotificationForm(){
+		var f = new Date();
+		var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
+		var fechaFinal = document.getElementById('StudentPersonalNotificationDateDay').value	+ "/" +
+								document.getElementById('StudentPersonalNotificationDateMonth').value	+ "/" +
+								document.getElementById('StudentPersonalNotificationDateYear').value	;
+		
 
-
+		selectedIndexDay = document.getElementById("StudentPersonalNotificationDateDay").selectedIndex;
+		selectedIndexMonth = document.getElementById("StudentPersonalNotificationDateMonth").selectedIndex;
+		selectedIndexYear = document.getElementById("StudentPersonalNotificationDateYear").selectedIndex;
+		
+		responseValidateDate = validarFecha(fechaFinal);
+		
+		if(document.getElementById('StudentPersonalNotificationMessage').value == ''){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el mensaje'});
+			document.getElementById('StudentPersonalNotificationMessage').focus();
+			return false;
+		} else
+		if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista personal'});
+			document.getElementById('StudentPersonalNotificationDateDay').focus();
+			return false;
+		}else 
+		 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista personal no debe ser menor a la actual'});
+			document.getElementById('StudentPersonalNotificationDateDay').focus();
+			return false;
+		}else 
+		if(responseValidateDate == false){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista personal no es válida'});
+			document.getElementById('StudentPersonalNotificationDateDay').focus();
+			return false;
+		}else{
+			document.getElementById("FormPersonalNotification").submit();
+		 }
+		
+	}
+	function validateNotificationFormPropuesta(){
+			
+			var f = new Date();
+			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
+			var fechaFinal = document.getElementById('StudentPropuestaFechaDay').value	+ "/" +
+									document.getElementById('StudentPropuestaFechaMonth').value	+ "/" +
+									document.getElementById('StudentPropuestaFechaYear').value;
+			
+			
+			selectedIndexDay = document.getElementById("StudentPropuestaFechaDay").selectedIndex;
+			selectedIndexMonth = document.getElementById("StudentPropuestaFechaMonth").selectedIndex;
+			selectedIndexYear = document.getElementById("StudentPropuestaFechaYear").selectedIndex;
+			
+			responseValidateDate = validarFecha(fechaFinal);
+			
+			if(document.getElementById('taComentarioPropuesta').value == ''){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el mensaje para la nueva propuesta'});
+				document.getElementById('taComentarioPropuesta').focus();
+				return false;
+			} else
+			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista'});
+				document.getElementById('StudentPropuestaFechaDay').focus();
+				return false;
+			}else 
+			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista no debe ser menor a la actual'});
+				document.getElementById('StudentPropuestaFechaDay').focus();
+				return false;
+			}else 
+			if(responseValidateDate == false){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista no es válida'});
+				document.getElementById('StudentPropuestaFechaDay').focus();
+				return false;
+			}else{
+				document.getElementById("formNotificacionPropuesta").submit();
+			 }
+		}
+	function validarReportarContratacionForm(){
+			var fechaFinal = document.getElementById('StudentReportarContratacionFechaContratacionDay').value	+ "/" +
+									document.getElementById('StudentReportarContratacionFechaContratacionMonth').value	+ "/" +
+									document.getElementById('StudentReportarContratacionFechaContratacionYear').value	;
+			
+			selectedIndexDay = document.getElementById("StudentReportarContratacionFechaContratacionDay").selectedIndex;
+			selectedIndexMonth = document.getElementById("StudentReportarContratacionFechaContratacionMonth").selectedIndex;
+			selectedIndexYear = document.getElementById("StudentReportarContratacionFechaContratacionYear").selectedIndex;
+		 
+			responseValidateDate = validarFecha(fechaFinal);
+			
+			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
+				jAlert ('Seleccione la fecha completa para reportar la contratación','Mensaje');
+				document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
+				return false;
+			}else  
+			if(responseValidateDate == false){
+				jAlert ('La fecha para reportar contratación no es válida', 'Mensaje');
+				document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
+				return false;
+			}else {
+				return true;
+			 }
+	}
 </script>
 
 <div class="col-md-12 sombra" style="border: 1px solid #1a75bb; margin-bottom: 15px; background: url('/bolsabti/img/satinweave.png');">    	
@@ -303,9 +469,7 @@
 			</div>
 		</center>
 	</div>
-	
 
-	
 </div>
 	<?php endforeach; ?>
 

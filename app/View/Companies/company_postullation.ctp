@@ -4,42 +4,39 @@
 	<script>
 		function validateEmpty(){
 			selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
-			if(document.getElementById('CompanyBuscar').value == ''){
-				jAlert('Ingrese el nombre de la empresa, puesto ó folio a buscar', 'Mensaje');
-				document.getElementById('CompanyBuscar').focus();
-				return false;
-			} else 
 			if(selectedIndex == 0){
-				jAlert('Seleccione el criterio de búsqueda', 'Mensaje');
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
 				document.getElementById('CompanyCriterio').focus();
+				return false;
+			}
+			 else 
+			if(document.getElementById('CompanyBuscar').value == ''){
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el nombre de la empresa, puesto ó folio a buscar'});
+				document.getElementById('CompanyBuscar').focus();
 				return false;
 			}else {
 				return true;
 			}
 		}
 	</script>
-	
-	
-	<?= $this->Session->flash();
-		$paginator = $this->Paginator;
-	?>
 
 	<div class="col-md-12">
 				<?= $this->Form->create('Company', [
 									'class' => 'form-horizontal', 
 									'role' => 'form',
 									'inputDefaults' => [
-															'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
-															'div' => ['class' => 'form-group'],
-															'class' => 'form-control',
-															'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
-															'between' => ' <div class="col-md-12">',
-															'after' => '</div>',
-															'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
-									],
+									'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+									'div' => ['class' => 'form-group'],
+									'class' => 'form-control',
+									'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+									'between' => ' <div class="col-md-12">',
+									'after' => '</div>',
+									'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+													],
 									'action' => 'companyPostullation',
 									'onsubmit' =>'return validateEmpty();'
 					]); ?>		
+		
 				<fieldset>
 					<div  class="col-md-3">
 					<?php $options = array('1' => 'Nombre de la empresa', '2' => 'Puesto', '3' => 'Folio'); ?>
@@ -65,7 +62,7 @@
 					else:
 	?>
 		
-	<div class="col-md-8 col-md-offset-1" style="max-height: 450px; width:720px; overflow-y: auto; margin-top: 50px; font-size: 12px;">
+	<div class="col-md-8 col-md-offset-0" style="overflow-y: auto; margin-top: 50px; font-size: 12px;">
 			
 		<?php 
 			foreach($ofertas as $k => $oferta):
@@ -98,7 +95,7 @@
 				<?php endif; ?>
 				
 			</div>
-			<div class="col-md-3" >
+			<div class="col-md-2" >
 				<?php 
 						if(!empty($oferta['Application'])):
 							echo $this->Html->link(
@@ -108,8 +105,7 @@
 																'action'=>'results_search_excel',$oferta['CompanyJobProfile']['id'],$oferta['CompanyJobProfile']['job_name'],
 															),
 															array(
-																'class' => 'btn btn-default btn-primary ',
-																'style' => 'width: 200px; font-size: 12px;',
+															'class' => 'btn btn-primary',
 																'escape' => false,
 																)	
 											); 
@@ -121,8 +117,7 @@
 															),
 															array(
 																'title' => 'Sin postulados',
-																'class' => 'btn btn-default btn-primary ',
-																'style' => 'width: 200px; cursor: not-allowed; font-size: 12px;',
+																'class' => 'btn btn-primary',
 																'escape' => false,
 																)	
 											); 	
@@ -131,6 +126,10 @@
 						
 						
 				?> 
+				
+		
+				
+				
 			</div>
 		</div>
 		
@@ -144,16 +143,13 @@
 		endif; 
 	?>
 	
-	<div class="col-md-8 col-md-offset-1" style="margin-top: 30px;">
+	<div class="col-md-8 col-md-offset-0" style="margin-top: 30px;">
 		<?php 
 			if(!empty($ofertas)):
-		?>
-			<p style="margin-left: 30px; font-size: 14px;">
-				<?php echo $this->Paginator->counter(
-													array('format' => 'Total de ofertas {:count}')
-													); 
-				?>
-			</p>
+		?>  
+		<p style="margin-left: 30px; font-size: 14px; color: #000000;"> 
+		<?php echo $this->Paginator->counter(array('format' => 'Total de ofertas {:count}'));?>
+		</p>
 		<?php 
 			endif;
 		?>

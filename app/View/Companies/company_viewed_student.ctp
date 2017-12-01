@@ -45,8 +45,7 @@
 			
 		}
 
-		function updateContadorTa(idtextarea, idcontador,max)
-		{
+		function updateContadorTa(idtextarea, idcontador,max){
 			var contador = $("#"+idcontador);
 			var ta =     $("#"+idtextarea);
 			contador.html("0/"+max);
@@ -60,7 +59,7 @@
 
 		}
 	
-	function validate_fechaMayorQue(fechaInicial,fechaFinal){
+		function validate_fechaMayorQue(fechaInicial,fechaFinal){
 			valuesStart=fechaInicial.split("/");
             valuesEnd=fechaFinal.split("/");
 
@@ -76,249 +75,104 @@
             return 0;
         }
 		
-			function saveTelephoneNotification(StudentId){
-				document.getElementById('StudentTelephoneNotificationId').value = StudentId;
-				$('#myModalnotificationTelefonica').modal('show');
-			}
-			
-			function savePersonalNotification(StudentId){
-				document.getElementById('StudentPersonalNotificationId').value = StudentId;
-				$('#myModalnotificationPersonal').modal('show');
-			}
-			
-			function saveEmailNotification(email){
-				document.getElementById('StudentEmailTo').value = email;
-				$('#myModalMail').modal('show');
-			}
-			
-			function nuevaFechaEntrevista(id, company_job_profile_id){
-				document.getElementById('StudentPropuestaId').value = id;
-				document.getElementById('StudentPropuestaCompsnyaJobProfileId').value = company_job_profile_id;
-				$('#myModalnotification').modal('show');
-				return false;
-			}
-			
-			function saveOffer(StudentId){
-				document.getElementById('CompanySavedStudentStudentId').value = StudentId;
-				$('#myModal1').modal('show');
-			}
-			
-			function validaFormSaveStudent(){
-				var valor = document.getElementById("CompanySavedStudentCompanyFolderId").value;
-				if (valor == ''){
-					alert('Seleccione la carpeta donde se guardará el perfil');
-					document.getElementById("CompanySavedStudentCompanyFolderId").focus;
-					return false;
-				} else {
-					return true;
-				}
-			}
-			
-			function saveReportarContratacion(StudentId){
-				document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
-				$('#myModalReportarContratacion').modal('show');
-			}
-			
-			function cambiarContenido(){
-			
-				var archivo = document.getElementById('StudentFile').value;
-				extensiones_permitidas = new Array(".jpg",".pdf");
-				mierror = "";
-
-				if (!archivo) {
-						alert ('Adjuntar Cédula de Identificación Fiscal');
-						document.getElementById('StudentFile').scrollIntoView();
-						return false;
-				}else{
-						extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
-						permitida = false;
-						for (var i = 0; i < extensiones_permitidas.length; i++) {
-							 if (extensiones_permitidas[i] == extension) {
-							 permitida = true;
-							 break;
-							 }
-						}
-						  
-						if (!permitida) {
-							alert ("Compruebe la extensión de su imagen de RFC a subir. \nSólo se pueden subir imagenes con extensiones: " + extensiones_permitidas.join());
-							document.getElementById('StudentFile').scrollIntoView();
-							deleteText();
-							return false;
-						}else{
-							document.getElementById("textFile").innerHTML = document.getElementById('StudentFile').value + '<button id="deleteTextId" onclick="deleteText();" class="btnBlue" style="margin-left: 10px;" >x</button>';
-							return false;
-						}
-				   }
-			}
-			
-			function deleteText(){
-				document.getElementById("textFile").innerHTML = '';
-				document.getElementById('StudentFile').value = '';  
-				return false;
-			}
-				
-		function validarFecha(fecha){
-				 //Funcion validarFecha 
-				 //valida fecha en formato aaaa-mm-dd
-				 var fechaArr = fecha.split('/');
-				 var aho = fechaArr[2];
-				 var mes = fechaArr[1];
-				 var dia = fechaArr[0];
-				 
-				 var plantilla = new Date(aho, mes - 1, dia);//mes empieza de cero Enero = 0
-
-				 if(!plantilla || plantilla.getFullYear() == aho && plantilla.getMonth() == mes -1 && plantilla.getDate() == dia){
-				 return true;
-				 }else{
-				 return false;
-				 }
-			}
-			
-		function validarReportarContratacionForm(){
-				var fechaFinal = document.getElementById('StudentReportarContratacionFechaContratacionDay').value	+ "/" +
-										document.getElementById('StudentReportarContratacionFechaContratacionMonth').value	+ "/" +
-										document.getElementById('StudentReportarContratacionFechaContratacionYear').value	;
-				
-				selectedIndexDay = document.getElementById("StudentReportarContratacionFechaContratacionDay").selectedIndex;
-				selectedIndexMonth = document.getElementById("StudentReportarContratacionFechaContratacionMonth").selectedIndex;
-				selectedIndexYear = document.getElementById("StudentReportarContratacionFechaContratacionYear").selectedIndex;
-			 
-				responseValidateDate = validarFecha(fechaFinal);
-				
-				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					alert ('Seleccione la fecha completa para reportar la contratación');
-					document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
-					return false;
-				}else  
-				if(responseValidateDate == false){
-					alert ('La fecha para reportar contratación no es válida');
-					document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
-					return false;
-				}else {
-					return true;
-				 }
+		function saveTelephoneNotification(StudentId){
+			document.getElementById('StudentTelephoneNotificationId').value = StudentId;
+			$('#myModalnotificationTelefonica').modal('show');
 		}
 		
-		function validateTelephoneNotificationForm(){
-				
-				var f = new Date();
-				var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-				var fechaFinal = document.getElementById('StudentTelephoneNotificationDateDay').value	+ "/" +
-										document.getElementById('StudentTelephoneNotificationDateMonth').value	+ "/" +
-										document.getElementById('StudentTelephoneNotificationDateYear').value;
-				
-				
-				selectedIndexDay = document.getElementById("StudentTelephoneNotificationDateDay").selectedIndex;
-				selectedIndexMonth = document.getElementById("StudentTelephoneNotificationDateMonth").selectedIndex;
-				selectedIndexYear = document.getElementById("StudentTelephoneNotificationDateYear").selectedIndex;
-				
-				responseValidateDate = validarFecha(fechaFinal);
-				
-				if(document.getElementById('StudentTelephoneNotificationMessage').value == ''){
-					$.alert({ title: 'Aviso',type: 'blue',content: 'Ingrese el mensaje para la notificación telefónica'});
-					document.getElementById('StudentTelephoneNotificationMessage').focus();
-					return false;
-				} else
-					
-				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					$.alert({ title: 'Aviso',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista telefónica'});
-					document.getElementById('StudentTelephoneNotificationDateDay').focus();
-					return false;
-				}else 
-				 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-				$.alert({ title: 'Aviso',type: 'blue',content: 'La fecha de la entrevista telefónica no debe ser menor a la actual'});
-				document.getElementById('StudentTelephoneNotificationDateDay').focus();
-					return false;
-				}else 
-				if(responseValidateDate == false){
-					$.alert({ title: 'Aviso',type: 'blue',content: 'La fecha de la entrevista telefónica no es valida'});
-					document.getElementById('StudentTelephoneNotificationDateDay').focus();
-					return false;
-				}else{
-					document.getElementById("FormTelephoneNotification").submit();
-				 }
-			}
+		function savePersonalNotification(StudentId){
+			document.getElementById('StudentPersonalNotificationId').value = StudentId;
+			$('#myModalnotificationPersonal').modal('show');
+		}
 		
-		function validatePersonalNotificationForm(){
-			
-			var f = new Date();
-			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-			var fechaFinal = document.getElementById('StudentPersonalNotificationDateDay').value	+ "/" +
-									document.getElementById('StudentPersonalNotificationDateMonth').value	+ "/" +
-									document.getElementById('StudentPersonalNotificationDateYear').value	;
-			
+		function saveEmailNotification(email){
+			document.getElementById('StudentEmailTo').value = email;
+			$('#myModalMail').modal('show');
+		}
+		
+		function nuevaFechaEntrevista(id, company_job_profile_id){
+			document.getElementById('StudentPropuestaId').value = id;
+			document.getElementById('StudentPropuestaCompsnyaJobProfileId').value = company_job_profile_id;
+			$('#myModalnotification').modal('show');
+			return false;
+		}
+		
+		function saveOffer(StudentId){
+			document.getElementById('CompanySavedStudentStudentId').value = StudentId;
+			$('#myModal1').modal('show');
+		}
+		
+		function validaFormSaveStudent(){
+			var valor = document.getElementById("CompanySavedStudentCompanyFolderId").value;
+			if (valor == ''){
+				alert('Seleccione la carpeta donde se guardará el perfil');
+				document.getElementById("CompanySavedStudentCompanyFolderId").focus;
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		function saveReportarContratacion(StudentId){
+			document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
+			$('#myModalReportarContratacion').modal('show');
+		}
+		
+		function cambiarContenido(){
+		
+			var archivo = document.getElementById('StudentFile').value;
+			extensiones_permitidas = new Array(".jpg",".pdf");
+			mierror = "";
 
-			selectedIndexDay = document.getElementById("StudentPersonalNotificationDateDay").selectedIndex;
-			selectedIndexMonth = document.getElementById("StudentPersonalNotificationDateMonth").selectedIndex;
-			selectedIndexYear = document.getElementById("StudentPersonalNotificationDateYear").selectedIndex;
-			
-			responseValidateDate = validarFecha(fechaFinal);
-			
-			if(document.getElementById('StudentPersonalNotificationMessage').value == ''){
-				$.alert({ title: 'Aviso',type: 'blue',content: 'Ingrese el mensaje para la notificación personal'});
-				document.getElementById('StudentPersonalNotificationMessage').focus();
-				return false;
-			} else
-			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-				$.alert({ title: 'Aviso',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista personal'});
-				document.getElementById('StudentPersonalNotificationDateDay').focus();
-				return false;
-			}else 
-			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-				$.alert({ title: 'Aviso',type: 'blue',content: 'La fecha de la entrevista personal no debe ser menor a la actual'});
-				document.getElementById('StudentPersonalNotificationDateDay').focus();
-				return false;
-			}else 
-			if(responseValidateDate == false){
-				$.alert({ title: 'Aviso',type: 'blue',content: 'La fecha de la entrevista personal no es válida'});
-				document.getElementById('StudentPersonalNotificationDateDay').focus();
-				return false;
+			if (!archivo) {
+					alert ('Adjuntar Cédula de Identificación Fiscal');
+					document.getElementById('StudentFile').scrollIntoView();
+					return false;
 			}else{
-				document.getElementById("FormPersonalNotification").submit();
-			 }
-			
+					extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
+					permitida = false;
+					for (var i = 0; i < extensiones_permitidas.length; i++) {
+						 if (extensiones_permitidas[i] == extension) {
+						 permitida = true;
+						 break;
+						 }
+					}
+					  
+					if (!permitida) {
+						alert ("Compruebe la extensión de su imagen de RFC a subir. \nSólo se pueden subir imagenes con extensiones: " + extensiones_permitidas.join());
+						document.getElementById('StudentFile').scrollIntoView();
+						deleteText();
+						return false;
+					}else{
+						document.getElementById("textFile").innerHTML = document.getElementById('StudentFile').value + '<button id="deleteTextId" onclick="deleteText();" class="btnBlue" style="margin-left: 10px;" >x</button>';
+						return false;
+					}
+			   }
 		}
 		
-		function validateNotificationFormPropuesta(){
-				
-				var f = new Date();
-				var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-				var fechaFinal = document.getElementById('StudentPropuestaFechaDay').value	+ "/" +
-										document.getElementById('StudentPropuestaFechaMonth').value	+ "/" +
-										document.getElementById('StudentPropuestaFechaYear').value;
-				
-				
-				selectedIndexDay = document.getElementById("StudentPropuestaFechaDay").selectedIndex;
-				selectedIndexMonth = document.getElementById("StudentPropuestaFechaMonth").selectedIndex;
-				selectedIndexYear = document.getElementById("StudentPropuestaFechaYear").selectedIndex;
-				
-				responseValidateDate = validarFecha(fechaFinal);
-				
-				if(document.getElementById('taComentarioPropuesta').value == ''){
-					alert ('Ingrese el mensaje para la nueva propuesta');
-					document.getElementById('taComentarioPropuesta').focus();
-					return false;
-				} else
-				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					alert ('Seleccione la fecha completa para el día de la entrevista');
-					document.getElementById('StudentPropuestaFechaDay').focus();
-					return false;
-				}else 
-				 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-					alert ('La fecha de la entrevista no debe ser menor a la actual');
-					document.getElementById('StudentPropuestaFechaDay').focus();
-					return false;
-				}else 
-				if(responseValidateDate == false){
-					alert ('La fecha de la entrevista no es válida');
-					document.getElementById('StudentPropuestaFechaDay').focus();
-					return false;
-				}else{
-					document.getElementById("formNotificacionPropuesta").submit();
-				 }
-			}
-	
-	
+		function deleteText(){
+			document.getElementById("textFile").innerHTML = '';
+			document.getElementById('StudentFile').value = '';  
+			return false;
+		}
+			
+		function validarFecha(fecha){
+			 //Funcion validarFecha 
+			 //valida fecha en formato aaaa-mm-dd
+			 var fechaArr = fecha.split('/');
+			 var aho = fechaArr[2];
+			 var mes = fechaArr[1];
+			 var dia = fechaArr[0];
+			 
+			 var plantilla = new Date(aho, mes - 1, dia);//mes empieza de cero Enero = 0
+
+			 if(!plantilla || plantilla.getFullYear() == aho && plantilla.getMonth() == mes -1 && plantilla.getDate() == dia){
+			 return true;
+			 }else{
+			 return false;
+			 }
+		}
+
 		function validateEmpty(){
 			selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
 			
@@ -348,8 +202,6 @@
 		
 	</script>
 	
-		
-
 <blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
 	<p style="color: #588BAD;">Candidatos mas vistos por empresas</p>
 </blockquote>

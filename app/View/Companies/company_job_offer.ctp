@@ -167,7 +167,10 @@
 	<fieldset>
 		<div class="col-md-6">
 			<div class="col-md-12">
-			
+			<?php echo $this->Form->input('CompanyJobOffer.id', array(				
+															'label' => '',
+															'placeholder' => 'Id',					
+							)); ?>
 			<?php $options = array('s' => 'Si', 'n' => 'No');
 					echo $this->Form->input('CompanyJobOffer.same_contact', ['type' => 'select','default'=> 0,'empty' => '¿Son los mismos datos del contacto de registro?','options' => $options,'onchange' => 'desabilityOptions()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
 			?>
@@ -228,39 +231,20 @@
 				?>
 			</div>	
 
-			<div class="col-md-12" style="margin-top: 30px;">				
-				<?php if(($this->Session->check('CompanyJobOffer.id') == true) and (!empty($this->request->data))): ?>
-				<div class="col-md-6">
-					<?php else:;?>
-					<div class="col-md-6 col-md-offset-2">
-						<?php endif; ?>
-						<?= $this->Form->button('<span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar',['type'=>'submit','class' => 'btn btn-primary btn-bti','escape' => false]);
-						echo $this->Form->end(); 
-						?>
-					</div>
-					<?php if(($this->Session->check('CompanyJobOffer.id') == true) and (!empty($this->request->data))): ?>
-					<div class="col-md-6">
-						<div class="btn-group">
-							<?php echo $this->Html->link('Continuar &nbsp; <i class="glyphicon glyphicon-arrow-right"></i>',
-							array(
-								'controller'=>'Companies',
-								'action'=>'companyJobProfile',
-							),
-							array(
-								'class' => 'btn btn-primary btn-bti',
-							//	'style' => 'width: 130px;',
-								'escape' => false,
-								)	
-							); 	?> 
-						</div>
-					</div>
-					<?php endif; ?>
-				</div>
-			</div>
 		</div>	
 
 	</fieldset>	
 </div>
 	
-	
+	<div class="col-md-12 text-center">
+		<?= $this->Form->button('<span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar',['type'=>'submit','class' => 'btn btn-primary btn-bti','escape' => false]);?>
+
+		<?= $this->Form->end(); ?>
+
+		<!-- <?= $this->Html->link('Continuar&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>',
+														['controller'=>'Companies',
+														'action'=>'companyJobProfile',1],
+														['class' => 'btn btn-default',
+														'escape' => false]); ?>  -->
+	</div>
 	

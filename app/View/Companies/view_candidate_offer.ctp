@@ -67,25 +67,7 @@
 				 }
 		}
 
-			function saveTelephoneNotification(StudentId){
-				document.getElementById('StudentNotificationStudentId').value = StudentId;
-				$('#myModalnotificationTelefonica').modal('show');
-			}
 			
-			function savePersonalNotification(StudentId){
-				$('.StudentNotificationStudentId').val(StudentId);
-				$('#myModalnotificationPersonal').modal('show');
-			}
-			
-			function saveEmailNotification(email){
-				document.getElementById('StudentEmailTo').value = email;
-				$('#myModalMail').modal('show');
-			}
-			
-			function saveReportarContratacion(StudentId){
-				document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
-				$('#myModalReportarContratacion').modal('show');
-			}
 			
 			function saveOffer(StudentId){
 				document.getElementById('CompanySavedStudentStudentId').value = StudentId;
@@ -200,12 +182,12 @@
 				responseValidateDate = validarFecha(fechaFinal);
 				
 				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					jAlert('Seleccione la fecha completa para reportar la contratación', 'Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para reportar la contratación'});
 					document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
 					return false;
 				}else  
 				if(responseValidateDate == false){
-					jAlert('La fecha para reportar contratación no es válida', 'Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha para reportar contratación no es válida'});
 					document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
 					return false;
 				}else {
@@ -226,17 +208,17 @@
 			selectedIndexYear = document.getElementById("StudentPersonalNotificationCompanyInterviewDateYear").selectedIndex;
 		
 			if(document.getElementById('taComentario2').value == ''){
-				jAlert('Ingrese el mensaje para la notificación telefónica', 'Mensaje');
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el mensaje para la notificación telefónica'});
 				document.getElementById('taComentario2').focus();
 				return false;
 			} else
 			if((selectedIndexDay==0) || (selectedIndexMonth==0) || (selectedIndexYear==0)){
-				jAlert('Seleccione la fecha completa para el día de la entrevista personal', 'Mensaje');
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista personal', 'Mensaje'});
 				document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').focus();
 				return false;
 			}else 
 			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-				jAlert('La fecha de la entrevista personal no debe ser menor a la actual', 'Mensaje');
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista personal no debe ser menor a la actual'});
 				document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').focus();
 				return false;
 			}else {
@@ -244,24 +226,7 @@
 			 }
 			
 		}
-	
-		function validateEmpty(){
-			selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
-			
-			if(document.getElementById('CompanyBuscar').value == ''){
-				jAlert('Ingrese el nombre del candidato, correo ó folio', 'Mensaje');
-				document.getElementById('CompanyBuscar').focus();
-				return false;
-			} else 
-			if(selectedIndex == 0){
-				jAlert('Seleccione el criterio de búsqueda', 'Mensaje');
-				document.getElementById('CompanyCriterio').focus();
-				return false;
-			}else {
-				return true;
-			}
-		}
-		
+
 		function sendLimit(){
 			 selectedIndex = document.getElementById("limit").selectedIndex;
 			 if(selectedIndex == 0){
@@ -323,8 +288,7 @@
 						'action' => 'viewCandidateOffer',
 						'onsubmit' =>'return validateEmpty();']); ?>
 	<fieldset>
-		<div class="col-md-3">	
-			
+		<div class="col-md-3">
 			<?php $options = array('1' => 'Nombre candidato', '2' => 'Correo electrónico', '3' => 'Folio'); ?>
 			<?= $this->Form->input('criterio', ['type'=>'select','options' => $options,'selected' => $this->Session->read('tipoBusqueda'),'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Criterio de búsqueda']); ?>
 		</div>

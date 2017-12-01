@@ -1,9 +1,9 @@
 <?php 
 	$this->layout = 'company'; 
 ?>
-
-	<script>
-		$(document).ready(function() {
+<script>
+	
+	$(document).ready(function() {
 			var helpText = [
 							"Guarda y nombra las consultas de ofertas en carpetas para una mejor organización. Las carpetas creadas se ordenarán alfabéticamente.",					
 							];
@@ -17,219 +17,38 @@
 			 $('#CompanyJobProfileExpirationMonth').prepend('<option value="" selected>MM</option>');
 			 $('#CompanyJobProfileExpirationDay').prepend('<option value="" selected>DD</option>');
 			 
-			init_contadorTa("StudentTelephoneNotificationMessage","contadorTaComentario", 316);
-			updateContadorTa("StudentTelephoneNotificationMessage","contadorTaComentario", 316);
-			
-			init_contadorTa("StudentPersonalNotificationMessage","contadorTaComentarioPropuesta", 316);
-			updateContadorTa("StudentPersonalNotificationMessage","contadorTaComentarioPropuesta", 316);
-			
-			init_contadorTa("messageIdEmail","contadorTaComentario2", 632);
-			updateContadorTa("messageIdEmail","contadorTaComentario2", 632);
-			
-			 $('#StudentTelephoneNotificationDateYear').prepend('<option value="" selected>AAAA</option>');
-			 $('#StudentTelephoneNotificationDateMonth').prepend('<option value="" selected>MM</option>');
-			 $('#StudentTelephoneNotificationDateDay').prepend('<option value="" selected>DD</option>');
-			 
-			 $('#StudentPersonalNotificationDateYear').prepend('<option value="" selected>AAAA</option>');
-			 $('#StudentPersonalNotificationDateMonth').prepend('<option value="" selected>MM</option>');
-			 $('#StudentPersonalNotificationDateDay').prepend('<option value="" selected>DD</option>');
-			 
-			 $('#StudentReportarContratacionFechaContratacionYear').prepend('<option value="" selected>AAAA</option>');
-			 $('#StudentReportarContratacionFechaContratacionMonth').prepend('<option value="" selected>MM</option>');
-			 $('#StudentReportarContratacionFechaContratacionDay').prepend('<option value="" selected>DD</option>');
-			 
 			typeSearch();
-			<?php if($this->Session->check('companyJobProfileId')): ?>
-				if ($('#'+'<?php echo $this->Session->read('companyJobProfileId'); ?>').length){
-					document.getElementById('<?php echo $this->Session->read('companyJobProfileId'); ?>').scrollIntoView();
-				}
-			<?php endif; ?>
-			typeSearchStudent();
-			typeSearch();
-		});	
-		
-		function validateEmpty(){
+		});		
+	function validateEmptyCompany(){
 			selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
 			var palabraBuscar = document.getElementById('CompanyBuscar').value ;
 			var sueldo = document.getElementById("CompanyBuscarSalary").selectedIndex;
-			
-			
+
 			if(selectedIndex == 0){
-				$.alert({ title: '¡Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
-				$( "#CompanyCriterio" ).focus();
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
 				document.getElementById('CompanyCriterio').focus();
 				return false;
 			}else 
 			if((palabraBuscar == '') && (sueldo == '')){
 				
 				if(selectedIndex == 1){
-					$.alert({ title: '¡Aviso!',type: 'blue',content: 'Ingrese el puesto'});
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el puesto'});
 					document.getElementById('CompanyBuscar').focus();
 				} else
 				if(selectedIndex == 2){
-					$.alert({ title: '¡Aviso!',type: 'blue',content: 'Seleccione el rango de sueldo'});
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el rango de sueldo'});
 					document.getElementById('CompanyBuscarSalary').focus();
 				}else{
-					$.alert({ title: '¡Aviso!',type: 'blue',content: 'Ingrese el folio'});
-					document.getElementById('CompanyBuscar').focus();
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el folio'});
+						document.getElementById('CompanyBuscar').focus();
 				}
+				
 				return false;
 			}else {
 				return true;
 			}
 		}
-		
-		// function saveVigencia(idJobProfile,fecha){
-			// var fechaArr = fecha.split('-');
-			// var aho = fechaArr[0];
-			// var mes = fechaArr[1];
-			// var dia = fechaArr[2];
-			
-			// $("#CompanyJobProfileExpirationYear option[value='"+aho+"']").prop('selected', true);
-			// $("#CompanyJobProfileExpirationMonth option[value='"+mes+"']").prop('selected', true);
-			// $("#CompanyJobProfileExpirationDay option[value='"+dia+"']").prop('selected', true);
-		
-			// document.getElementById('CompanyJobProfileId').value = idJobProfile;
-			// $('#myModalVigencia').modal('show');
-		// }
-		
-		function saveVigencia(idJobProfile,fecha, fechaCreacion){
-			var fechaArr = fecha.split('-');
-			var aho = fechaArr[0];
-			var mes = fechaArr[1];
-			var dia = fechaArr[2];
-			
-			$("#CompanyJobProfileExpirationYear option[value='"+aho+"']").prop('selected', true);
-			$("#CompanyJobProfileExpirationMonth option[value='"+mes+"']").prop('selected', true);
-			$("#CompanyJobProfileExpirationDay option[value='"+dia+"']").prop('selected', true);
-			
-			var fechaArr = fechaCreacion.split('-');
-			var aho = fechaArr[0];
-			var mes = fechaArr[1];
-			var dia = fechaArr[2];
-			
-			$("#CompanyJobProfileCreatedYear option[value='"+aho+"']").prop('selected', true);
-			$("#CompanyJobProfileCreatedMonth option[value='"+mes+"']").prop('selected', true);
-			$("#CompanyJobProfileCreatedDay option[value='"+dia+"']").prop('selected', true);
-		
-			document.getElementById('CompanyJobProfileId').value = idJobProfile;
-			$('#myModalVigencia').modal('show');
-		}
-		
-		function fechaMax(fecha, fechaCreacion){
-			<?php if(($this->Session->read('Auth.User.role')=='administrator') OR ($this->Session->read('Auth.User.role')=='subadministrator')): ?>
-				var hoy = new Date();
-				var dd = hoy.getDate();
-				var mm = hoy.getMonth()+1; //hoy es 0!
-				var yyyy = hoy.getFullYear();
-				hoy = yyyy+'-'+mm+'-'+dd;
-				var fechaCreacion = hoy;
-			<?php else: ?>
-				var fechaCreacion = fechaCreacion;
-			<?php endif; ?>
-			
-				var fechaArrCreacion = fechaCreacion.split('-');
-				var aho2 = fechaArrCreacion[0];
-				var mes2 = fechaArrCreacion[1];
-				var dia2 = fechaArrCreacion[2];
-				var fechaCreacionOferta = new Date(aho2,mes2,dia2);
-
-				var fechaArr = fecha.split('/');
-				var aho = fechaArr[2];
-				var mes = fechaArr[1];
-				var dia = fechaArr[0];
-				var fechaPropuesta = new Date(aho, mes-1, dia); 
-
-				if(fechaPropuesta > fechaCreacionOferta){
-					return false;
-				} else{
-					return true;
-				}
-	}
-	
-		function validateVigenciaForm(){
-				var f = new Date();
-				var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-				var fechaFinal = document.getElementById('CompanyJobProfileExpirationDay').value	+ "/" +
-										document.getElementById('CompanyJobProfileExpirationMonth').value	+ "/" +
-										document.getElementById('CompanyJobProfileExpirationYear').value	;
-				
-				var fechaCreacion = document.getElementById('CompanyJobProfileCreatedYear').value	+ "-" +
-										document.getElementById('CompanyJobProfileCreatedMonth').value	+ "-" +
-										document.getElementById('CompanyJobProfileCreatedDay').value;
-				
-
-				selectedIndexDay = document.getElementById("CompanyJobProfileExpirationDay").selectedIndex;
-				selectedIndexMonth = document.getElementById("CompanyJobProfileExpirationMonth").selectedIndex;
-				selectedIndexYear = document.getElementById("CompanyJobProfileExpirationYear").selectedIndex;
-				
-				responseValidateDate = validarFecha(fechaFinal);
-				fechaMaxima = fechaMax(fechaFinal,fechaCreacion);
-				
-				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					jAlert ('Seleccione la fecha completa para la vigencia','Mensaje');
-					document.getElementById('CompanyJobProfileExpirationYear','Mensaje').focus();
-					return false;
-				}else 
-				 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-					jAlert('La fecha de vigencia no debe ser menor a la actual', 'Mensaje');
-					document.getElementById('CompanyJobProfileExpirationYear').focus();
-					return false;
-				}else 
-				if(responseValidateDate == false){
-					jAlert('La fecha de vigencia es incorrecta', 'Mensaje');
-					document.getElementById('CompanyJobProfileExpirationYear').focus();
-					return false;
-				}else
-				if(fechaMaxima == false){
-					<?php if(($this->Session->read('Auth.User.role')=='administrator') OR ($this->Session->read('Auth.User.role')=='subadministrator')): ?>
-						jAlert('La fecha de vigencia es de máximo 1 mes respecto a la fecha actual', 'Mensaje');
-					<?php else: ?>
-						jAlert('La fecha de vigencia es de máximo 1 mes respecto a la fecha de creación de la oferta', 'Mensaje');
-					<?php endif; ?>		
-					document.getElementById('CompanyJobProfileExpirationYear').focus();
-					return false;
-				}else
-				if(responseValidateDate == false){
-					jAlert('La fecha de vigencia es incorrecta', 'Mensaje');
-					document.getElementById('CompanyJobProfileExpirationYear').focus();
-					return false;
-				}else{
-					return true;
-				 }
-		}
-			
-		function typeSearch(){
-			selectedIndexTypeSearch = document.getElementById("CompanyCriterio").selectedIndex;
-			
-			
-				if(selectedIndexTypeSearch==0){
-						$("#CompanyBuscar").attr("placeholder", "Ingrese el Puesto, Sueldo o Folio");
-						
-				}else
-			if(selectedIndexTypeSearch==2){
-				$("#idDivBuscar").hide();
-				$("#idDivBuscarSelect").show();
-				
-			} else {
-				$("#idDivBuscar").show();
-				$("#idDivBuscarSelect").hide();
-				
-				document.getElementById('CompanyBuscarSalary').options[0].selected = 'selected';
-			}
-			
-			if(selectedIndexTypeSearch==1){
-				$("#CompanyBuscar").attr("placeholder", "Ingrese el puesto");
-			}
-			else
-				if(selectedIndexTypeSearch==3){
-						$("#CompanyBuscar").attr("placeholder", "Ingrese el folio");
-				}
-					
-				
-		}
-		
-		function typeSearchStudent(){
+	function typeSearchStudent(){
 			if ( $("#CompanyCriterioStudent").length > 0 ) {
 				selectedIndexTypeSearch = document.getElementById("CompanyCriterioStudent").selectedIndex;
 			
@@ -249,10 +68,31 @@
 						}
 			}
 		}
-		
-		//Contador de caracteres para las notificaciones telefónicas 
-		function init_contadorTa(idtextarea, idcontador,max)
-		{
+	function typeSearch(){
+			selectedIndexTypeSearch = document.getElementById("CompanyCriterio").selectedIndex;
+
+			if(selectedIndexTypeSearch==2){
+				$("#idDivBuscar").hide();
+				$("#idDivBuscarSelect").show();
+				$('#CompanyBuscar').val('');
+				
+			} else {
+				$("#idDivBuscar").show();
+				$("#idDivBuscarSelect").hide();
+				
+				document.getElementById('CompanyBuscarSalary').options[0].selected = 'selected';
+			}
+			
+			if(selectedIndexTypeSearch==1){
+				$("#CompanyBuscar").attr("placeholder", "Ingrese el puesto");
+			}
+			else
+				if(selectedIndexTypeSearch==3){
+						$("#CompanyBuscar").attr("placeholder", "Ingrese el folio");
+				}
+			
+		}
+	function init_contadorTa(idtextarea, idcontador,max){
 			$("#"+idtextarea).keyup(function()
 					{
 						updateContadorTa(idtextarea, idcontador,max);
@@ -264,9 +104,7 @@
 			});
 			
 		}
-
-		function updateContadorTa(idtextarea, idcontador,max)
-		{
+	function updateContadorTa(idtextarea, idcontador,max){
 			var contador = $("#"+idcontador);
 			var ta =     $("#"+idtextarea);
 			contador.html("0/"+max);
@@ -279,51 +117,29 @@
 			}
 
 		}
-	
-		function validate_fechaMayorQue(fechaInicial,fechaFinal){
-			valuesStart=fechaInicial.split("/");
-            valuesEnd=fechaFinal.split("/");
-
-            // Verificamos que la fecha no sea posterior a la actual
-
-            var dateStart=new Date(valuesStart[2],(valuesStart[1]-1),valuesStart[0]);
-            var dateEnd=new Date(valuesEnd[2],(valuesEnd[1]-1),valuesEnd[0]);
-
-            if(dateStart>dateEnd)
-            {
-                return 1;
-            }
-            return 0;
-        }
-		
-			function saveTelephoneNotification(StudentId){
+	function saveTelephoneNotification(StudentId){
 				document.getElementById('StudentTelephoneNotificationId').value = StudentId;
 				$('#myModalnotificationTelefonica').modal('show');
 			}
-			
-			function savePersonalNotification(StudentId){
+	function savePersonalNotification(StudentId){
 				document.getElementById('StudentPersonalNotificationId').value = StudentId;
 				$('#myModalnotificationPersonal').modal('show');
 			}
-			
-			function saveEmailNotification(email){
+	function saveEmailNotification(email){
 				document.getElementById('StudentEmailTo').value = email;
 				$('#myModalMail').modal('show');
 			}
-			
-			function nuevaFechaEntrevista(id, company_job_profile_id){
+	function nuevaFechaEntrevista(id, company_job_profile_id){
 				document.getElementById('StudentPropuestaId').value = id;
 				document.getElementById('StudentPropuestaCompsnyaJobProfileId').value = company_job_profile_id;
 				$('#myModalnotification').modal('show');
 				return false;
 			}
-			
-			function saveOffer(StudentId){
+	function saveOffer(StudentId){
 				document.getElementById('CompanySavedStudentStudentId').value = StudentId;
 				$('#myModal1').modal('show');
 			}
-			
-			function validaFormSaveStudent(){
+	function validaFormSaveStudent(){
 				var valor = document.getElementById("CompanySavedStudentCompanyFolderId").value;
 				if (valor == ''){
 					alert('Seleccione la carpeta donde se guardará el perfil');
@@ -333,8 +149,7 @@
 					return true;
 				}
 			}
-			
-			function cambiarContenido(){
+	function cambiarContenido(){
 				var archivo = document.getElementById('StudentFile').value;
 				extensiones_permitidas = new Array(".jpg",".pdf");
 				mierror = "";
@@ -364,36 +179,16 @@
 						}
 				   }
 			}
-			
-			function deleteText(){
+	function deleteText(){
 				document.getElementById("textFile").innerHTML = '';
 				document.getElementById('StudentFile').value = '';  
 				return false;
 			}
-			
-			function saveReportarContratacion(StudentId){
+	function saveReportarContratacion(StudentId){
 				document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
 				$('#myModalReportarContratacion').modal('show');
 			}
-			
-		function validarFecha(fecha){
-				 //Funcion validarFecha 
-				 //valida fecha en formato aaaa-mm-dd
-				 var fechaArr = fecha.split('/');
-				 var aho = fechaArr[2];
-				 var mes = fechaArr[1];
-				 var dia = fechaArr[0];
-				 
-				 var plantilla = new Date(aho, mes - 1, dia);//mes empieza de cero Enero = 0
-
-				 if(!plantilla || plantilla.getFullYear() == aho && plantilla.getMonth() == mes -1 && plantilla.getDate() == dia){
-				 return true;
-				 }else{
-				 return false;
-				 }
-			}
-			
-		function validateTelephoneNotificationForm(){
+	function validateTelephoneNotificationForm(){
 				var f = new Date();
 				var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
 				var fechaFinal = document.getElementById('StudentTelephoneNotificationDateDay').value	+ "/" +
@@ -408,30 +203,29 @@
 				responseValidateDate = validarFecha(fechaFinal);
 				
 				if(document.getElementById('StudentTelephoneNotificationMessage').value == ''){
-					jAlert ('Ingrese el mensaje para la notificación telefónica','Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el mensaje para la notificación telefónica'});
 					document.getElementById('StudentTelephoneNotificationMessage').focus();
 					return false;
 				} else
 				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					jAlert ('Seleccione la fecha completa para el día de la entrevista telefónica','Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista telefónica'});
 					document.getElementById('StudentTelephoneNotificationDateDay').focus();
 					return false;
 				}else 
 				 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-					jAlert ('La fecha de la entrevista telefónica no debe ser menor a la actual','Mensaje');
+					 $.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista telefónica no debe ser menor a la actual'});
 					document.getElementById('StudentTelephoneNotificationDateDay').focus();
 					return false;
 				}else 
 				if(responseValidateDate == false){
-					jAlert ('La fecha de la entrevista telefónica no es válida','Mensaje');
+					 $.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista telefónica no es válida'});
 					document.getElementById('StudentTelephoneNotificationDateDay').focus();
 					return false;
 				}else{
 					document.getElementById("FormTelephoneNotification").submit();
 				 }
 			}
-		
-		function validatePersonalNotificationForm(){
+	function validatePersonalNotificationForm(){
 			
 			var f = new Date();
 			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
@@ -447,22 +241,22 @@
 			responseValidateDate = validarFecha(fechaFinal);
 			
 			if(document.getElementById('StudentPersonalNotificationMessage').value == ''){
-				jAlert ('Ingrese el mensaje para la notificación personal','Mensaje');
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el mensaje para la notificación personal'});
 				document.getElementById('StudentPersonalNotificationMessage').focus();
 				return false;
 			} else
 			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-				jAlert ('Seleccione la fecha completa para el día de la entrevista personal','Mensaje');
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista personal'});
 				document.getElementById('StudentPersonalNotificationDateDay').focus();
 				return false;
 			}else 
 			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-				jAlert ('La fecha de la entrevista personal no debe ser menor a la actual','Mensaje');
+			 $.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista personal no debe ser menor a la actual'});
 				document.getElementById('StudentPersonalNotificationDateDay').focus();
 				return false;
 			}else 
 			if(responseValidateDate == false){
-				jAlert ('La fecha de la entrevista personal no es válida','Mensaje');
+				 $.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista personal no es válida'});
 				document.getElementById('StudentPersonalNotificationDateDay').focus();
 				return false;
 			}else{
@@ -470,8 +264,7 @@
 			 }
 			
 		}
-		
-		function validateNotificationFormPropuesta(){
+	function validateNotificationFormPropuesta(){
 				
 				var f = new Date();
 				var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
@@ -487,30 +280,30 @@
 				responseValidateDate = validarFecha(fechaFinal);
 				
 				if(document.getElementById('taComentarioPropuesta').value == ''){
-					jAlert ('Ingrese el mensaje para la nueva propuesta','Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el mensaje para la nueva propuesta'});
 					document.getElementById('taComentarioPropuesta').focus();
 					return false;
 				} else
 				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					jAlert ('Seleccione la fecha completa para el día de la entrevista','Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para el día de la entrevista'});
 					document.getElementById('StudentPropuestaFechaDay').focus();
 					return false;
 				}else 
 				 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-					jAlert ('La fecha de la entrevista no debe ser menor a la actual','Mensaje');
+					 $.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista no debe ser menor a la actual'});
 					document.getElementById('StudentPropuestaFechaDay').focus();
 					return false;
 				}else 
 				if(responseValidateDate == false){
-					jAlert ('La fecha de la entrevista no es válida','Mensaje');
+					 $.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha de la entrevista no es válida'});
+		
 					document.getElementById('StudentPropuestaFechaDay').focus();
 					return false;
 				}else{
 					document.getElementById("formNotificacionPropuesta").submit();
 				 }
 			}
-	
-		function validateEmptyStudent(){
+	function validateEmptyStudent(){
 			selectedIndex = document.getElementById("CompanyCriterioStudent").selectedIndex;
 			
 			if(document.getElementById('CompanyBuscarStudent').value == ''){
@@ -528,8 +321,7 @@
 				return true;
 			}
 		}
-		
-		function sendLimit(){
+	function sendLimit(){
 			 selectedIndex = document.getElementById("limit").selectedIndex;
 			 if(selectedIndex == 0){
 				return false;
@@ -538,8 +330,7 @@
 				document.getElementById("CompanySearchCandidateForm").submit();
 			 }
 		}
-		
-		function validarReportarContratacionForm(){
+	function validarReportarContratacionForm(){
 				var fechaFinal = document.getElementById('StudentReportarContratacionFechaContratacionDay').value	+ "/" +
 										document.getElementById('StudentReportarContratacionFechaContratacionMonth').value	+ "/" +
 										document.getElementById('StudentReportarContratacionFechaContratacionYear').value	;
@@ -551,20 +342,20 @@
 				responseValidateDate = validarFecha(fechaFinal);
 				
 				if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-					jAlert ('Seleccione la fecha completa para reportar la contratación','Mensaje');
+	
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la fecha completa para reportar la contratación'});
 					document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
 					return false;
 				}else  
 				if(responseValidateDate == false){
-					jAlert ('La fecha para reportar contratación no es válida','Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'La fecha para reportar contratación no es válida'});
 					document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
 					return false;
 				}else {
 					return true;
 				 }
 		}
-		
-		function deleteOffer(param){
+	function deleteOffer(param){
 				document.getElementById('focusOfferId'+param).scrollIntoView();
 				jConfirm('¿Realmente desea eliminar la oferta?', 'Confirmación', function(r){
 					if( r ){						
@@ -572,68 +363,73 @@
 					}
 				});
 		}
-		
-	</script>
-<?php 
-	echo $this->Session->flash();
-	$paginator = $this->Paginator;
-?>	
-<script>
-function openModalReporte(id){
-			document.getElementById('ReportCompanyJobProfileId').value = id;
-			$('#openModal').modal('show');
-		}
 </script>
-<div class="col-md-12">
-	<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
-      <p style="color: #588BAD">Buscar oferta publicada:</p>
-	</blockquote>	
-
-	<?= $this->Form->create('Company', [
-								'class' => 'form-horizontal', 
-								'role' => 'form',
-								'inputDefaults' => [
-								'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
-								'div' => ['class' => 'form-group'],
-								'class' => 'form-control',
-								'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
-								'between' => '<div class="col-md-12">',
-								'after' => '</div>',
-								'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
-							],
-								'action' => 'studentReport',
-								'onsubmit' =>'return validateEmpty();']); ?>
 	
+<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 10px;margin-bottom: 5px;">
+        <p style="color: #588BAD">Administrar ofertas guardadas.
+        <?php if((isset($intoFolder)) and ($intoFolder<>'')): ?>
+				<img class="estatica" src="<?php echo $this->webroot; ?>img/student/folder1.png" style="width: 25px; ">   
+				<label><?php echo $foldersList[$intoFolder]; ?> </label>
+		<?php endif?></p>
+</blockquote>
+
+<div class="col-md-12" >
+	<div class="col-md-12" >
+		<label>Buscar oferta:</label>
+	</div>
+</div>
+
+<div class="col-md-12" >
+	<?= $this->Form->create('Company', [
+						'class' => 'form-horizontal', 
+						'role' => 'form',
+						'inputDefaults' => [
+							'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+							'div' => ['class' => 'form-group'],
+							'class' => 'form-control',
+							'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+							'between' => '<div class="col-md-12">',
+							'after' => '</div>',
+							'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+						],
+						'action' => 'studentReport',
+						'onsubmit' =>'return validateEmptyCompany();']); ?>
+
 	<fieldset>
 		<div class="col-md-3">
 			<?php $options = array('1' => 'Puesto', '2' => 'Sueldo', '3' => 'Folio'); ?>
 			<?= $this->Form->input('criterio', ['type'=>'select','options' => $options,'selected' => $this->Session->read('tipoBusqueda'),'onchange' => 'typeSearch()','class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Criterio de búsqueda']); ?>
 		</div>
-
-		<div class="col-md-6" id="idDivBuscar" style="display: none;" >
-			<?= $this->Form->input('Buscar', ['placeholder' => 'Puesto / Sueldo / Folio','value'=> $this->Session->read('palabraBuscada'),]); ?>
+		<div class="col-md-6" id="idDivBuscar">
+			<?= $this->Form->input('Buscar', ['placeholder' => 'Puesto / Sueldo / Folio ','value'	=> $this->Session->read('palabraBuscada')]); ?>
 		</div>
-
-		<div class="col-md-6" id="idDivBuscarSelect" style="display: none;" >
-			<?= $this->Form->input('buscarSalary', ['type'=>'select','options' => $Salarios,'selected' => $this->Session->read('palabraBuscada'),'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Sueldo (Neto)']); ?>
+		<div class="col-md-6" id="idDivBuscarSelect">
+			<?= $this->Form->input('buscarSalary', ['placeholder' => 'Puesto / Sueldo / Folio ','value'	=> $this->Session->read('palabraBuscada'),'options' => $Salarios,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Sueldo (Neto)']); ?>
 		</div>
-
-		<?= $this->Form->input('limite', ['type'=>'hidden']); ?>
-
-		<div class="col-md-2 text-center" style="margin-top: 6px;">
-			<?= $this->Form->button('Buscar <i class="glyphicon glyphicon-search"></i>',['type'=>'submit','class' => 'btn btn-primary col-md-12','escape' => false]);?>
+		<?php echo $this->Form->input('limite', array('type'=>'hidden')); ?>
+		<div class="col-md-2">
+			<?= $this->Form->button('Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>',['type'=>'submit','class' => 'btn btn-primary','escape' => false,'style'=>'margin-top: 7px;']);?>
 			<?= $this->Form->end(); ?>
-		</div>	
+		</div>
 	</fieldset>
 </div>
-	
+
+		
+<div class="col-md-12">
+	<div class="col-md-12">
+		<label> Resultados de busqueda</label>
+	</div>
+</div>
+
+
+
 <?php if(isset($ofertas)): 
 		if(empty($ofertas)):
 			echo '<div class="col-md-12" style="margin-top: 15px;"> <p style="font-size: 22px;margin-left: -20px;">Sin ofertas</p></div>';
-	else:
+		else:
 ?>
-
-
+	
+				
 <div class="col-md-12 scrollbar" id="style-2" >
 <?= $this->element('ReportarOfertasCom'); ?>
 		
@@ -659,19 +455,18 @@ function openModalReporte(id){
 			<?php endif; ?>
 		</center>
 	</div>			
-</div>	
-	
-	<?php 
-			endif;
-		endif; 
-	 ?>								
+</div>					
 
-	
+<?php 
+		endif;
+	endif; 
+?>	
+
 		
 <?php if(isset($ofertaSeleccionada) and ($ofertaSeleccionada <> '')): ?>
 		
 <div class="col-md-12" >
-	<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 0px;margin-bottom: 5px;">
+	<blockquote style="border-top-width: 0px;padding-top: 0px;padding-bottom: 0px;margin-top: 50px;margin-bottom: 5px;">
 	    <p style="color: #588BAD">Buscar candidatos dentro de oferta:</p>
 	</blockquote>
 	<?= $this->Form->create('Company', [
@@ -698,7 +493,7 @@ function openModalReporte(id){
 		<div class="col-md-6">
 			<?= $this->Form->input('BuscarStudent', ['placeholder' => 'Nombre candidato / Correo electrónico / Folio ','value'	=> $this->Session->read('palabraBuscadaStudent')]); ?>
 		</div>
-		<div class="col-md-2 text-center" style="margin-top: 6px;">
+		<div class="col-md-2 text-center">
 			<?= $this->Form->button('Buscar  &nbsp;&nbsp;&nbsp; <i class="glyphicon glyphicon-search"></i>',['type'=>'submit','class' => 'btn btn-primary','escape' => false,'style'=>'margin-top: 7px;']);?>
 			<?= $this->Form->end(); ?>
 		</div>
@@ -755,4 +550,3 @@ function openModalReporte(id){
 		endif;		
 ?>
 		
-	
