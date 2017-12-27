@@ -2,23 +2,6 @@
 	$this->layout = 'company'; 
 ?>
 <script>
-
-function validateEmpty(){
-		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
-		
-		if(document.getElementById('CompanyBuscar').value == ''){
-			jAlert('Ingrese el puesto, sueldo ó folio', 'Mensaje');
-			document.getElementById('CompanyBuscar').focus();
-			return false;
-		} else 
-		if(selectedIndex == 0){
-			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione el criterio de búsqueda'});
-			return false;
-		}else {
-			return true;
-		}
-	}
-	
 	function validateEmpty(){
 		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
 		
@@ -176,8 +159,7 @@ function validateEmpty(){
 			echo '<div class="col-md-12" style="margin-top: 15px;"> <p style="font-size: 22px;margin-left: -20px;">Sin ofertas</p></div>';
 		else:
 ?>
-	
-				
+					
 <div class="col-md-12 scrollbar" id="style-2" style="margin-top: 30px">
 	<?= $this->element('ofertascompanies'); ?>
 </div>					

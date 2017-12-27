@@ -27,8 +27,6 @@
 		 <?php endif; ?>
 
 	});  
-	
-			
 	function validateInputs(){
 		if ($("#CompanyExternalOfferExperienceRequired").val() == ''){
 			$.alert({ title: '!Aviso!',type: 'red',content: 'Selecciona si la experiencia profesional es requerida'});
@@ -63,23 +61,30 @@
 		<div class="col-md-4">
 			<?= $this->Form->input('CompanyExternalOffer.student_name', ['placeholder' =>' Nombre del candidato']); ?>
 			<?= $this->Form->input('CompanyExternalOffer.student_academic_level', ['type'=>'select','options' => $NivelesAcademicos,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Ultimo nivel de estudios']); ?>			
-			<br />
-			<label class="col-md-12" style="margin-top: 14px"><div class="asterisk">*</div>Fecha de termino</label>
-				<?php echo $this->Form->input('CompanyExternalOffer.fecha_contratacion', array(
-							'type' => 'date',
-							'befoe' => '<div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">',
-							'class' => 'selectpicker show-tick form-control show-menu-arrow',
-							'data-width'=> '75px',
-							'between' => '<div class="col-md-12" style="padding-right: 0px;left: -2px;">',
-							'style' => 'font-size: 11px; width: 75px; margin-left: -10px; margin-right: 18px; padding-left: 0px; padding-right: 0px;',
-							'div' => array('class' => 'form-inline'),
-							'label' => '',
-							'dateFormat' => 'DMY',
-							'separator' => '',
-							'minYear' => date('Y') - 5,
-							'maxYear' => date('Y') - 0,
-				)); ?>
+			<br />		
 			<center>
+			<label class="col-md-12" style="margin-top: 14px">Fecha de termino</label>
+				<?= $this->Form->input('CompanyExternalOffer.fecha_contratacion', [
+													'class' => 'selectpicker show-tick form-control show-menu-arrow',
+													'data-width'=> '100px',
+													'dateFormat' => 'YMD',
+													'separator' => '',
+													'minYear' => date('Y') - 3,
+													'maxYear' => date('Y') - 0]); ?>
+
+						<div style="display: none;">
+							<?= $this->Form->input('CompanyExternalOffer.created', [
+													'class' => 'selectpicker show-tick form-control show-menu-arrow',
+													'data-width'=> '105px',
+													'dateFormat' => 'YMD',
+													'separator' => '',
+													'minYear' => date('Y') - 10,
+													'maxYear' => date('Y') - 0]); ?>
+						</div>
+				
+				
+				
+	
 			<?php echo $this->Form->input('CompanyExternalOffer.employees_number', array(
 						'type' => 'hidden',
 						'value' => $company['CompanyProfile']['employees_number']

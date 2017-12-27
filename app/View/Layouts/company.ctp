@@ -26,31 +26,7 @@
 	<?= $this->fetch('css') ?>
 	<?= $this->fetch('script') ?>	
 
-	<style>
-		<?php 
-			if($this->Session->check('editingAdmin')):
-				if($this->Session->read('editingAdmin') == 'yes'):
-		?>
-		body {
-			padding-top: 40px;
-		}
-		<?php 
-				endif;
-			endif;
-		?>
-		header {
-			background: #829CE0;
-			height: 40px;
-			position: fixed;
-			top: 0;
-			transition: top 0.3s ease-in-out;
-			width: 100%;
-			z-index: 100;
-		}
-		.nav-up {
-			top: -40px;
-		}
-	</style>
+
 <script>
 	     $(function() {
 	    	$('#fotoPerfil').on('click', function() {
@@ -135,6 +111,31 @@
 				    }
 				});
 		}
+		function init_contadorTa(idtextarea, idcontador,max){
+		$("#"+idtextarea).keyup(function()
+				{
+					updateContadorTa(idtextarea, idcontador,max);
+				});
+		
+		$("#"+idtextarea).change(function()
+		{
+				updateContadorTa(idtextarea, idcontador,max);
+		});
+		
+	}
+	function updateContadorTa(idtextarea, idcontador,max){
+		var contador = $("#"+idcontador);
+		var ta =     $("#"+idtextarea);
+		contador.html("0/"+max);
+		
+		contador.html(ta.val().length+"/"+max);
+		if(parseInt(ta.val().length)>max)
+		{
+			ta.val(ta.val().substring(0,max-1));
+			contador.html(max+"/"+max);
+		}
+
+	}
 		function editFolder(id, folderName){
 			document.getElementById("Vista"+id).value = vista();
 			
@@ -473,16 +474,25 @@
 												); ?>
 				</div>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav navbar-right">	           
+					<ul class="nav navbar-nav navbar-right">	
+						<?php 
+							if($this->Session->check('editingAdmin')):
+								if($this->Session->read('editingAdmin') == 'yes'):
+						?>           
+						<li><?= $this->Html->link('<span class="glyphicon glyphicon-arrow-left"></span> Volver como administrador', 
+																			['controller'=>'Administrators',
+																			'action' =>$this->Session->read('redirectAdmin')],
+																			['escape' => false,
+																			'style' => 'background-color: #b81616;',]);?>
+						</li>
+						<?php 
+								endif;
+							endif;
+						?>
 						<li><?= $this->Html->link('<span class="glyphicon glyphicon-search"></span> Buscar Candidatos', 
 																			['controller'=>'Companies',
 																			'action' => 'searchCandidate', 'nuevaBusqueda'], 
 																			['escape' => false]);?>
-																			
-																			
-																			
-																			
-																			
 						</li>
 						<li><?= $this->Html->link('<span class="glyphicon glyphicon-bell"></span> Notificaciones <span style="margin-left: 5px;">'.$notificaciones.'</span>', 
 																			['controller'=>'Companies',
@@ -537,31 +547,7 @@
 		</div>
 	</div>
 
-	<?php 
-		if(!isset($vista)):
-			 $vista = '';
-		endif;
-	?>
 
-	<?php 
-		if($this->Session->check('editingAdmin')):
-			if($this->Session->read('editingAdmin') == 'yes'):
-	?>
-	<header class="nav-down" >
-		<div class="col-md-12" style="margin-top: 4px; ">
-			<?= $this->Html->link('<i class="glyphicon glyphicon-arrow-left"></i>&nbsp; Volver como administrador', 
-							['controller'=>'Administrators',
-							'action'=>$this->Session->read('redirectAdmin')],
-							['class' => 'btn btn-default btnRed ',
-							'style' => 'width: 250px; float: right;',
-							'escape' => false]	
-			);?> 
-		</div>
-	</header>
-	<?php 
-			endif;
-		endif;
-	?>
 
 	<!--Modal foto de perfil-->
 	<div class="modal fade" id="enlargeImageModal" tabindex="-1" role="dialog" aria-labelledby="enlargeImageModal" aria-hidden="true">
@@ -631,14 +617,14 @@
 				</div>
 				<div class="profile-usermenu">
 					<ul class="nav">
-						<li <?= (!empty($this->params['action']) && (($this->params['action']=='companyJobOffer') || ($this->params['action']=='companyJobProfile') || ($this->params['action']=='CompanyJobProfile') || ($this->params['action']=='companyJobContractType') || ($this->params['action']=='CompanyJobContractType') || ($this->params['action']=='companyCandidateProfile') || ($this->params['action']=='CompanyCandidateProfile')  || ($this->params['action']=='companyJobKnowledge') || ($this->params['action']=='viewOfferOnline') || ($this->params['action']=='viewOfferPdf')) )? 'class="active" ' : ''; ?> >  
+						<li <?= (!empty($this->params['action']) && (($this->params['action']=='companyJobOffer') || ($this->params['action']=='companyJobProfile') || ($this->params['action']=='CompanyJobProfile') || ($this->params['action']=='companyJobContractType') || ($this->params['action']=='CompanyJobContractType') || ($this->params['action']=='companyCandidateProfile') || ($this->params['action']=='CompanyCandidateProfile')  || ($this->params['action']=='companyJobKnowledge')) )? 'class="active" ' : ''; ?> >  
 										<?= $this->Html->link('<i class="glyphicon glyphicon-plus"></i> Registar Ofertas', 
 															['controller'=>'Companies',
 															'action' => 'companyJobOffer'],
 															['escape'=> false ]
 										);?>
 						</li>
-						<li <?= (!empty($this->params['action']) && (($this->params['action']=='offerAdmin') || ($this->params['action']=='viewCandidateOffer')))? 'class="active" ' : ''; ?> >  
+						<li <?= (!empty($this->params['action']) && (($this->params['action']=='offerAdmin') || ($this->params['action']=='viewOfferOnline')   || ($this->params['action']=='viewOfferPdf')||  ($this->params['action']=='viewCandidateOffer')))? 'class="active" ' : ''; ?> >  
 										<?= $this->Html->link('<i class="glyphicon glyphicon-folder-open"></i> Administrar Ofertas', 
 															['controller'=>'Companies',
 															'action' => 'offerAdmin','nuevaBusqueda'],
@@ -1292,11 +1278,13 @@
 																					'type'=>'hidden',
 																					'value'=>$company['CompanyInterviewMessage']['id'],
 						)); ?>
+						
+					
 						<?php 	echo $this->Form->input('StudentNotification.company_interview_message', array(
 																			'id' => 'StudentTelephoneNotificationMessage',
 																			'before' => '<div class="col-md-12 ">',
-																			'style' => 'resize: vertical; min-height: 75px;  max-height: 120px; height: 75px;',
-																			'maxlength' => '316',
+																			'style' => 'resize: vertical; min-height: 75px;  max-height: 280px; height: 75px;',
+																			'maxlength' => '632',
 																			'type' => 'textarea',
 																			'value'=>$company['CompanyInterviewMessage']['telehone_interview_message'],
 																			// 'id' => 'taComentario',
@@ -1305,6 +1293,15 @@
 																			'text' => ''),
 																			'placeholder' => 'Mensaje ',
 						));	?>	
+				
+
+						
+					<div class="col-md-12" style="float: right;">
+						<div style="float: right;"><span id="contadorTaComentario" style="color: white">0/632</span><span style="color: white"> caracteres máx.</span></div>
+					</div>
+					
+					
+
 						<center>	
 							<h4 class="modal-title whiteText" id="myModalLabel">Fecha:</h4>						
 							<?php echo $this->Form->input('StudentNotification.company_interview_date', array(				
@@ -1547,6 +1544,8 @@
 		</div>
 	</div>
 </div>
+
+
 		<!-- modal vigencia -->
 	<div class="modal fade" id="myModalVigencia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" width="100%" height="100%">
 		<div class="modal-dialog">
@@ -1556,6 +1555,7 @@
 					<h4 class="modal-title whiteText" id="myModalLabel">Seleccione la fecha de vigencia para la oferta</h4>
 				</div>
 				<div class="modal-body" >
+	
 					<?= $this->Form->create('Company', [
 								'type' => 'file',
 								'class' => 'form-horizontal', 
@@ -1573,12 +1573,13 @@
 								'action' => 'updateCompanyJobProfileExpiration',]); ?>
 
 					<fieldset>
-						<?= $this->Form->input('CompanyJobProfile.id', ['type'=>'hidden']); ?>
+					<?= $this->Form->input('CompanyJobProfile.id', ['type'=>'hidden']); ?>
 							
-						<h4 class="modal-title whiteText" id="myModalLabel">Fecha.</h4>
-						<?= $this->Form->input('CompanyJobProfile.expiration', [
+						<label style="margin-top: 3px;">Vigencia de la oferta</label>
+						<center>
+							<?= $this->Form->input('CompanyJobProfile.expiration', [
 													'class' => 'selectpicker show-tick form-control show-menu-arrow',
-													'data-width'=> '180px',
+													'data-width'=> '160px',
 													'dateFormat' => 'YMD',
 													'separator' => '',
 													'minYear' => date('Y') - 3,
@@ -1593,7 +1594,8 @@
 													'minYear' => date('Y') - 10,
 													'maxYear' => date('Y') - 0]); ?>
 						</div>
-
+				
+					</center>
 					</fieldset>
 				</div>
 				<div class="modal-footer">

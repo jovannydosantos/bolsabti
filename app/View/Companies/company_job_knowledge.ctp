@@ -139,32 +139,9 @@
 			
 		});
 		
-			function init_contadorTa(idtextarea, idcontador,max){
-			$("#"+idtextarea).keyup(function()
-					{
-						updateContadorTa(idtextarea, idcontador,max);
-					});
-			
-			$("#"+idtextarea).change(function()
-			{
-					updateContadorTa(idtextarea, idcontador,max);
-			});
-			
-	}
 
-	function updateContadorTa(idtextarea, idcontador,max){
-			var contador = $("#"+idcontador);
-			var ta =     $("#"+idtextarea);
-			contador.html("0/"+max);
-			
-			contador.html(ta.val().length+"/"+max);
-			if(parseInt(ta.val().length)>max)
-			{
-				ta.val(ta.val().substring(0,max-1));
-				contador.html(max+"/"+max);
-			}
 
-	}
+
 		var mensaje = "\u00BFSeguro que desea eliminar este bloque?";
 		$("body").on("click", ".eliminar", function(e) {
 			var respuesta = confirm(mensaje);
@@ -180,9 +157,6 @@
 				
 		<?php endif; ?>
 	});	
-
-	
-	
 	function restart(index){
 		var textBox = document.getElementById('CompanyJobComputingSkill'+index+'Other');
 		var textLength = textBox.value.length;
@@ -194,7 +168,6 @@
 			$("#contentName"+index).show();
 		}
 	}
-
 	function hideOther(index){
 		
 		var disabilityValue = $('#CompanyJobComputingSkill'+index+'Name').val();
@@ -206,7 +179,6 @@
 			$("#contentOther"+index).show();
 		}
 	}
-	
 	function validateInputs(){
 		var numIdiomas = $(".divIdiomas");			
 		var nivelesIdiomas = 0;
@@ -246,6 +218,7 @@
 		}
 	}
 </script>
+
 <div class="col-md-12" style="margin-top:15px">
 	<?= $this->Form->create('Company', [
 										'class' => 'form-horizontal', 
@@ -381,7 +354,8 @@
 					<p style="color:#588BAD">Conocimientos y habilidades profesionales</p>
 				</blockquote>       
 				<?php echo $this->Form->input('CompanyJobProfile.id'); ?>
-				<?= $this->Form->input('CompanyJobProfile.professional_skill', ['placeholder' => 'Conocimientos y habilidades profesionales','style' => ' margin-top: 15px;','maxlength' => '316']); ?>
+				<?= $this->Form->input('CompanyJobProfile.professional_skill',
+				['placeholder' => 'Conocimientos y habilidades profesionales','style' => ' margin-top: 15px;','maxlength' => '316']); ?>
 				<div class="col-md-12" style="text-align: right;">
 					<span id="contadorTaComentario">0/316</span><span> caracteres máx.</span>
 				</div>

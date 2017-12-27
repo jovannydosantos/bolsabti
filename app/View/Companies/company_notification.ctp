@@ -39,32 +39,6 @@
 			 $('.selectpicker').selectpicker('refresh');
 		});
 
-
-	//<![CDATA[	
-	function init_contadorTa(idtextarea, idcontador,max){
-		$("#"+idtextarea).keyup(function()
-				{
-					updateContadorTa(idtextarea, idcontador,max);
-				});
-		
-		$("#"+idtextarea).change(function()
-		{
-				updateContadorTa(idtextarea, idcontador,max);
-		});
-	}
-	function updateContadorTa(idtextarea, idcontador,max){
-		var contador = $("#"+idcontador);
-		var ta =     $("#"+idtextarea);
-		contador.html("0/"+max);
-		
-		contador.html(ta.val().length+"/"+max);
-		if(parseInt(ta.val().length)>max)
-		{
-			ta.val(ta.val().substring(0,max-1));
-			contador.html(max+"/"+max);
-		}
-	}
-	//]]> 
 	function validate_fechaMayorQue(fechaInicial,fechaFinal){
 		valuesStart=fechaInicial.split("/");
 		valuesEnd=fechaFinal.split("/");
@@ -80,77 +54,17 @@
 		}
 		return 0;
 	}	
-	function saveTelephoneNotification(StudentId){
-		document.getElementById('StudentTelephoneNotificationId').value = StudentId;
-		$('#myModalnotificationTelefonica').modal('show');
-	}		
-	function savePersonalNotification(StudentId){
-		document.getElementById('StudentPersonalNotificationId').value = StudentId;
-		$('#myModalnotificationPersonal').modal('show');
-	}		
-	function saveEmailNotification(email){
-		document.getElementById('StudentEmailTo').value = email;
-		$('#myModalMail').modal('show');
-	}		
-	function saveReportarContratacion(StudentId){
-		document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
-		$('#myModalReportarContratacion').modal('show');
-	}		
 	function nuevaFechaEntrevista(id, company_job_profile_id){
 		document.getElementById('StudentPropuestaId').value = id;
 		document.getElementById('StudentPropuestaCompsnyaJobProfileId').value = company_job_profile_id;
 		$('#myModalnotification').modal('show');
 		return false;
 	}	
-	function saveOffer(StudentId){
-		document.getElementById('CompanySavedStudentStudentId').value = StudentId;
-		$('#myModal1').modal('show');
-	}		
-	function validaFormSaveStudent(){
-		var valor = document.getElementById("CompanySavedStudentCompanyFolderId").value;
-		if (valor == ''){
-			jAlert('Seleccione la carpeta donde se guardará el perfil','Mensaje');
-			document.getElementById("CompanySavedStudentCompanyFolderId").focus;
-			return false;
-		} else {
-			return true;
-		}
-	}		
-	function cambiarContenido(){
-		var archivo = document.getElementById('StudentFile').value;
-		extensiones_permitidas = new Array(".jpg",".pdf");
-		mierror = "";
-
-		if (!archivo) {
-				jAlert('No se ha adjuntado ningún archivo', 'Mensaje');
-				document.getElementById('StudentFile').scrollIntoView();
-				return false;
-		}else{
-				extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
-				permitida = false;
-				for (var i = 0; i < extensiones_permitidas.length; i++) {
-					 if (extensiones_permitidas[i] == extension) {
-					 permitida = true;
-					 break;
-					 }
-				}
-				  
-				if (!permitida) {
-					jAlert("Compruebe la extensión de su archivo. \nSólo se pueden subir archivos con extensiones: " + extensiones_permitidas.join(), 'Mensaje');
-					document.getElementById('StudentFile').scrollIntoView();
-					deleteText();
-					return false;
-				}else{
-					document.getElementById("textFile").innerHTML = document.getElementById('StudentFile').value + '<button id="deleteTextId" onclick="deleteText();" class="btnBlue" style="margin-left: 10px;" >x</button>';
-					return false;
-				}
-		   }
-	}		
-	function deleteText(){
+	/* 	function deleteText(){
 		document.getElementById("textFile").innerHTML = '';
 		document.getElementById('StudentFile').value = '';  
 		return false;
-	}
+	} */
 	function validarFecha(fecha){
 			 //Funcion validarFecha 
 			 //valida fecha en formato aaaa-mm-dd
@@ -167,81 +81,6 @@
 			 return false;
 			 }
 		}		
-	function validateTelephoneNotificationForm(){
-			var f = new Date();
-			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-			var fechaFinal = document.getElementById('StudentTelephoneNotificationDateDay').value	+ "/" +
-									document.getElementById('StudentTelephoneNotificationDateMonth').value	+ "/" +
-									document.getElementById('StudentTelephoneNotificationDateYear').value;
-			
-			
-			selectedIndexDay = document.getElementById("StudentTelephoneNotificationDateDay").selectedIndex;
-			selectedIndexMonth = document.getElementById("StudentTelephoneNotificationDateMonth").selectedIndex;
-			selectedIndexYear = document.getElementById("StudentTelephoneNotificationDateYear").selectedIndex;
-			
-			responseValidateDate = validarFecha(fechaFinal);
-			
-			if(document.getElementById('StudentTelephoneNotificationMessage').value == ''){
-				jAlert('AIngrese el mensaje para la notificación telefónica', 'Mensaje');
-				document.getElementById('StudentTelephoneNotificationMessage').focus();
-				return false;
-			} else
-			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-				jAlert('Seleccione la fecha completa para el día de la entrevista telefónica', 'Mensaje');
-				document.getElementById('StudentTelephoneNotificationDateDay').focus();
-				return false;
-			}else 
-			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-				jAlert('La fecha de la entrevista telefónica no debe ser menor a la actual', 'Mensaje');
-				document.getElementById('StudentTelephoneNotificationDateDay').focus();
-				return false;
-			}else 
-			if(responseValidateDate == false){
-				aljAlert('La fecha de la entrevista telefónica no es válida', 'Mensaje');
-				document.getElementById('StudentTelephoneNotificationDateDay').focus();
-				return false;
-			}else{
-				document.getElementById("FormTelephoneNotification").submit();
-			 }
-		}		
-	function validatePersonalNotificationForm(){
-		var f = new Date();
-		var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-		var fechaFinal = document.getElementById('StudentPersonalNotificationDateDay').value	+ "/" +
-								document.getElementById('StudentPersonalNotificationDateMonth').value	+ "/" +
-								document.getElementById('StudentPersonalNotificationDateYear').value	;
-		
-
-		selectedIndexDay = document.getElementById("StudentPersonalNotificationDateDay").selectedIndex;
-		selectedIndexMonth = document.getElementById("StudentPersonalNotificationDateMonth").selectedIndex;
-		selectedIndexYear = document.getElementById("StudentPersonalNotificationDateYear").selectedIndex;
-		
-		responseValidateDate = validarFecha(fechaFinal);
-		
-		if(document.getElementById('StudentPersonalNotificationMessage').value == ''){
-			jAlert('Ingrese el mensaje para la notificación personal', 'Mensaje');
-			document.getElementById('StudentPersonalNotificationMessage').focus();
-			return false;
-		} else
-		if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-			jAlert('Seleccione la fecha completa para el día de la entrevista personal', 'Mensaje');
-			document.getElementById('StudentPersonalNotificationDateDay').focus();
-			return false;
-		}else 
-		 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-			jAlert('La fecha de la entrevista personal no debe ser menor a la actual', 'Mensaje');
-			document.getElementById('StudentPersonalNotificationDateDay').focus();
-			return false;
-		}else 
-		if(responseValidateDate == false){
-			jAlert('La fecha de la entrevista personal no es válida', 'Mensaje');
-			document.getElementById('StudentPersonalNotificationDateDay').focus();
-			return false;
-		}else{
-			document.getElementById("FormPersonalNotification").submit();
-		 }
-		
-	}		
 	function validateNotificationFormPropuesta(){
 			
 			var f = new Date();
@@ -284,7 +123,7 @@
 			document.getElementById('focusNotificationId'+param).scrollIntoView();
 			jConfirm('¿Realmente desea eliminar la notificación?', 'Confirmación', function(r){
 				if( r ){						
-					$("#deleteNotificationId"+param).click();
+					$("#eliminarNotificacion"+param).click();
 				}
 			});
 		}
@@ -325,30 +164,6 @@
 				document.getElementById("formNotificacionPropuesta").submit();
 			 }
 		}
-	function validarReportarContratacionForm(){
-			var fechaFinal = document.getElementById('StudentReportarContratacionFechaContratacionDay').value	+ "/" +
-									document.getElementById('StudentReportarContratacionFechaContratacionMonth').value	+ "/" +
-									document.getElementById('StudentReportarContratacionFechaContratacionYear').value	;
-			
-			selectedIndexDay = document.getElementById("StudentReportarContratacionFechaContratacionDay").selectedIndex;
-			selectedIndexMonth = document.getElementById("StudentReportarContratacionFechaContratacionMonth").selectedIndex;
-			selectedIndexYear = document.getElementById("StudentReportarContratacionFechaContratacionYear").selectedIndex;
-		 
-			responseValidateDate = validarFecha(fechaFinal);
-			
-			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-				jAlert ('Seleccione la fecha completa para reportar la contratación','Mensaje');
-				document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
-				return false;
-			}else  
-			if(responseValidateDate == false){
-				jAlert ('La fecha para reportar contratación no es válida', 'Mensaje');
-				document.getElementById('StudentReportarContratacionFechaContratacionDay').focus();
-				return false;
-			}else {
-				return true;
-			 }
-	}
 </script>
 
 	<?php 
@@ -496,7 +311,7 @@
 											echo $this->Html->link('Eliminar', ['controller'=>'Companies',
 																				'action'=>'companyNotification',
 																				'?' => ['id' => $candidato['StudentNotification']['id'],'respuestaNotificacion' => 3]],
-																				['id'=>'eliminarNotificacion'.$puesto['id']]); 
+																				['id'=>'eliminarNotificacion'.$candidato['StudentNotification']['id']]); 
 											echo "</div>";
 
 											echo $this->Html->link('<i class="glyphicon glyphicon-eye-open"></i>', ['controller'=>'Companies',
@@ -538,11 +353,11 @@
 																				'onclick' =>"return confirma('Notificacion".$candidato['StudentNotification']['id']."');",
 																				'title'=>'Cancelar contratación','escape' => false]); 
 											
-					echo '<div style="display: none">';
+					echo '<div style="display: none">'; 
 					echo $this->Html->link('<i class="glyphicon glyphicon-thumbs-down"></i>', ['controller'=>'Companies',
 																				'action'=>'companyNotification',
 																				'?' => ['id' => $candidato['StudentNotification']['id'],'respuestaNotificacion' => 3]],
-																				['id'=>'eliminarNotificacion'.$puesto['id']]);  
+																				['id'=>'eliminarNotificacion'.$candidato['StudentNotification']['id']]);  
 					echo "</div>";
 
 						

@@ -20,190 +20,133 @@
 		});
 	
 		//Contador de caracteres para las notificaciones telefónicas 
-		function init_contadorTa(idtextarea, idcontador,max)
-		{
-			$("#"+idtextarea).keyup(function()
-					{
-						updateContadorTa(idtextarea, idcontador,max);
-					});
-			
-			$("#"+idtextarea).change(function()
-			{
-					updateContadorTa(idtextarea, idcontador,max);
-			});
-			
-		}
-
-		function updateContadorTa(idtextarea, idcontador,max)
-		{
-			var contador = $("#"+idcontador);
-			var ta =     $("#"+idtextarea);
-			contador.html("0/"+max);
-			
-			contador.html(ta.val().length+"/"+max);
-			if(parseInt(ta.val().length)>max)
-			{
-				ta.val(ta.val().substring(0,max-1));
-				contador.html(max+"/"+max);
-			}
-
-		}
 	
-
-			function saveTelephoneNotification(StudentId){
-				document.getElementById('StudentTelephoneNotificationId').value = StudentId;
-				$('#myModalnotificationTelefonica').modal('show');
-			}
-			
-			function savePersonalNotification(StudentId){
-				$('.StudentNotificationStudentId').val(StudentId);
-				$('#myModalnotificationPersonal').modal('show');
-			}
-			
-			function saveEmailNotification(email){
-				document.getElementById('StudentEmailTo').value = email;
-				$('#myModalMail').modal('show');
-			}
-			
-			function saveOffer(StudentId){
-				document.getElementById('CompanySavedStudentStudentId').value = StudentId;
-				$('#myModal1').modal('show');
-			}
-			
-			function saveReportarContratacion(StudentId){
-				document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
-				$('#myModalReportarContratacion').modal('show');
-			}
-			
-			function validaFormSaveStudent(){
-				var valor = document.getElementById("CompanySavedStudentStudentFolderId").value;
-				if (valor == ''){
-					alert('Seleccione la carpeta donde se guardará el perfil');
-					document.getElementById("CompanySavedStudentStudentFolderId").focus;
-					return false;
-				} else {
-					return true;
-				}
-			}
-		
-			function cambiarContenido(){
-			
-			var archivo = document.getElementById('StudentFile').value;
-			extensiones_permitidas = new Array(".jpg",".pdf");
-			mierror = "";
-
-			if (!archivo) {
-					alert ('Adjuntar Cédula de Identificación Fiscal');
-					document.getElementById('StudentFile').scrollIntoView();
-					return false;
-			}else{
-					extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
-					permitida = false;
-					for (var i = 0; i < extensiones_permitidas.length; i++) {
-						 if (extensiones_permitidas[i] == extension) {
-						 permitida = true;
-						 break;
-						 }
-					}
-					  
-					if (!permitida) {
-						alert ("Compruebe la extensión de su imagen de RFC a subir. \nSólo se pueden subir imagenes con extensiones: " + extensiones_permitidas.join());
-						document.getElementById('StudentFile').scrollIntoView();
-						deleteText();
-						return false;
-					}else{
-						document.getElementById("textFile").innerHTML = document.getElementById('StudentFile').value + '<button id="deleteTextId" onclick="deleteText();" class="btnBlue" style="margin-left: 10px;" >x</button>';
-						return false;
-					}
-			   }
-			}
-			
-			function deleteText(){
-				document.getElementById("textFile").innerHTML = '';
-				document.getElementById('StudentFile').value = '';  
-				return false;
-			}
-		
-			function validate_fechaMayorQue(fechaInicial,fechaFinal){
-			valuesStart=fechaInicial.split("/");
-            valuesEnd=fechaFinal.split("/");
-
-            // Verificamos que la fecha no sea posterior a la actual
-
-            var dateStart=new Date(valuesStart[2],(valuesStart[1]-1),valuesStart[0]);
-            var dateEnd=new Date(valuesEnd[2],(valuesEnd[1]-1),valuesEnd[0]);
-
-            if(dateStart>dateEnd)
-            {
-                return 1;
-            }
-            return 0;
-        }
-		
-			function validateNotificationForm(){
-			
-			var f = new Date();
-			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-			var fechaFinal = document.getElementById('StudentNotificationCompanyInterviewDateDay').value	+ "/" +
-									document.getElementById('StudentNotificationCompanyInterviewDateMonth').value	+ "/" +
-									document.getElementById('StudentNotificationCompanyInterviewDateYear').value	;
-			
-
-			selectedIndexDay = document.getElementById("StudentNotificationCompanyInterviewDateDay").selectedIndex;
-			selectedIndexMonth = document.getElementById("StudentNotificationCompanyInterviewDateMonth").selectedIndex;
-			selectedIndexYear = document.getElementById("StudentNotificationCompanyInterviewDateYear").selectedIndex;
-		
-			if(document.getElementById('taComentario').value == ''){
-				alert ('Ingrese el mensaje para la notificación telefónica');
-				document.getElementById('taComentario').focus();
-				return false;
-				
-			} else
-			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-				alert ('Seleccione la fecha completa para el día de la entrevista telefónica');
-				document.getElementById('StudentNotificationCompanyInterviewDateDay').focus();
-				return false;
-			}else 
-			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-				alert ('La fecha de la entrevista telefónica no debe ser menor a la actual');
-				document.getElementById('StudentNotificationCompanyInterviewDateDay').focus();
-				return false;
-			}else {
-				document.getElementById("CompanyCompanyTelephoneNotificationForm").submit();
-			 }
+	//r
+		function saveTelephoneNotification(StudentId){
+			document.getElementById('StudentTelephoneNotificationId').value = StudentId;
+			$('#myModalnotificationTelefonica').modal('show');
 		}
+		function savePersonalNotification(StudentId){
+			$('.StudentNotificationStudentId').val(StudentId);
+			$('#myModalnotificationPersonal').modal('show');
+		}
+		function saveEmailNotification(email){
+			document.getElementById('StudentEmailTo').value = email;
+			$('#myModalMail').modal('show');
+		}	
+		function saveReportarContratacion(StudentId){
+			document.getElementById('StudentReportarContratacionStudentId').value = StudentId;
+			$('#myModalReportarContratacion').modal('show');
+		}		
+		function validaFormSaveStudent(){
+			var valor = document.getElementById("CompanySavedStudentStudentFolderId").value;
+			if (valor == ''){
+				alert('Seleccione la carpeta donde se guardará el perfil');
+				document.getElementById("CompanySavedStudentStudentFolderId").focus;
+				return false;
+			} else {
+				return true;
+			}
+		}
+		function cambiarContenido(){
 		
-			function validateNotificationPersonalForm (){
-			
-			var f = new Date();
-			var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
-			var fechaFinal = document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').value	+ "/" +
-									document.getElementById('StudentPersonalNotificationCompanyInterviewDateMonth').value	+ "/" +
-									document.getElementById('StudentPersonalNotificationCompanyInterviewDateYear').value	;
-			
+		var archivo = document.getElementById('StudentFile').value;
+		extensiones_permitidas = new Array(".jpg",".pdf");
+		mierror = "";
 
-			selectedIndexDay = document.getElementById("StudentPersonalNotificationCompanyInterviewDateDay").selectedIndex;
-			selectedIndexMonth = document.getElementById("StudentPersonalNotificationCompanyInterviewDateMonth").selectedIndex;
-			selectedIndexYear = document.getElementById("StudentPersonalNotificationCompanyInterviewDateYear").selectedIndex;
+		if (!archivo) {
+				alert ('Adjuntar Cédula de Identificación Fiscal');
+				document.getElementById('StudentFile').scrollIntoView();
+				return false;
+		}else{
+				extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
+				permitida = false;
+				for (var i = 0; i < extensiones_permitidas.length; i++) {
+					 if (extensiones_permitidas[i] == extension) {
+					 permitida = true;
+					 break;
+					 }
+				}
+				  
+				if (!permitida) {
+					alert ("Compruebe la extensión de su imagen de RFC a subir. \nSólo se pueden subir imagenes con extensiones: " + extensiones_permitidas.join());
+					document.getElementById('StudentFile').scrollIntoView();
+					deleteText();
+					return false;
+				}else{
+					document.getElementById("textFile").innerHTML = document.getElementById('StudentFile').value + '<button id="deleteTextId" onclick="deleteText();" class="btnBlue" style="margin-left: 10px;" >x</button>';
+					return false;
+				}
+		   }
+		}		
+		function deleteText(){
+			document.getElementById("textFile").innerHTML = '';
+			document.getElementById('StudentFile').value = '';  
+			return false;
+		}	
+		function validateNotificationForm(){
 		
-			if(document.getElementById('taComentario2').value == ''){
-				alert ('Ingrese el mensaje para la notificación telefónica');
-				document.getElementById('taComentario2').focus();
-				return false;
-			} else
-			if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
-				alert ('Seleccione la fecha completa para el día de la entrevista personal');
-				document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').focus();
-				return false;
-			}else 
-			 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
-				alert ('La fecha de la entrevista personal no debe ser menor a la actual');
-				document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').focus();
-				return false;
-			}else {
-				document.getElementById("CompanyCompanyPersonalNotificationForm").submit();
-			 }
+		var f = new Date();
+		var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
+		var fechaFinal = document.getElementById('StudentNotificationCompanyInterviewDateDay').value	+ "/" +
+								document.getElementById('StudentNotificationCompanyInterviewDateMonth').value	+ "/" +
+								document.getElementById('StudentNotificationCompanyInterviewDateYear').value	;
+		
+
+		selectedIndexDay = document.getElementById("StudentNotificationCompanyInterviewDateDay").selectedIndex;
+		selectedIndexMonth = document.getElementById("StudentNotificationCompanyInterviewDateMonth").selectedIndex;
+		selectedIndexYear = document.getElementById("StudentNotificationCompanyInterviewDateYear").selectedIndex;
+	
+		if(document.getElementById('taComentario').value == ''){
+			alert ('Ingrese el mensaje para la notificación telefónica');
+			document.getElementById('taComentario').focus();
+			return false;
 			
+		} else
+		if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
+			alert ('Seleccione la fecha completa para el día de la entrevista telefónica');
+			document.getElementById('StudentNotificationCompanyInterviewDateDay').focus();
+			return false;
+		}else 
+		 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
+			alert ('La fecha de la entrevista telefónica no debe ser menor a la actual');
+			document.getElementById('StudentNotificationCompanyInterviewDateDay').focus();
+			return false;
+		}else {
+			document.getElementById("CompanyCompanyTelephoneNotificationForm").submit();
+		 }
+	}	
+		function validateNotificationPersonalForm (){
+		
+		var f = new Date();
+		var fechaInicial = f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear();
+		var fechaFinal = document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').value	+ "/" +
+								document.getElementById('StudentPersonalNotificationCompanyInterviewDateMonth').value	+ "/" +
+								document.getElementById('StudentPersonalNotificationCompanyInterviewDateYear').value	;
+		
+
+		selectedIndexDay = document.getElementById("StudentPersonalNotificationCompanyInterviewDateDay").selectedIndex;
+		selectedIndexMonth = document.getElementById("StudentPersonalNotificationCompanyInterviewDateMonth").selectedIndex;
+		selectedIndexYear = document.getElementById("StudentPersonalNotificationCompanyInterviewDateYear").selectedIndex;
+	
+		if(document.getElementById('taComentario2').value == ''){
+			alert ('Ingrese el mensaje para la notificación telefónica');
+			document.getElementById('taComentario2').focus();
+			return false;
+		} else
+		if((selectedIndexDay==0) || (selectedIndexMonth==0) ||(selectedIndexYear==0)){
+			alert ('Seleccione la fecha completa para el día de la entrevista personal');
+			document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').focus();
+			return false;
+		}else 
+		 if(validate_fechaMayorQue(fechaInicial,fechaFinal)){
+			alert ('La fecha de la entrevista personal no debe ser menor a la actual');
+			document.getElementById('StudentPersonalNotificationCompanyInterviewDateDay').focus();
+			return false;
+		}else {
+			document.getElementById("CompanyCompanyPersonalNotificationForm").submit();
+		 }
+		
 		}
 
 	</script>

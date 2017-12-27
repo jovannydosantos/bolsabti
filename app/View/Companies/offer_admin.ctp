@@ -3,21 +3,22 @@
 ?>
 <script>
 	$(document).ready(function() {
-			var helpText = [
-							"Guarda y nombra las consultas de ofertas en carpetas para una mejor organización. Las carpetas creadas se ordenarán alfabéticamente.",					
-							];
-			 
-			$('.form-group').each(function(index, element) {
-				$(this).find(".cambia").attr("id", index);
-				$(this).find('#'+index).attr("data-original-title", helpText[index]);
-			});
-			
-			 $('#CompanyJobProfileExpirationYear').prepend('<option value="" selected>AAAA</option>');
-			 $('#CompanyJobProfileExpirationMonth').prepend('<option value="" selected>MM</option>');
-			 $('#CompanyJobProfileExpirationDay').prepend('<option value="" selected>DD</option>');
+			$('#CompanyJobProfileExpirationYear').prepend('<option value="" selected>AAAA</option>');
+			$('#CompanyJobProfileExpirationMonth').prepend('<option value="" selected>MM</option>');
+			$('#CompanyJobProfileExpirationDay').prepend('<option value="" selected>DD</option>');
 			 
 			typeSearch();
+			$('.selectpicker').selectpicker('refresh');
 		});	
+			function sendLimit(){
+			 selectedIndex = document.getElementById("limit").selectedIndex;
+			 if(selectedIndex == 0){
+				return false;
+			 } else {
+				document.getElementById('CompanyLimite').value = document.getElementById('limit').value;
+				document.getElementById("CompanyOfferAdminForm").submit();
+			 }
+		}
 	function validateEmpty(){
 			selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
 			var palabraBuscar = document.getElementById('CompanyBuscar').value ;
@@ -217,10 +218,10 @@
 			echo '<div class="col-md-12" style="margin-top: 15px;"> <p style="font-size: 22px;margin-left: -20px;">Sin ofertas</p></div>';
 		else:
 ?>
-	
-				
+			
 <div class="col-md-12 scrollbar" id="style-2" style="margin-top: 30px">
 	<?= $this->element('ofertascompanies'); ?>
+	<?= $this->element('paginacionStudentAdmin'); ?>
 </div>					
 
 <?php 

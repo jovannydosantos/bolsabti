@@ -35,7 +35,6 @@
 
 	<?= $this->Form->input('Company.id'); ?>
 
-	
 	<?php $options = array('s' => 'Si', 'n' => 'No');
 		echo $this->Form->input('Company.disable', ['type' => 'select','default'=> 0,'empty' => '¿Está seguro que desea eliminar su registro?','options' => $options,'onchange' => 'desabilityOptions()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
 	?>
@@ -52,31 +51,30 @@
 			$cont++;
 		?>	
 
-			<?= $this->Form->input('CompanyAnswer.'.$cont.'.question_id', ['type' => 'hidden','value' => $pregunta['Question']['id'],'placeholder' => 'Respuesta...']); ?>
+		<?= $this->Form->input('CompanyAnswer.'.$cont.'.question_id', ['type' => 'hidden','value' => $pregunta['Question']['id'],'placeholder' => 'Respuesta...']); ?>
 
-			<?php
-				if($pregunta['Question']['question_type'] == 1):
+		<?php
+			if($pregunta['Question']['question_type'] == 1):
 
-					echo $this->Form->input('CompanyAnswer.'.$cont.'.answer', ['type' => 'textarea','placeholder' => 'Comentario','text' => '¿'.$pregunta['Question']['question'].'?','maxlength' => '632','onkeypress'=> 'caracteresCont("CompanyAnswer2Answer", "contadorTaComentario",632)']);
+				echo $this->Form->input('CompanyAnswer.'.$cont.'.answer', ['type' => 'textarea','placeholder' => 'Comentario','text' => '¿'.$pregunta['Question']['question'].'?','maxlength' => '632','onkeypress'=> 'caracteresCont("CompanyAnswer2Answer", "contadorTaComentario",632)']);
+
+			else:
+				if($pregunta['Question']['question_type'] == 2):
+
+					echo $this->Form->input('CompanyAnswer.'.$cont.'.answer', ['type' => 'textarea','placeholder' => 'Comentario','text' => '2.- '.$pregunta['Question']['question'],'maxlength' => '632','onkeypress'=> 'caracteresCont("CompanyAnswer2Answer", "contadorTaComentario",632)']);
 
 				else:
-					if($pregunta['Question']['question_type'] == 2):
+					if($pregunta['Question']['question_type'] == 3):
 
-						echo $this->Form->input('CompanyAnswer.'.$cont.'.answer', ['type' => 'textarea','placeholder' => 'Comentario','text' => '2.- '.$pregunta['Question']['question'],'maxlength' => '632','onkeypress'=> 'caracteresCont("CompanyAnswer2Answer", "contadorTaComentario",632)']);
+							echo $this->Form->input('CompanyAnswer.'.$cont.'.answer', ['type' => 'select','options' => $MotivosCancelacion,'default'=>'0', 'empty' => 'Motivo','text' => '1.- '.$pregunta['Question']['question'],'class' => 'selectpicker show-tick form-control show-menu-arrow',]);
 
-					else:
-						if($pregunta['Question']['question_type'] == 3):
-
-								echo $this->Form->input('CompanyAnswer.'.$cont.'.answer', ['type' => 'select','options' => $MotivosCancelacion,'default'=>'0', 'empty' => 'Motivo','text' => '1.- '.$pregunta['Question']['question'],'class' => 'selectpicker show-tick form-control show-menu-arrow',]);
-
-						endif;
 					endif;
 				endif;
-			?>
+			endif;
+		?>
 								
-				<?php  endforeach; ?>
+		<?php  endforeach; ?>
 				
-	
 		<div style="text-align: right;">
 			<span id="contadorTaComentario">0/632</span><span> caracteres máx.</span>
 		</div>

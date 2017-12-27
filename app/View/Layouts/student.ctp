@@ -971,7 +971,7 @@
 												'minYear' => date('Y') - 10,
 												'maxYear' => date('Y') - 0,
 												'after' => '<div class="col-md-3 text-center" style="margin-top: 5px;" id="idAge"></div></div>',
-												'onchange'=> 'ageCalculator()']); ?>
+												]); ?>
 					</fieldset>
 
 					<div class="modal-footer">

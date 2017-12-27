@@ -2,8 +2,6 @@
 <?php 
 	foreach($ofertas as $k => $oferta):
 ?>
-<script>
-</script>
 
 <div class="col-md-12 sombra" style="border: 1px solid #1a75bb; margin-bottom: 15px; background: url('/bolsabti/img/satinweave.png');">    
      <!-- columna logo -->
@@ -160,10 +158,12 @@
 									'data-placement'=>'left',
 									'class' => 'icono',
 									'url' => ['controller'=>'Companies',
-											'action'=>'studentReport',
+											'action'=>'viewCandidateOffer',
 											'?' => ['company_id' => $oferta['Company']['id'],
+													'editingAdmin' => 'yes',
 													'id' => $oferta['CompanyJobProfile']['id'],
-													'editingAdmin' => 'yes']]]);?>
+													'editar' => 1,
+													'nuevaBusqueda' => 'nuevaBusqueda']]]);?>
 				<!--Estado Oferta -->
 				<?php 
 					if($oferta['CompanyJobContractType']['status'] == null):

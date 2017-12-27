@@ -1,8 +1,7 @@
 <?php	
 	$this->layout = 'company'; 
 ?>	
-
-	
+ 
 	<script>
 	$(document).ready(function() {
 			var helpText = [
@@ -195,7 +194,7 @@
 			mierror = "";
 
 			if (!archivo) {
-					jAlert('Adjuntar Cédula de Identificación Fiscal', 'Mensaje');
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Adjuntar Cédula de Identificación Fiscal'});
 					document.getElementById('CompanyFile').scrollIntoView();
 					return false;
 			}else{
@@ -224,14 +223,14 @@
 		function condiciones(){
 			 
 			if(document.getElementById('CompanyFile').value == ''){
-				jAlert('Adjuntar Cédula de Identificación Fiscal', 'Mensaje');
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'Adjuntar Cédula de Identificación Fiscal'});
 				document.getElementById('AdjuntarRfcId').scrollIntoView();
 				return false;
 			}
 			else if( $('#terminos').is(':checked') ) {
 				//return true;
 			} else {
-				jAlert('No ha aceptado términos y condiciones: Aún no ha aceptado los  términos  y condiciones del SISBUT. Los puede consultar en la liga en azul: “Leer Aviso de Privacidad”', 'Mensaje');
+				$.alert({ title: '!Aviso!',type: 'blue',content: 'No ha aceptado términos y condiciones: Aún no ha aceptado los  términos  y condiciones del SISBUT. Los puede consultar en la liga en azul: “Leer Aviso de Privacidad”'});
 				document.getElementById('terminos').focus();
 				return false;
 			}
@@ -262,7 +261,7 @@
 			mierror = "";
 			  
 			if (!archivo) {
-					alert ('Selecciona el logo de la empresa');
+					$.alert({ title: '!Aviso!',type: 'blue',content:'Selecciona el logo de la empresa'});
 					document.getElementById('CompanyFilename').scrollIntoView();
 					return false;
 			}else{
@@ -361,7 +360,7 @@
         <p style="color: #588BAD;">Actualizar datos de registro.</p>
     </blockquote>
 	
-	 <div class="col-md-12" >
+	<div class="col-md-12" >
     	<?= $this->Form->create('Company', [
 											'class' => 'form-horizontal', 
 											'role' => 'form',
@@ -479,9 +478,6 @@
 			<?= $this->Form->input('Company.username', ['readonly' => 'readonly','placeholder' => 'Usuario creado automáticamente (RFC)']); ?>
 
 		</div>
-		
-
-		
 		</fieldset>
 	</div>	
 	<div class="col-md-5 col-md-offset-4 text-center" style="margin-top: 15px;">

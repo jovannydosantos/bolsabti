@@ -1,8 +1,8 @@
 <?php 
 	$this->layout = 'company'; 
 ?>
-	<script>
-		$(document).ready(function() {
+<script>
+	$(document).ready(function() {
 			var helpText = [
 							"Si el responsable de la oferta es el mismo que el contacto dado de alta en el registro, seleccione Si y automáticamente se llenarán los campos con la información proporcionada. En caso de seleccionar No le pedimos ingresar los datos para seguir con el registro de la oferta.", 
 							"", 
@@ -33,50 +33,14 @@
 	
 	function copyEmail(){
 		document.getElementById("CompanyJobOfferCompanyEmailConfirm").value = document.getElementById("CompanyJobOfferCompanyEmail").value ;
-	}
-	
-		
+	}	
 	function desabilityOptions(){
 		if(document.getElementById("CompanyJobOfferSameContact").value == 'n') {  
 			$('#mismoContactoId').show();
 		} else {
 			$('#mismoContactoId').hide();
 		}
-	}
-	
-	
-	
-	function vaciarCajas(){
-		$('#CompanyJobOfferResponsibleName').val('');
-		$('#CompanyJobOfferResponsibleLastName').val('');
-		$('#CompanyJobOfferResponsibleSecondLastName').val('');
-		$('#CompanyJobOfferResponsiblePosition').val('');
-		$('#CompanyJobOfferResponsibleLongDistanceCod').val('');
-		$('#CompanyJobOfferResponsibleTelephone').val('');
-		$('#CompanyJobOfferResponsiblePhoneExtension').val('');
-		$('#CompanyJobOfferResponsibleLongDistanceCodCellPhone').val('');
-		$('#CompanyJobOfferResponsibleCellPhone').val('');
-		$('#CompanyJobOfferCompanyEmail').val('');
-		$('#CompanyJobOfferCompanyEmailConfirm').val('');
-		
-		
-			
-			if(document.getElementById("CompanyJobOfferSameContactS").value == 's') {  
-				  var disabilityValue = 's';
-			} else if(document.getElementById("CompanyJobOfferSameContactS").value == 'n'){
-				 var disabilityValue = 'n';   
-			}else{
-				var disabilityValue = '';  
-			}
-			
-			if (disabilityValue == 'n'){
-				$("#mismoContactoId").show();
-			} else {
-				$("#mismoContactoId").hide();
-			}	
-	}
-	
-	
+	}		
 	function desabilityconfidencial(){
 		if(document.getElementById("CompanyJobOfferConfidentialJobOffer").value == 'n') {  
 			$('#bloque1').show();
@@ -85,9 +49,6 @@
 			$('#bloque1').hide();
 		}
 	}
-	
-
-	
 	function validateInputs(){
 				
 		if(document.getElementById("CompanyJobOfferSameContact").value == 's') {  
@@ -99,55 +60,53 @@
 			
 		}
 		
-			
-			if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleName').value == '')){
-				//jAlert('', 'Mensaje');
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el nombre'});
-				document.getElementById('CompanyJobOfferResponsibleName').focus();
-				return false;
-			}
-			else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleLastName').value == '')){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el apellido paterno'});
-				document.getElementById('CompanyJobOfferResponsibleLastName').focus();
-				return false;
-			}
-			else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsiblePosition').value == '')){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el cargo'});
-				document.getElementById('CompanyJobOfferResponsiblePosition').focus();
-				return false;
-			}
-			else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleLongDistanceCod').value == '')){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese la lada'});
-				document.getElementById('CompanyJobOfferResponsibleLongDistanceCod').focus();
-				return false;
-			}
-			else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleTelephone').value == '')){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el teléfono de contacto'});
-				document.getElementById('CompanyJobOfferResponsibleTelephone').focus();
-				return false;
-			}
-			else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferCompanyEmail').value == '')){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el correo institucional'});
-				document.getElementById('CompanyJobOfferCompanyEmail').focus();
-				return false;
-			}
-			else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferCompanyEmailConfirm').value == '')){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese la confirmación del correo institucional'});
-				document.getElementById('CompanyJobOfferCompanyEmailConfirm').focus();
-				return false;
-			}
-			else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferCompanyEmail').value != document.getElementById('CompanyJobOfferCompanyEmailConfirm').value)){
-				$.alert({ title: '!Aviso!',type: 'blue',content: 'Los correos electrónicos no coinciden'});
-				document.getElementById('CompanyJobOfferCompanyEmail').focus();
-				return false;
-			}
-			else {
-				return true;
-			}			
+		if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleName').value == '')){
+			//jAlert('', 'Mensaje');
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el nombre'});
+			document.getElementById('CompanyJobOfferResponsibleName').focus();
+			return false;
+		}
+		else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleLastName').value == '')){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el apellido paterno'});
+			document.getElementById('CompanyJobOfferResponsibleLastName').focus();
+			return false;
+		}
+		else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsiblePosition').value == '')){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el cargo'});
+			document.getElementById('CompanyJobOfferResponsiblePosition').focus();
+			return false;
+		}
+		else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleLongDistanceCod').value == '')){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese la lada'});
+			document.getElementById('CompanyJobOfferResponsibleLongDistanceCod').focus();
+			return false;
+		}
+		else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferResponsibleTelephone').value == '')){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el teléfono de contacto'});
+			document.getElementById('CompanyJobOfferResponsibleTelephone').focus();
+			return false;
+		}
+		else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferCompanyEmail').value == '')){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese el correo institucional'});
+			document.getElementById('CompanyJobOfferCompanyEmail').focus();
+			return false;
+		}
+		else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferCompanyEmailConfirm').value == '')){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Ingrese la confirmación del correo institucional'});
+			document.getElementById('CompanyJobOfferCompanyEmailConfirm').focus();
+			return false;
+		}
+		else if ((value1 == 'n') && (document.getElementById('CompanyJobOfferCompanyEmail').value != document.getElementById('CompanyJobOfferCompanyEmailConfirm').value)){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Los correos electrónicos no coinciden'});
+			document.getElementById('CompanyJobOfferCompanyEmail').focus();
+			return false;
+		}
+		else {
+			return true;
+		}			
 	}
-	</script>
+</script>
 
-	
 <div class="col-md-12">
 	<?= $this->Form->create('Company', [
 										'class' => 'form-horizontal', 
@@ -175,7 +134,6 @@
 					echo $this->Form->input('CompanyJobOffer.same_contact', ['type' => 'select','default'=> 0,'empty' => '¿Son los mismos datos del contacto de registro?','options' => $options,'onchange' => 'desabilityOptions()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
 			?>
 			</div>
-	
 			<div id="mismoContactoId" style="display:none">
 				<div class="col-md-12">
 					<?= $this->Form->input('CompanyJobOffer.responsible_name', ['placeholder' => 'Nombre']); ?>
@@ -212,8 +170,6 @@
 				</div>
 			</div>
 		</div>
-	
-
 		<div class="col-md-6">
 			<div class="col-md-12">
 				<?php $options = array('s' => 'Si', 'n' => 'No');
@@ -230,21 +186,17 @@
 					echo $this->Form->input('CompanyJobOffer.show_details_responsible', ['type' => 'select','default'=> 0,'empty' => '¿Mostrar datos del reponsable de la oferta?','options' => $options,'class' => 'selectpicker show-tick form-control show-menu-arrow']);
 				?>
 			</div>	
-
 		</div>	
-
 	</fieldset>	
 </div>
 	
-	<div class="col-md-12 text-center">
-		<?= $this->Form->button('<span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar',['type'=>'submit','class' => 'btn btn-primary btn-bti','escape' => false]);?>
-
-		<?= $this->Form->end(); ?>
-
-		<!-- <?= $this->Html->link('Continuar&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>',
-														['controller'=>'Companies',
-														'action'=>'companyJobProfile',1],
-														['class' => 'btn btn-default',
-														'escape' => false]); ?>  -->
-	</div>
+<div class="col-md-12 text-center">
+	<?= $this->Form->button('<span class="glyphicon glyphicon-floppy-disk"></span>&nbsp; Guardar',['type'=>'submit','class' => 'btn btn-primary btn-bti','escape' => false]);?>
+	<?= $this->Form->end(); ?>
+	<!-- <?= $this->Html->link('Continuar&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>',
+													['controller'=>'Companies',
+													'action'=>'companyJobProfile',1],
+													['class' => 'btn btn-default',
+													'escape' => false]); ?>  -->
+</div>
 	

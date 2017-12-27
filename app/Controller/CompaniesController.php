@@ -1270,6 +1270,222 @@
 		}
 		
 		public function searchCandidate($newSearch = null){
+			// $this->Administrator->recursive = 0;
+			$this->Company->recursive = 2;
+			$this->CompanyJobProfile->recursive = 0;
+			$this->set('company', $this->Company->findById($this->Session->read('company_id')));
+				$this->folder();
+			$this->salary();
+			$this->totalDescargas();
+			// $administrator = $this->Administrator->findById($this->Auth->user('id'));
+			// $this->set('administrator', $administrator);
+			$this->Student->recursive = 3;
+
+			$this->Session->write('redirect', 'searchCandidate');
+					// Enlista los perfiles con un tipo de notificación
+				$entrevistasTelefonicas = $this->StudentNotification->find('all',
+												array(
+													// 'fields' => array('StudentNotification.id', 'StudentNotification.student_id', 'StudentNotification.company_interview_date'),
+													'conditions' => array(
+																		'StudentNotification.company_id' => $this->Session->read('company_id'),
+																		'StudentNotification.interview_type' => 1,
+																		),
+													'order' => array('StudentNotification.id ASC')
+												)
+											);
+				$this->set( compact ('entrevistasTelefonicas') );
+				
+					$entrevistasPersonales = $this->StudentNotification->find('all',
+													array(
+														// 'fields' => array('StudentNotification.id', 'StudentNotification.student_id'),
+														'conditions' => array(
+																			'StudentNotification.company_id' => $this->Session->read('company_id'),
+																			'StudentNotification.interview_type' => 2,
+																			),
+														'order' => array('StudentNotification.id ASC')
+													)
+												);
+				$this->set( compact ('entrevistasPersonales') );
+			
+			$SugerenciasAdmin = '';	
+			if($newSearch == 'nuevaBusqueda'):
+				$this->Session->delete('limit');
+				$this->Session->delete('palabraBuscada');
+				$this->Session->delete('tipoBusqueda');
+				$this->Session->delete('orden');
+				$this->Session->delete('page');
+			endif;
+
+			if(isset($this->params['named']['page'])):
+				$page = $this->params['named']['page'];
+				$this->Session->write('page', '/page:'.$page);
+			else:
+				$this->Session->write('page','');
+				$page = '';
+			endif;
+			
+			if($this->request->query('orden') <> ''):
+				$orden = ' StudentLastUpdate.modified '.$this->request->query('orden');
+				$this->Session->write('orden', $this->request->query('orden'));
+			else:	
+				$orden = ' StudentProfile.name DESC ';
+			endif;
+			
+			if(isset($this->request->data['Company']['limit']) and ($this->request->data['Company']['limit'] <> '')):
+				$this->Session->write('limiteAdmin', $this->request->data['Company']['limit']);
+				$limite = $this->request->data['Company']['limit'];
+			else:
+				if(($this->Session->read('limiteAdmin')) <> ''):
+					$limite = $this->Session->read('limiteAdmin');
+				else:
+					$limite = 5; //default limit
+				endif;
+			endif;
+				if($this->request->query('intoFolder') <> ''):
+				$intoFolder = $this->request->query('intoFolder');
+				$this->Session->write('intoFolder', $this->request->query('intoFolder'));
+			else:
+				if($this->Session->read('intoFolder') <> ''):
+					$intoFolder = $this->Session->read('intoFolder');
+				else:
+					$intoFolder = '';
+				endif;
+			endif;
+			
+			
+			//Si llega el id del folder se agrega  a los parametros de la búsqueda
+			if($intoFolder<>''):
+				$folderExist = $this->CompanyFolder->find('count', array(
+																	'conditions' => array (
+																							'CompanyFolder.id' => $intoFolder,	
+																							'CompanyFolder.company_id' => $this->Session->read('company_id'),	
+																							)
+																	)
+														);
+				if($folderExist>0):
+				
+					$forGuardadas['conditions'][] = array('CompanySavedStudent.company_folder_id' => $intoFolder);
+					
+					$ofertasGuardadas = $this->CompanySavedStudent->find('all', array(
+																			'conditions' => array(
+																								$forGuardadas['conditions']
+																			)
+					));
+					
+					$guardadas['conditions']['OR'] = array("Student.id" => Set::extract("/CompanySavedStudent/student_id", $ofertasGuardadas));
+					
+					foreach($guardadas['conditions']['OR']['Student.id'] as $soloGuardada){
+							$conditionsConcatenated['conditions']['OR'][] =  array(
+																					'Student.id' => array ($soloGuardada)
+																					);  
+		
+					}
+					$this->set('intoFolder', $intoFolder);
+				else:
+					// Elimina la sessión del folder seleccionado
+					$this->Session->delete('intoFolder');
+					$this->set('intoFolder', '');
+					
+				endif;
+				
+					//Si no hay alumnos relacionados a la carpeta se deja vacio
+					if(empty($conditionsConcatenated['conditions']['OR'])):
+						$conditionsConcatenated['conditions']['OR'][] =  array('Student.id' => '' ); 
+					endif;
+			else:
+				$conditionsConcatenated['conditions']['OR'][] = array('Student.id <> ' => '' ); 
+				$this->set('intoFolder', '');
+			endif;
+			if($this->request->query('tipoBusqueda') <> ''):
+				$tipoBusqueda = $this->request->query('tipoBusqueda');
+				$this->Session->write('tipoBusqueda', $this->request->query('tipoBusqueda'));
+			else:
+				if(isset($this->request->data['Company']['criterio']) and ($this->request->data['Company']['criterio'] <> '')):
+					$this->Session->write('tipoBusqueda', $this->request->data['Company']['criterio']);
+					$tipoBusqueda = $this->request->data['Company']['criterio'];
+				else:
+					if(($this->Session->read('tipoBusqueda')) <> ''):
+						$tipoBusqueda = $this->Session->read('tipoBusqueda');
+					else:
+						$tipoBusqueda = 0; //Búsqueda default equivalente a mostrar todos las ofertas guardadas, postulados o ambos
+					endif;
+				endif;
+			endif;
+			
+			if(isset($this->request->data['Company']['Buscar']) and ($this->request->data['Company']['Buscar'] <> '')):
+				$this->Session->write('palabraBuscada', $this->request->data['Company']['Buscar']);
+				$palabraBuscada  = $this->request->data['Company']['Buscar'];
+			else:
+				if(($this->Session->read('palabraBuscada')) <> ''):
+					$palabraBuscada  = $this->Session->read('palabraBuscada');
+				else:
+					$palabraBuscada = '';
+				endif;
+			endif;
+	
+			if($tipoBusqueda == 1):
+						$this->set('tipoDescarga', 'Por Nombre(s): '.$palabraBuscada);
+						// $criterio[] = array('StudentProfile.name LIKE' => '%'. $palabraBuscada . '%');
+						$claves = explode(" ", $palabraBuscada);
+						$indice = 0;
+						foreach ($claves as $clave) {
+							if(strlen($clave)>2):
+								$criterio[$indice]['OR'][] = array('StudentProfile.name LIKE' => "%$clave%");
+								$criterio[$indice]['OR'][] = array('StudentProfile.last_name LIKE' => "%$clave%");
+								$criterio[$indice]['OR'][] = array('StudentProfile.second_last_name LIKE' => "%$clave%");
+						endif;
+							$indice++;
+						}
+			else:
+				if($tipoBusqueda == 2):
+						$criterio[] = array('Student.email LIKE' => '%'. $palabraBuscada . '%');
+				else:
+					if($tipoBusqueda == 3):
+							$criterio[] = array('Student.id'  => intval($palabraBuscada));
+						else:
+							$criterio[] = '';
+					endif;
+				endif;
+			endif;
+			
+			if(!isset($criterio)):
+				$criterio = array();
+			endif;
+			
+		
+			
+			// identifica si se descarga o no para poner un limite o no
+			if(($newSearch==null) OR ($newSearch=='nuevaBusqueda')):
+				$this->paginate = array(
+											'conditions' => array(
+																'OR' => array(
+																				$criterio
+																			),
+																'AND' => array(
+																		$conditionsConcatenated['conditions'],
+																		'Student.block' => 0,
+																		'Student.status' => 1,
+																		$SugerenciasAdmin
+																		
+																			)
+																),
+											'limit' => $limite,
+											'order' => $orden,
+											);
+			else:
+				$this->paginate = array(
+											'conditions' => array(
+																'OR' => array(
+																				$criterio
+																			)
+																),
+											);
+			endif;
+				$this->set('candidatos', $candidatos = $this->paginate('Student'));
+				
+		}
+		
+		public function searchCandidate1($newSearch = null){
 			$this->Company->recursive = 2;
 			$this->CompanyJobProfile->recursive = 0;
 			$this->set('company', $this->Company->findById($this->Session->read('company_id')));
@@ -1447,9 +1663,11 @@
 				$this->set('intoFolder', '');
 			endif;
 
+			
+			
 			if($this->request->query('tipoBusqueda') <> ''):
 				$tipoBusqueda = $this->request->query('tipoBusqueda');
-				$this->Session->write('tipoBusqueda', $this->request->query('tipoBusqueda'));
+				$this->Session->write('tipoBusqueda', $tipoBusqueda);
 			else:
 				if(isset($this->request->data['Company']['criterio']) and ($this->request->data['Company']['criterio'] <> '')):
 					$this->Session->write('tipoBusqueda', $this->request->data['Company']['criterio']);
@@ -1458,10 +1676,12 @@
 					if(($this->Session->read('tipoBusqueda')) <> ''):
 						$tipoBusqueda = $this->Session->read('tipoBusqueda');
 					else:
-						$tipoBusqueda = 4; //Búsqueda default equivalente a mostrar todos las ofertas guardadas, postulados o ambos
+						$tipoBusqueda = 0; //Búsqueda default equivalente a mostrar todos las ofertas guardadas, postulados o ambos
 					endif;
 				endif;
 			endif;
+			
+
 			
 			if(isset($this->request->data['Company']['Buscar']) and ($this->request->data['Company']['Buscar'] <> '')):
 				$this->Session->write('palabraBuscada', $this->request->data['Company']['Buscar']);
@@ -3616,8 +3836,10 @@
 							$reporteActualizado = 1;
 						endif;
 				endif;
-				
+
 				if(($tipoNotificacion==3) OR (($tipoNotificacion==4) AND (($notification['StudentNotification']['step_process']==2) OR ($notification['StudentNotification']['step_process']==3)))):
+					$this->Report->recursive = -1;
+
 					$reporteEnviado = $this->Report->find('all', array(
 															'conditions' => array (
 																					'company_job_profile_id' => $notification['StudentNotification']['company_job_profile_id'],
@@ -3627,7 +3849,7 @@
 																				)
 																	)
 														);
-													
+					
 					$reporteStudent = $this->Report->find('all', array(
 															'conditions' => array (
 																					'company_job_profile_id' => $notification['StudentNotification']['company_job_profile_id'],
@@ -3637,6 +3859,7 @@
 																				)
 																	)
 														);
+				
 																					
 					if(count($reporteEnviado)==0): //Si no esta el reporte de contratación se crea
 						if(count($reporteStudent)<>0): //Si encuentra el reporte inicial generado pasa los datos
@@ -3676,8 +3899,7 @@
 						endif;
 					endif;
 				endif;
-		
-				if($respuestaNotificacion==1):
+			if($respuestaNotificacion==1):
 					if ($this->StudentNotification->updateAll(array('StudentNotification.company_interview_status' => 1,'StudentNotification.student_interview_status' => 1),array('StudentNotification.id' => $id))):
 						if($tipoNotificacion==1):
 							$this->Session->setFlash('Entrevista telefónica aceptada', 'alert-success');
@@ -3828,7 +4050,7 @@
 															'Teléfonos:  56 22 04 20 / 56 22 04 21<br/>'.
 															'Correo electrónico: bolsa@unam.mx</p></div>'
 													));
-				$Email->send();
+			//	$Email->send();
 			endif;
 			
 			
@@ -3984,7 +4206,7 @@
 																	'Teléfonos:  56 22 04 20 / 56 22 04 21<br/>'.
 																	'Correo electrónico: bolsa@unam.mx</p></div>'
 																	));
-						$Email->send();
+				//		$Email->send();
 						
 						$this->Session->setFlash('Notificación telefónica enviada.', 'alert-success');
 						$this->redirect(array('action' => $redirect));
@@ -4106,7 +4328,7 @@
 																	'Teléfonos:  56 22 04 20 / 56 22 04 21<br/>'.
 																	'Correo electrónico: bolsa@unam.mx</p></div>'
 																	));
-						$Email->send();
+					//	$Email->send();
 						
 						$this->Session->setFlash('Notificación personal enviada.', 'alert-success');
 						$this->redirect(array('action' => $redirect));
@@ -5091,7 +5313,7 @@
 																					'Teléfonos:  56 22 04 20 / 56 22 04 21<br/>'.
 																					'Correo electrónico: bolsa@unam.mx</p></div>'
 																			));
-										$Email->send();
+								//		$Email->send();
 									else:
 										$this->Session->setFlash('La notificación para el universitario no pudo ser cargada', 'alert-success');
 									endif;

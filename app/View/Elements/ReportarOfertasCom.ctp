@@ -216,16 +216,21 @@
 								'action'=>'viewOfferOnline', $oferta['CompanyJobProfile']['id']],
 								['class' => 'btn btn btn-bti col-md-12',
 								'escape' => false]); ?>
+								
+								
 				<?= $this->Html->link('<i class="glyphicon glyphicon-eye-open"></i>&nbsp;&nbsp;Ver candidatos', 
-				['controller'=>'Companies','action'=>'studentReport', 
-				'?' => array(
-				'companyJobProfileId' => $oferta['CompanyJobProfile']['id'],
+				['controller'=>'Companies',
+				'action'=>'viewCandidateOffer','?' => array(
+				'company_id' => $oferta['Company']['id'],
+				'editingAdmin' => 'yes',
+				'id' => $oferta['CompanyJobProfile']['id'],
+				'editar' => 1,'nuevaBusqueda' => 'nuevaBusqueda'
 				),],
 				['class' => 'btn btn-info col-md-12',
 				'style' => 'margin-top: 5px;',
 				'escape' => false]); ?>
 				
-		
+			
 				
 			</div>
 		</center>

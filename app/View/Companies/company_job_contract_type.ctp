@@ -1,33 +1,24 @@
 <?php 
 	$this->layout = 'company'; 
 ?>
-	<style>
-	.required label:after {
-		  content:"*";
-		  display: block;
-		  position: absolute;
-		  left: 10px;
-		  color:red;
-	} 
-	</style>
-	<script>
-		
-		$(document).ready(function() {
-			var helpText = [
-							"", 
-							"", 
-							"",
-							"",
-							"",
-							"Al seleccionar Sí el sueldo no será visible al candidato.",
-							"Opciones de servicios y apoyos que son adicionales al sueldo que son otorgadas al trabajador para hacer más atractiva la oferta.",
-							"En este apartado podrá describir las prestaciones o apoyos adicionales a las descritas en el campo anterior."
-							];
+
+<script>
+	$(document).ready(function() {
+		var helpText = [
+						"", 
+						"", 
+						"",
+						"",
+						"",
+						"Al seleccionar Sí el sueldo no será visible al candidato.",
+						"Opciones de servicios y apoyos que son adicionales al sueldo que son otorgadas al trabajador para hacer más atractiva la oferta.",
+						"En este apartado podrá describir las prestaciones o apoyos adicionales a las descritas en el campo anterior."
+						];
 			 
-			$('.form-group').each(function(index, element) {
-				$(this).find(".cambia").attr("id", index);
-				$(this).find('#'+index).attr("data-original-title", helpText[index]);
-			});
+		$('.form-group').each(function(index, element) {
+			$(this).find(".cambia").attr("id", index);
+			$(this).find('#'+index).attr("data-original-title", helpText[index]);
+		});
 
 			$("#estado").on('change',function (){
 				if($("#estado").val() != 0)
@@ -141,35 +132,6 @@
 			
 		});
 	
-		function init_contadorTa(idtextarea, idcontador,max)
-		{
-			$("#"+idtextarea).keyup(function()
-					{
-						updateContadorTa(idtextarea, idcontador,max);
-					});
-			
-			$("#"+idtextarea).change(function()
-			{
-					updateContadorTa(idtextarea, idcontador,max);
-			});
-			
-		}
-
-		function updateContadorTa(idtextarea, idcontador,max)
-		{
-			var contador = $("#"+idcontador);
-			var ta =     $("#"+idtextarea);
-			contador.html("0/"+max);
-			
-			contador.html(ta.val().length+"/"+max);
-			if(parseInt(ta.val().length)>max)
-			{
-				ta.val(ta.val().substring(0,max-1));
-				contador.html(max+"/"+max);
-			}
-
-		}
- 	
 	function desabilityMobility(){
 		<?php if(($this->Session->check('companyJobContractType.id') == false) and (empty($this->request->data))): ?>
 			$( "#CompanyJobContractTypeMobilityOption1" ).prop( "checked", false );
@@ -197,7 +159,6 @@
 		}
 		$('.selectpicker').selectpicker('refresh');
 	}
-
 	function desabilityMobility2(){
 		<?php if(($this->Session->check('companyJobContractType.id') == false) and (empty($this->request->data))): ?>
 			$( "#CompanyJobContractTypeChangeResidenceOption1" ).prop( "checked", false );
@@ -223,7 +184,6 @@
 		}
 		$('.selectpicker').selectpicker('refresh');
 	}
-	
 	function mobilityCityOption(){
 		<?php if(($this->Session->check('companyJobContractType.id') == false) and (empty($this->request->data))): ?>
 			document.getElementById('CompanyJobContractTypeMobilityCity1').options[0].selected = 'selected';
@@ -304,8 +264,6 @@
 		}
 
 	}
-	
-	
 	function mobilityCityOption2(){
 		<?php if(($this->Session->check('companyJobContractType.id') == false) and (empty($this->request->data))): ?>
 			document.getElementById('CompanyJobContractTypeChangeResidenceState').options[0].selected = 'selected';
@@ -384,7 +342,6 @@
 		}
 
 	}
-	
     function validateInputs(){
 		var selectViajar = $('#CompanyJobContractTypeMobilityCity1').val();
 		var selecttResidencia = $('#CompanyJobContractTypeChangeResidenceState').val();
@@ -484,9 +441,7 @@
 	}
 </script>
 
-
 <div class="col-md-12">
-	
 	<?= $this->Form->create('Company', [
 										'class' => 'form-horizontal', 
 										'role' => 'form',
@@ -505,11 +460,11 @@
 		<div class="col-md-6">
 			<div class="col-md-12">
 				<?php echo $this->Form->input('CompanyJobContractType.id', array('label' => '','placeholder' => 'Id',)); ?>
-				<?= $this->Form->input('CompanyJobContractType.contract_type', ['type'=>'select','options' => $TiposContratos,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Tipo de contrato']); ?>
+				<?= $this->Form->input('CompanyJobContractType.contract_type', ['type'=>'select','options' => $TiposContratos,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Tipo de contrato']); ?>
 				<?= $this->Form->input('CompanyJobContractType.contract_length', ['placeholder' => 'Duración de contrato']); ?>
-				<?= $this->Form->input('CompanyJobContractType.workday', ['type'=>'select','options' => $JornadasLaborales,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Jornada laboral']); ?>
+				<?= $this->Form->input('CompanyJobContractType.workday', ['type'=>'select','options' => $JornadasLaborales,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Jornada laboral']); ?>
 				<?= $this->Form->input('CompanyJobContractType.schedule', ['placeholder' => 'Horario']); ?>
-				<?= $this->Form->input('CompanyJobContractType.salary', ['type'=>'select','options' => $Salarios,'class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => 'true','default'=>'0', 'empty' => 'Sueldo (Neto)']); ?>
+				<?= $this->Form->input('CompanyJobContractType.salary', ['type'=>'select','options' => $Salarios,'class' => 'selectpicker show-tick form-control show-menu-arrow','default'=>'0', 'empty' => 'Sueldo (Neto)']); ?>
 				<?php $options = array('s' => 'Si', 'n' => 'No');
 					echo $this->Form->input('CompanyJobContractType.confidential_salary', ['type' => 'select','default'=> 0,'empty' => '¿Sueldo confidencial?','options' => $options,'class' => 'selectpicker show-tick form-control show-menu-arrow']);
 				?>
@@ -532,21 +487,22 @@
 			<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
 				<p style="color: #588BAD">Disponibilidad para viajar:</p>
 			</blockquote>
+			
 			<?php $options = array('s' => 'Si', 'n' => 'No');
 					echo $this->Form->input('CompanyJobContractType.mobility', ['type' => 'select','default'=> 0,'empty' => '¿Disponibilidad para viajar?','options' => $options,'onchange' => 'desabilityMobility()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
 			?>
+			
 			<div id="bloque2" style="display:none">
-				
 				<?php $options = array('1' => 'Dentro del país', '2' => 'Fuera del país');
 					echo $this->Form->input('CompanyJobContractType.mobility_option', ['type' => 'select','default'=> 0,'empty' => '¿Donde?','options' => $options,'onchange' => 'mobilityCityOption()','class' => 'selectpicker show-tick form-control show-menu-arrow']);
 				?>
-				
 				<div id="divMobilityCityOption1" >
 				<?php 
 					echo $this->Form->input('CompanyJobContractType.mobility_city', ['type' => 'select','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => "true",'id' => 'CompanyJobContractTypeMobilityCity1','label' => '','default'=>'0','empty' => 'Sin opciones']);
 				?>
 				</div>	
 			</div>
+		
 			<blockquote style="border-top-width: 0px; padding-top: 0px; padding-bottom: 0px;margin-top: 15px;">
 				<p style="color: #588BAD">Disponibilidad para cambio de residencia:</p>
 			</blockquote>
@@ -561,24 +517,18 @@
 				<?php 
 					echo $this->Form->input('CompanyJobContractType.change_residence_state', ['type' => 'select','class' => 'selectpicker show-tick form-control show-menu-arrow','data-live-search' => "true",'placeholder' => 'País','label' => '','default'=>'0','empty' => 'Sin opciones']);
 				?>
-				
 				</div>	
-			
 			</div>
-			
-		
 		</div>	
 	</fieldset>	
 </div>
-	<div class="col-md-12  text-center" style="margin-top: 30px;">
-
-		<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-disk"></i>&nbsp; Guardar',array(
-								'type' => 'submit', 
-								'div' => 'form-group',
-								'class' => 'btn btn-primary',
-								'escape' => false,
-					));
-		echo $this->Form->end(); 				
-		?>
-
-	</div>
+<div class="col-md-12  text-center" style="margin-top: 30px;">
+	<?php echo $this->Form->button('<i class=" glyphicon glyphicon-floppy-disk"></i>&nbsp; Guardar',array(
+							'type' => 'submit', 
+							'div' => 'form-group',
+							'class' => 'btn btn-primary',
+							'escape' => false,
+				));
+	echo $this->Form->end(); 				
+	?>
+</div>

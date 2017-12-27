@@ -19,6 +19,42 @@
 			document.getElementById('StudentPersonalNotificationId').value = StudentId;
 			$('#myModalnotificationPersonal').modal('show');
 		}
+	function deleteText(){
+			document.getElementById("textFile").innerHTML = '';
+			document.getElementById('StudentFile').value = '';  
+			return false;
+		}
+	function cambiarContenido(){
+		
+			var archivo = document.getElementById('StudentFile').value;
+			extensiones_permitidas = new Array(".jpg",".pdf");
+			mierror = "";
+
+			if (!archivo) {
+					$.alert({ title: '!Aviso!',type: 'blue',content: 'Adjuntar Cédula de Identificación Fiscal'});
+					document.getElementById('StudentFile').scrollIntoView();
+					return false;
+			}else{
+					extension = (archivo.substring(archivo.lastIndexOf("."))).toLowerCase();
+					permitida = false;
+					for (var i = 0; i < extensiones_permitidas.length; i++) {
+						 if (extensiones_permitidas[i] == extension) {
+						 permitida = true;
+						 break;
+						 }
+					}
+					  
+					if (!permitida) {
+						$.alert({ title: '!Aviso!',type: 'blue',content: "Compruebe la extensión de su imagen de RFC a subir. \nSólo se pueden subir imagenes con extensiones: " + extensiones_permitidas.join()});
+						document.getElementById('StudentFile').scrollIntoView();
+						deleteText();
+						return false;
+					}else{
+						document.getElementById("textFile").innerHTML = document.getElementById('StudentFile').value + '<button id="deleteTextId" onclick="deleteText();" class="btnBlue" style="margin-left: 10px;" >x</button>';
+						return false;
+					}
+			   }
+		}
 	function validateEmpty(){
 		selectedIndex = document.getElementById("CompanyCriterio").selectedIndex;
 		
@@ -147,6 +183,16 @@
 				document.getElementById("formNotificacionPropuesta").submit();
 			 }
 		}
+	function validaFormSaveStudent(){
+		var valor = document.getElementById("CompanySavedStudentCompanyFolderId").value;
+		if (valor == ''){
+			$.alert({ title: '!Aviso!',type: 'blue',content: 'Seleccione la carpeta donde se guardará el perfil'});
+			document.getElementById("CompanySavedStudentCompanyFolderId").focus;
+			return false;
+		} else {
+			return true;
+		}
+	}
 	function validarReportarContratacionForm(){
 			var fechaFinal = document.getElementById('StudentReportarContratacionFechaContratacionDay').value	+ "/" +
 									document.getElementById('StudentReportarContratacionFechaContratacionMonth').value	+ "/" +

@@ -1,21 +1,14 @@
 <?php 
 	$this->layout = 'company'; 
 ?>
-
 <script>
-	$(document).ready(function() {
-
+$(document).ready(function() {
 			 $('#CompanyJobProfileExpirationYear').prepend('<option value="" selected>AAAA</option>');
 			 $('#CompanyJobProfileExpirationMonth').prepend('<option value="" selected>MM</option>');
 			 $('#CompanyJobProfileExpirationDay').prepend('<option value="" selected>DD</option>');
-			 
 		});	
-	
-	
-	
 </script>
-	
-	<div class="scrollbar" id="style-2" >
+<div class="scrollbar" id="style-2" >
 
 	<!--Oferta-->
 	<div class="col-md-12">
@@ -23,223 +16,227 @@
 		  <div class="panel-heading">
 			<h3 class="panel-title" >Oferta</h3>
 		  </div>
-		  <div class="panel-body" style="text-align: center">
+			<div class="panel-body" style="text-align: center">
 				<div class="col-md-12">
-				<!--Visto/noVisto -->
-					<?php 
-						$vista = 0;
-						foreach($company['CompanyViewedOffer']as $k => $viewed):
-							if($viewed['company_job_profile_id'] == $oferta['CompanyJobProfile']['id']):
-								$vista = 1;
-								 break;
+					<!--Visto/noVisto -->
+						<?php 
+							$vista = 0;
+							foreach($company['CompanyViewedOffer']as $k => $viewed):
+								if($viewed['company_job_profile_id'] == $oferta['CompanyJobProfile']['id']):
+									$vista = 1;
+									 break;
+								endif;
+							endforeach;
+				
+							if($vista == 1):
+								echo $this->Html->image('student/visto.png',
+											['title' => 'Oferta vista',
+											'data-toggle'=>'tooltip',
+											'data-placement'=>'left',
+											'class' => 'icono']);						
+							else:
+								echo $this->Html->image('student/noVisto.png',
+											['title' => 'Oferta no vista',
+											'data-toggle'=>'tooltip',
+											'data-placement'=>'left',
+											'class' => 'icono']);
 							endif;
-						endforeach;
-			
-						if($vista == 1):
-							echo $this->Html->image('student/visto.png',
-										['title' => 'Oferta vista',
+						?>
+					<!--Ver candidatos -->
+					<?= $this->Html->image('student/lista.png',
+										['title' => 'Ver candidatos dentro de oferta',
 										'data-toggle'=>'tooltip',
 										'data-placement'=>'left',
-										'class' => 'icono']);						
-						else:
-							echo $this->Html->image('student/noVisto.png',
-										['title' => 'Oferta no vista',
+										'class' => 'icono',
+										'url' => ['controller'=>'Companies',
+												'action'=>'viewCandidateOffer',
+												'?' => ['company_id' => $oferta['Company']['id'],
+														'editingAdmin' => 'yes',
+														'id' => $oferta['CompanyJobProfile']['id'],
+														'editar' => 1,
+														'nuevaBusqueda' => 'nuevaBusqueda']]]);?>
+					<!--Editar oferta -->
+					<?= $this->Html->image('student/lapiz.png',
+										['title' => 'Editar oferta',
 										'data-toggle'=>'tooltip',
 										'data-placement'=>'left',
-										'class' => 'icono']);
-						endif;
-					?>
-				<!--Ver candidatos -->
-				<?= $this->Html->image('student/lista.png',
-									['title' => 'Ver candidatos dentro de oferta',
-									'data-toggle'=>'tooltip',
-									'data-placement'=>'left',
-									'class' => 'icono',
-									'url' => ['controller'=>'Companies',
+										'class' => 'icono',
+										'url' => ['controller'=>'Companies',
+												'action'=>'companyJobOffer',
+												'?' => ['company_id' => $oferta['Company']['id'],
+														'editingAdmin' => 'yes',
+														'id' => $oferta['CompanyJobProfile']['id'],
+														'editar' => 1]]]);?>
+					<!--Vigencia oferta -->
+					<?= $this->Html->image('student/visible.png',
+										['title' => 'Cambiar vigencia de oferta',
+										'data-toggle'=>'tooltip',
+										'data-placement'=>'left',
+										'class' => 'icono',
+										'onclick' => 'saveVigencia('.$oferta['CompanyJobProfile']['id'].',"'.$oferta['CompanyJobProfile']['expiration'].'","'.$oferta['CompanyJobProfile']['created'].'");',
+										]);?>
+					<!--Reportar contratación -->
+					<?= $this->Html->image('student/contratado.png',
+										['title' => 'Reportar contratación ',
+										'data-toggle'=>'tooltip',
+										'data-placement'=>'left',
+										'class' => 'icono',
+										'url' => ['controller'=>'Companies',
 											'action'=>'viewCandidateOffer',
 											'?' => ['company_id' => $oferta['Company']['id'],
 													'editingAdmin' => 'yes',
 													'id' => $oferta['CompanyJobProfile']['id'],
 													'editar' => 1,
 													'nuevaBusqueda' => 'nuevaBusqueda']]]);?>
-				<!--Editar oferta -->
-				<?= $this->Html->image('student/lapiz.png',
-									['title' => 'Editar oferta',
-									'data-toggle'=>'tooltip',
-									'data-placement'=>'left',
-									'class' => 'icono',
-									'url' => ['controller'=>'Companies',
-											'action'=>'companyJobOffer',
-											'?' => ['company_id' => $oferta['Company']['id'],
-													'editingAdmin' => 'yes',
-													'id' => $oferta['CompanyJobProfile']['id'],
-													'editar' => 1]]]);?>
-				<!--Vigencia oferta -->
-				<?= $this->Html->image('student/visible.png',
-									['title' => 'Cambiar vigencia de oferta',
-									'data-toggle'=>'tooltip',
-									'data-placement'=>'left',
-									'class' => 'icono',
-									'onclick' => 'saveVigencia('.$oferta['CompanyJobProfile']['id'].',"'.$oferta['CompanyJobProfile']['expiration'].'","'.$oferta['CompanyJobProfile']['created'].'");',
-									]);?>
-				<!--Reportar contratación -->
-				<?= $this->Html->image('student/contratado.png',
-									['title' => 'Reportar contratación ',
-									'data-toggle'=>'tooltip',
-									'data-placement'=>'left',
-									'class' => 'icono',
-									'url' => ['controller'=>'Companies',
-											'action'=>'studentReport',
-											'?' => ['company_id' => $oferta['Company']['id'],
-													'id' => $oferta['CompanyJobProfile']['id'],
-													'editingAdmin' => 'yes']]]);?>
-				<!--Estado Oferta -->
-				<?php 
-					if($oferta['CompanyJobContractType']['status'] == null):
-						echo $this->Html->image('student/noActiva.png',
-									['title' => 'Oferta incompleta',
-									'data-toggle'=>'tooltip',
-									'data-placement'=>'left',
-									'class' => 'icono',
-									'onclick' => 'ofertaIncompleta();'
-									]);	
-					else:	
-						if(strtotime($oferta['CompanyJobProfile']['expiration']) < strtotime(date('Y-m-d'))):
+					<!--Estado Oferta -->
+					<?php 
+						if($oferta['CompanyJobContractType']['status'] == null):
 							echo $this->Html->image('student/noActiva.png',
-										['title' => 'Oferta expirada',
+										['title' => 'Oferta incompleta',
 										'data-toggle'=>'tooltip',
 										'data-placement'=>'left',
 										'class' => 'icono',
-									  'onclick' => 'ofertaExpirada();'
+										'onclick' => 'ofertaIncompleta();'
 										]);	
-						else:		
-							if($oferta['CompanyJobContractType']['status'] == 0):
+						else:	
+							if(strtotime($oferta['CompanyJobProfile']['expiration']) < strtotime(date('Y-m-d'))):
 								echo $this->Html->image('student/noActiva.png',
-										['title' => 'Oferta inactiva',
-										'data-toggle'=>'tooltip',
-										'data-placement'=>'left',
-										'class' => 'icono',
-										'url' => [	'controller'=>'Companies',
-													'action'=>'enableDisableOffer',
-														'?' => ['id' => $oferta['CompanyJobContractType']['id'],
-																'estatus' => $oferta['CompanyJobContractType']['status']]]]);
-							else:
-								echo $this->Html->image('student/activa.png',
-										['title' => 'Oferta activa',
-										'data-toggle'=>'tooltip',
-										'data-placement'=>'left',
-										'class' => 'icono',
-										'url' => ['controller'=>'Companies',
-												'action'=>'enableDisableOffer',
-												'?' => ['id' => $oferta['CompanyJobContractType']['id'],
-														'estatus' => $oferta['CompanyJobContractType']['status']]]]);
-							endif;
-						endif;
-					endif;
-				?>
-				<!--Eliminar -->
-				<?php echo $this->Html->image('student/eliminarAzul.png',
-						array(
-							'title' => 'Eliminar oferta',
-							'style' => 'width: 20px; height: 20px; margin-right: 6px; cursor: pointer;',
-							'class' => 'class="img-responsive center-block"',
-							'id' => 'focusOfferId'.$oferta['CompanyJobProfile']['id'],
-							'onclick' => 'deleteOffer('.$oferta['CompanyJobProfile']['id'].');'
-							)
-					);
-											
-				 echo $this->Form->postLink(
-										$this->Html->image('student/eliminar.png',
-										array('alt' => 'Delete', 'title' =>'Eliminar oferta', 'style' => 'width: 20px; height: 20px; display: none','id'=>'deleteOfferId'.$oferta['CompanyJobProfile']['id'] )), 
-										array('action' => 'deleteOffer',$oferta['CompanyJobProfile']['id']), 
-										array('escape' => false) 
-										);
-				?>
-			</div>
-		  
-			<?php 
-				$caracteres = strlen($oferta['CompanyJobProfile']['id']);
-				$faltantes = 5 - $caracteres;	
-				if($faltantes > 0):
-					$ceros = '';
-					for($cont=0; $cont<=$faltantes;$cont++):
-						$ceros .= '0';
-					endfor;
-					$folio = $ceros.$oferta['CompanyJobProfile']['id'];
-				else:
-					$folio = strlen($oferta['CompanyJobProfile']['id']);
-				endif;
-			?>
-			<b style="font-size: 20px;">
-				<?php 
-					if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 's') AND ($oferta['CompanyJobOffer']['company_name']<>'')):
-						echo $oferta['CompanyJobOffer']['company_name']; 
-					else:
-						if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 's') AND ($oferta['CompanyJobOffer']['company_name']=='')):
-							echo 'Confidencial';
-						else:
-							if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 'n') AND ($oferta['CompanyJobOffer']['company_name']<>'')):
-								echo $oferta['CompanyJobOffer']['company_name']; 
-							else:
-								if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 'n') AND ($oferta['CompanyJobOffer']['company_name']=='')):
-									echo $oferta['Company']['CompanyProfile']['company_name'];
+											['title' => 'Oferta expirada',
+											'data-toggle'=>'tooltip',
+											'data-placement'=>'left',
+											'class' => 'icono',
+										  'onclick' => 'ofertaExpirada();'
+											]);	
+							else:		
+								if($oferta['CompanyJobContractType']['status'] == 0):
+									echo $this->Html->image('student/noActiva.png',
+											['title' => 'Oferta inactiva',
+											'data-toggle'=>'tooltip',
+											'data-placement'=>'left',
+											'class' => 'icono',
+											'onclick' => 'ofertaInactiva();'
+										//	'url' => [	'controller'=>'Companies',
+										//				'action'=>'enableDisableOffer',
+										//				'?' => ['id' => $oferta['CompanyJobContractType']['id'],
+										//				'estatus' => $oferta['CompanyJobContractType']['status']]]
+											]);
 								else:
-									echo 'Sin nombre de empresa';
+									echo $this->Html->image('student/activa.png',
+											['title' => 'Oferta activa',
+											'data-toggle'=>'tooltip',
+											'data-placement'=>'left',
+											'class' => 'icono',
+											'onclick' => 'ofertaActiva();'
+										//	'url' => ['controller'=>'Companies',
+										//			'action'=>'enableDisableOffer',
+										//			'?' => ['id' => $oferta['CompanyJobContractType']['id'],
+										//			'estatus' => $oferta['CompanyJobContractType']['status']]]
+											]);
 								endif;
 							endif;
 						endif;
+					?>
+					<!--Eliminar -->
+					<?php echo $this->Html->image('student/eliminarAzul.png',
+							array(
+								'title' => 'Eliminar oferta',
+								'style' => 'width: 20px; height: 20px; margin-right: 6px; cursor: pointer;',
+								'class' => 'class="img-responsive center-block"',
+								'id' => 'focusOfferId'.$oferta['CompanyJobProfile']['id'],
+								'onclick' => 'deleteOffer('.$oferta['CompanyJobProfile']['id'].');'
+								)
+						);
+												
+					 echo $this->Form->postLink(
+											$this->Html->image('student/eliminar.png',
+											array('alt' => 'Delete', 'title' =>'Eliminar oferta', 'style' => 'width: 20px; height: 20px; display: none','id'=>'deleteOfferId'.$oferta['CompanyJobProfile']['id'] )), 
+											array('action' => 'deleteOffer',$oferta['CompanyJobProfile']['id']), 
+											array('escape' => false) 
+											);
+					?>
+				</div>
+				<?php 
+					$caracteres = strlen($oferta['CompanyJobProfile']['id']);
+					$faltantes = 5 - $caracteres;	
+					if($faltantes > 0):
+						$ceros = '';
+						for($cont=0; $cont<=$faltantes;$cont++):
+							$ceros .= '0';
+						endfor;
+						$folio = $ceros.$oferta['CompanyJobProfile']['id'];
+					else:
+						$folio = strlen($oferta['CompanyJobProfile']['id']);
 					endif;
 				?>
-			</b><br>
-			<?php
-				echo '<b style="font-size: 14px;">Puesto:</b><span style="color:#000; font-size: 14px;"> ' . $oferta['CompanyJobProfile']['job_name'] . '</span><br>';
-				echo '<b style="font-size: 14px;">Folio:</b><span style="color:#000; font-size: 14px;">  ' .$folio. '</span><br>';
-				echo '<b style="font-size: 14px;">Vigencia:</b><span style="color:#000; font-size: 14px;">  ' . date("d/m/Y",strtotime($oferta['CompanyJobProfile']['expiration'])) . '</span>';
-			?>
-			<br>
+				<b style="font-size: 20px;">
+					<?php 
+						if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 's') AND ($oferta['CompanyJobOffer']['company_name']<>'')):
+							echo $oferta['CompanyJobOffer']['company_name']; 
+						else:
+							if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 's') AND ($oferta['CompanyJobOffer']['company_name']=='')):
+								echo 'Confidencial';
+							else:
+								if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 'n') AND ($oferta['CompanyJobOffer']['company_name']<>'')):
+									echo $oferta['CompanyJobOffer']['company_name']; 
+								else:
+									if(($oferta['CompanyJobOffer']['confidential_job_offer'] == 'n') AND ($oferta['CompanyJobOffer']['company_name']=='')):
+										echo $oferta['Company']['CompanyProfile']['company_name'];
+									else:
+										echo 'Sin nombre de empresa';
+									endif;
+								endif;
+							endif;
+						endif;
+					?>
+				</b><br>
+				<?php
+					echo '<b style="font-size: 14px;">Puesto:</b><span style="color:#000; font-size: 14px;"> ' . $oferta['CompanyJobProfile']['job_name'] . '</span><br>';
+					echo '<b style="font-size: 14px;">Folio:</b><span style="color:#000; font-size: 14px;">  ' .$folio. '</span><br>';
+					echo '<b style="font-size: 14px;">Vigencia:</b><span style="color:#000; font-size: 14px;">  ' . date("d/m/Y",strtotime($oferta['CompanyJobProfile']['expiration'])) . '</span>';
+				?>
+				<br>
+			</div>
+		</div>
+	</div>
+		
+	<!--Responsable de la oferta-->
+	<?php  if($oferta['CompanyJobOffer']['show_details_responsible']=='s'): ?>
+	<div class="col-md-12">
+		<div class="panel panel-default" style="padding-left: 0px;">
+		  <div class="panel-heading">
+			<h3 class="panel-title">Responsable de la oferta</h3>
+		  </div>
+		  <div class="panel-body" style="text-align: left">
+			<div class="col-md-12">
+				<?php 
+			if($oferta['CompanyJobOffer']['same_contact']=='n'):
+				echo '<span class="catorce">Nombre: </span>' . $oferta['CompanyJobOffer']['responsible_name']. ' ' .  $oferta['CompanyJobOffer']['responsible_last_name']. ' ' .  $oferta['CompanyJobOffer']['responsible_second_last_name'].'<br>';
+				echo '<span class="catorce">Puesto: </span>' . $oferta['CompanyJobOffer']['responsible_position'] . '<br>';
+				echo '<span class="catorce">Tel.: </span> (' . $oferta['CompanyJobOffer']['responsible_long_distance_cod'] .') '. $oferta['CompanyJobOffer']['responsible_telephone'] . ' ';
+				if($oferta['CompanyJobOffer']['responsible_phone_extension']<>''):
+					echo '<span class="catorce"> - ext. </span> '.$oferta['CompanyJobOffer']['responsible_phone_extension'];
+				endif;
+				echo '<br>';
+				if($oferta['CompanyJobOffer']['responsible_long_distance_cod_cell_phone']<>''):
+					echo '<span class="catorce">Cel.: </span> ('.$oferta['CompanyJobOffer']['responsible_long_distance_cod_cell_phone']. ') ' .$oferta['CompanyJobOffer']['responsible_cell_phone'] .'<br>';
+				endif;	
+			else:
+				echo '<span class="catorce">Nombre: </span>' . $oferta['Company']['CompanyContact']['name']. ' ' .  $oferta['Company']['CompanyContact']['last_name']. ' ' .  $oferta['Company']['CompanyContact']['second_last_name'].'<br>';
+				echo '<span class="catorce">Puesto: </span>' . $oferta['Company']['CompanyContact']['job_title'] . '<br>';
+				echo '<span class="catorce">Tel.: </span> (' . $oferta['Company']['CompanyContact']['long_distance_cod'] .') '. $oferta['Company']['CompanyContact']['telephone_number'] . ' ';
+				if($oferta['Company']['CompanyContact']['phone_extension']<>''):
+					echo ' <span class="catorce"> - ext. </span> '.$oferta['Company']['CompanyContact']['phone_extension'];
+				endif;
+				echo '<br>';
+				if(($oferta['Company']['CompanyContact']['long_distance_cod_cell_phone']<>'') and ($oferta['Company']['CompanyContact']['cell_phone']<>'')):
+					echo '<span class="catorce">Cel.: </span> ('.$oferta['Company']['CompanyContact']['long_distance_cod_cell_phone']. ') ' .$oferta['Company']['CompanyContact']['cell_phone'] .'<br>';
+				endif;
+			endif;
+		  ?>
+			</div>
 		  </div>
 		</div>
 	</div>
-	
-	
-	<!--Responsable de la oferta-->
-	<?php  if($oferta['CompanyJobOffer']['show_details_responsible']=='s'): ?>
-		<div class="col-md-12">
-			<div class="panel panel-default" style="padding-left: 0px;">
-			  <div class="panel-heading">
-				<h3 class="panel-title">Responsable de la oferta</h3>
-			  </div>
-			  <div class="panel-body" style="text-align: left">
-			<div class="col-md-12">
-			  <?php 
-				if($oferta['CompanyJobOffer']['same_contact']=='n'):
-					echo '<span class="catorce">Nombre: </span>' . $oferta['CompanyJobOffer']['responsible_name']. ' ' .  $oferta['CompanyJobOffer']['responsible_last_name']. ' ' .  $oferta['CompanyJobOffer']['responsible_second_last_name'].'<br>';
-					echo '<span class="catorce">Puesto: </span>' . $oferta['CompanyJobOffer']['responsible_position'] . '<br>';
-					echo '<span class="catorce">Tel.: </span> (' . $oferta['CompanyJobOffer']['responsible_long_distance_cod'] .') '. $oferta['CompanyJobOffer']['responsible_telephone'] . ' ';
-					if($oferta['CompanyJobOffer']['responsible_phone_extension']<>''):
-						echo '<span class="catorce"> - ext. </span> '.$oferta['CompanyJobOffer']['responsible_phone_extension'];
-					endif;
-					echo '<br>';
-					if($oferta['CompanyJobOffer']['responsible_long_distance_cod_cell_phone']<>''):
-						echo '<span class="catorce">Cel.: </span> ('.$oferta['CompanyJobOffer']['responsible_long_distance_cod_cell_phone']. ') ' .$oferta['CompanyJobOffer']['responsible_cell_phone'] .'<br>';
-					endif;	
-				else:
-					echo '<span class="catorce">Nombre: </span>' . $oferta['Company']['CompanyContact']['name']. ' ' .  $oferta['Company']['CompanyContact']['last_name']. ' ' .  $oferta['Company']['CompanyContact']['second_last_name'].'<br>';
-					echo '<span class="catorce">Puesto: </span>' . $oferta['Company']['CompanyContact']['job_title'] . '<br>';
-					echo '<span class="catorce">Tel.: </span> (' . $oferta['Company']['CompanyContact']['long_distance_cod'] .') '. $oferta['Company']['CompanyContact']['telephone_number'] . ' ';
-					if($oferta['Company']['CompanyContact']['phone_extension']<>''):
-						echo ' <span class="catorce"> - ext. </span> '.$oferta['Company']['CompanyContact']['phone_extension'];
-					endif;
-					echo '<br>';
-					if(($oferta['Company']['CompanyContact']['long_distance_cod_cell_phone']<>'') and ($oferta['Company']['CompanyContact']['cell_phone']<>'')):
-						echo '<span class="catorce">Cel.: </span> ('.$oferta['Company']['CompanyContact']['long_distance_cod_cell_phone']. ') ' .$oferta['Company']['CompanyContact']['cell_phone'] .'<br>';
-					endif;
-				endif;
-			  ?>
-			  </div>
-			  </div>
-			</div>
-		</div>
 	<?php endif; ?>
 	
 	<!--Perfil de la oferta-->
@@ -486,8 +483,7 @@
 		</div>
 	<?php endif; ?>
 </div>
-	
 
-	<div class="col-md-12 text-center">
-		<a class="btn btn-info" style="margin-top: 5px; width: 150px;" href="javascript:window.history.back();"><i class="glyphicon glyphicon-arrow-left"></i> &nbsp; Regresar</a>
-	</div>
+<div class="col-md-12 text-center">
+	<a class="btn btn-info" style="margin-top: 5px; width: 150px;" href="javascript:window.history.back();"><i class="glyphicon glyphicon-arrow-left"></i> &nbsp; Regresar</a>
+</div>

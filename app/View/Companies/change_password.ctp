@@ -5,21 +5,21 @@
         <p style="color: #588BAD;">Modificar Contraseña.</p>
     </blockquote>
 
-		<div class="col-md-8 col-md-offset-2 fondoBti" style="margin-top: 30px; margin-bottom: 30px;" >
+	<div class="col-md-8 col-md-offset-2 fondoBti" style="margin-top: 30px; margin-bottom: 30px;" >
 
 		<?= $this->Form->create('Company', [
-											'class' => 'form-horizontal', 
-											'role' => 'form',
-											'inputDefaults' => [
-												'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
-												'div' => ['class' => 'form-group'],
-												'class' => 'form-control',
-												'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
-												'between' => '<div class="col-md-12">',
-												'after' => '</div>',
-												'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
-											],
-											'action' => 'changePassword']); ?>
+										'class' => 'form-horizontal', 
+										'role' => 'form',
+										'inputDefaults' => [
+											'format' => ['before', 'label', 'between', 'input', 'error', 'after'],
+											'div' => ['class' => 'form-group'],
+											'class' => 'form-control',
+											'label' => ['class' => 'col-md-12 control-label', 'text'=>''],
+											'between' => '<div class="col-md-12">',
+											'after' => '</div>',
+											'error' => ['attributes' => ['wrap' => 'div', 'class' => 'help-inline alert alert-danger margin-reduce']]
+										],
+										'action' => 'changePassword']); ?>
 		
 		<fieldset style="margin-top: 30px; margin-bottom: 30px">
 				<?= $this->Form->input('Company.id',['type' => 'hidden']); ?>
